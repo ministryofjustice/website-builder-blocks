@@ -1,0 +1,38 @@
+{
+  "name": "website-builder-blocks",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/website-builder-blocks.git"
+  },
+  "contributors": [
+    "Ministry of Justice"
+  ],
+  "devDependencies": {
+    "@wordpress/block-editor": "*",
+    "@wordpress/blocks": "*",
+    "@wordpress/components": "*",
+    "@wordpress/element": "*",
+    "@wordpress/i18n": "*",
+    "@wordpress/scripts": "*",
+    "classnames": "*",
+    "copy-webpack-plugin": "*",
+    "imagemin-mozjpeg": "*",
+    "imagemin-webpack-plugin": "*",
+    "import-glob-loader": "*",
+    "jsdoc": "*",
+    "laravel-mix": "*",
+    "laravel-mix-glob": "*",
+    "laravel-mix-imagemin": "*",
+    "resolve-url-loader": "*",
+    "sass": "*",
+    "sass-loader": "*",
+    "wp-hookdoc": "*",
+    "react-select": "*"
+  },
+  "scripts": {
+    "build": "wp-scripts build && NODE_ENV=production webpack --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+  }
+}
