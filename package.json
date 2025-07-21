@@ -1,0 +1,20 @@
+{
+  "name": "website-builder-blocks",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/website-builder-blocks.git"
+  },
+  "contributors": [
+    "Ministry of Justice"
+  ],
+  "devDependencies": {
+    "@wordpress/scripts": "*",
+    "react-select": "*"
+  },
+  "scripts": {
+    "build": "wp-scripts build"
+  }
+}

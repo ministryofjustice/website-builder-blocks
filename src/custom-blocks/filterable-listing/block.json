@@ -1,0 +1,10 @@
+{
+    "apiVersion": 3,
+    "name": "website-builder-blocks/filterable-listing",
+    "title": "Filterable Listing2",
+    "category": "",
+    "icon": "smiley",
+    "description": "",
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+  }
