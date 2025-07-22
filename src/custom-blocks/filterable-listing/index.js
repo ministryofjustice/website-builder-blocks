@@ -25,6 +25,22 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "array",
       default: ""
     },
+    listingItemsPerPage: {
+      type: "number",
+      default: 10
+    },
+    listingSortOrder: {
+      type: "string",
+      default: "published_date"
+    },
+    listingRestrictTaxonomies: {
+      type: "array",
+      default: ""
+    },
+    listingRestrictTerms: {
+      type: "array",
+      default: ""
+    },
     className: {
       type: "string"
     }

@@ -18,13 +18,20 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
     $attribute_box_listingPostType = esc_html($attributes['listingPostType'] ?? '');
     $attribute_box_listingFilters = $attributes['listingFilters'] ?? [];
     $attribute_box_listingDisplayFields = $attributes['listingDisplayFields'] ?? [];
+    $attribute_box_listingItemsPerPage = $attributes['listingItemsPerPage'] ?? 10;
+    $attribute_box_listingSortOrder = $attributes['listingSortOrder'] ?? 'published_date';
+    $attribute_box_listingRestrictTaxonomies = $attributes['listingRestrictTaxonomies'] ?? [];
+    $attribute_box_listingRestrictTerms = $attributes['listingRestrictTerms'] ?? [];
     $attribute_box_className = esc_html($attributes['className'] ?? '');
 
+   
     // Turn on buffering so we can collect all the html markup below and load it via the return
     // This is an alternative method to using sprintf(). By using buffering you can write your
     // code below as you would in any other PHP file rather then having to use the sprintf() syntax
     ob_start();
 
+    var_dump($attribute_box_listingRestrictTaxonomies);
+    var_dump($attribute_box_listingRestrictTerms);
     if(!empty($attribute_box_listingPostType)){ ?>
 
     <div class="grid grid-cols-3 gap-4">
@@ -43,13 +50,15 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 
     $listing_active_filters = [];
     $tax_qry_ary = [];
-
+    
     $listing_args = [
         'post_type' => $attribute_box_listingPostType,
-        'posts_per_page' => 10,
+        'posts_per_page' => $attribute_box_listingItemsPerPage,
         'relevanssi' => true,
         'paged' => $paged
     ];
+
+
 
     foreach ($attribute_box_listingFilters as $filter) {
 
@@ -74,6 +83,14 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 
     if (!empty($tax_qry_ary)) {
         $listing_args['tax_query'] = $tax_qry_ary;
+    }
+
+    if ($attribute_box_listingSortOrder == 'title') {
+        $listing_args['orderby'] = 'title';
+        $listing_args['order'] = 'ASC';
+    } else {
+        $listing_args['orderby'] = 'post_date';
+        $listing_args['order'] = 'DESC';
     }
 
     $listing_query = new WP_Query($listing_args);
@@ -108,6 +125,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         </div>
 
     <?php
+        wb_blocks_filterable_listing_pagination($listing_query);
     }
     ?>
     </div>
@@ -406,5 +424,56 @@ function wb_blocks_filterable_listing_display_fields($display_fields){
     <br/>
 <?php
     }
+}
+
+
+function wb_blocks_filterable_listing_pagination($custom_query)
+{
+
+    $query_to_paginate = $custom_query;
+    
+    $max_pages = $query_to_paginate->max_num_pages;
+
+   
+
+        $current_page_number = (get_query_var('paged')) ? get_query_var('paged') : 1;
+
+        if ($max_pages > 1) {
+            ?>
+            <nav class="archive-pagination-nav" aria-label="pagination">
+                <ul class="archive-pagination">
+                    <li class="archive-pagination-current-page">
+                        <?php
+                        printf(__('Page %s of %s','hale'),$current_page_number,$max_pages);
+                        ?>
+
+                    </li>
+                    <?php
+                        if ($current_page_number > "1") {
+                            echo "<li class='archive-pagination-prev-btn'>";
+                            previous_posts_link('
+                            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                                <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                            </svg><span class="govuk-pagination__link-title">'.__('Previous<span class="govuk-visually-hidden"> page</span>',"hale").'
+                            </span>
+                            ', $max_pages);
+                            echo "</li>";
+                        }
+                        if ($current_page_number < $max_pages) {
+                            echo "<li class='archive-pagination-next-btn'>";
+                            next_posts_link('
+                            <span class="govuk-pagination__link-title">'.__('Next<span class="govuk-visually-hidden"> page</span>',"hale").'</span><svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                                <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                            </svg>
+                            ', $max_pages);
+                            echo "</li>";
+                        }
+                    ?>
+                </ul>
+            </nav>
+            <?php
+        }
+
+    
 }
 ?>

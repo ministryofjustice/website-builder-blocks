@@ -1,11 +1,13 @@
 import {
 	PanelBody,
 	SelectControl,
+	RangeControl,
 	TextControl,
 	ToggleControl,
 	BaseControl,
 	Button,
 } from '@wordpress/components';
+import { NumberControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import {
 	InnerBlocks,
@@ -28,6 +30,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingPostType,
 		listingFilters,
 		listingDisplayFields,
+		listingItemsPerPage,
+		listingSortOrder,
+		listingRestrictTaxonomies,
+		listingRestrictTerms,
 		className,
 	} = attributes;
 
@@ -48,9 +54,39 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		}
 	);
 
+	// Sort Options used to sort the results
+	let sortOptions = [
+		{
+			label: "Published Date (Newest to Oldest)",
+			value: "published_date"
+		},
+		{
+			label: "Title (Alphabetical)",
+			value: "title"
+		},
+	]
+
 	const allTaxonomies = useSelect((select) => 
 		select(coreStore).getTaxonomies()
 	);
+
+	const termsByTaxonomy = useSelect(
+		( select ) => {
+			if ( ! allTaxonomies ) return {};
+
+			const map = {};
+			allTaxonomies.forEach( ( tax ) => {
+				map[ tax.slug ] = select( coreStore ).getEntityRecords(
+					'taxonomy',
+					tax.slug,
+					{ per_page: -1 }
+				);
+			} );
+			return map;
+		},
+		[ allTaxonomies ]
+	);
+
 
 	let itemTypes = [{
 		label: "-",
@@ -58,9 +94,16 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	}]
 
 	const taxOptionList = [];
+	const restrictTermOptionList = [];
 	const selectedListingFilters = [];
+	const selectedDisplayFields = [];
+	const selectedRestrictTaxonomies = [];
+	const selectedRestrictTerms = [];
 
 	if (allPostTypes) {
+
+		console.log(allPostTypes);
+		
 		allPostTypes.forEach(thisPostType => {
 			if (thisPostType.name != "Posts" && thisPostType.name != "Pages" && thisPostType.name != "Media" && thisPostType.viewable) {
 				itemTypes.push({
@@ -78,6 +121,18 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 								label: taxonomy.name,
 								value: taxonomy.slug
 							})
+
+							if (listingRestrictTaxonomies?.includes(taxonomy.slug) && termsByTaxonomy) {
+								if (termsByTaxonomy[taxonomy.slug]) {
+									
+									termsByTaxonomy[taxonomy.slug].forEach(term => {
+										restrictTermOptionList.push({
+											label: term.name,
+											value: term.id
+										})			
+									});
+								}
+							}
 						}
 					});
 				});
@@ -85,11 +140,24 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		});
 
 		taxOptionList.forEach((opt) => {
+
 			if (listingFilters?.includes(opt.value)) {
 				selectedListingFilters.push(opt);
 			}
+			if (listingDisplayFields?.includes(opt.value)) {
+				selectedDisplayFields.push(opt);
+			}
+			if (listingRestrictTaxonomies?.includes(opt.value)) {
+				selectedRestrictTaxonomies.push(opt);
+			}
 		  });
-		
+
+		restrictTermOptionList.forEach((opt) => {
+
+			if (listingRestrictTerms?.includes(opt.value)) {
+				selectedRestrictTerms.push(opt);
+			}
+		});
 	}
 
 	const setListingPostType = newPostType => {
@@ -105,12 +173,37 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const setListingFilters = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingFilters: values });
-	  };
-
-	const setListingDisplayFields = newListingDisplayFields => {
-		setAttributes({ listingDisplayFields: newListingDisplayFields });
 	};
 
+	const setListingDisplayFields = (selectedItems) => {
+		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+		setAttributes({ listingDisplayFields: values });
+	};
+
+	const setItemsPerPage = (newItemsPerPage) => {
+		const parsedValue = parseInt(newItemsPerPage, 10);
+	
+		if (!isNaN(parsedValue)) {
+			setAttributes({ listingItemsPerPage: parsedValue });
+		} else {
+			// Fallback to a default (optional)
+			setAttributes({ listingItemsPerPage: 10 });
+		}
+	};
+
+	const setSortOrder = newSortOrder => {
+		setAttributes({ listingSortOrder: newSortOrder });
+	};
+
+	const setRestrictTaxonomies = (selectedItems) => {
+		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+		setAttributes({ listingRestrictTaxonomies: values });
+	};
+
+	const setRestrictTerms = (selectedItems) => {
+		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+		setAttributes({ listingRestrictTerms: values });
+	};
 
 	const inspectorControls = (
 		<InspectorControls>
@@ -130,7 +223,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 						<BaseControl label="Listing Filters">
 							<ReactSelect
 							isMulti
-							label="Listing Filters"
+							label="Filters"
 							options={taxOptionList}
 							value={ selectedListingFilters }
 							onChange={ setListingFilters }
@@ -138,7 +231,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 						</BaseControl>
 					)
             	}
-				
+				</PanelBody>
 				{/*
 				{
 					(taxOptionList.length > 1) && (
@@ -152,19 +245,79 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					)
             	}
 				*/}
+				<PanelBody
+				title={__('Results display settings')}
+				initialOpen={true}
+				>
 				{
 					(taxOptionList.length > 1) && (
-						<SelectControl
-						multiple
-						label="Listing Display Fields"
-						value={ listingDisplayFields }
-						options={ taxOptionList }
-						onChange={ setListingDisplayFields }
-						/>
+						<BaseControl label="Display Fields">
+							<ReactSelect
+							isMulti
+							label="Display Fields"
+							value={ selectedDisplayFields }
+							options={ taxOptionList }
+							onChange={ setListingDisplayFields }
+							/>
+						</BaseControl>
 					)
             	}
 					
 					
+			</PanelBody>
+			<PanelBody
+				title={__('Results settings')}
+				initialOpen={true}
+			>
+				<RangeControl
+					label="Items per page"
+					min={5}
+					max={50}
+					value={ listingItemsPerPage }
+					onChange={ setItemsPerPage }
+				/>
+
+				<SelectControl
+						
+					label="Sort by"
+					options={ sortOptions }
+					value={ listingSortOrder }
+					onChange={ setSortOrder }
+					
+				/>	
+			</PanelBody>
+			<PanelBody
+				title={__('Restrict results settings')}
+				initialOpen={true}
+			>
+
+			{
+				(taxOptionList.length > 1) && (
+					<BaseControl label="Restrict by">
+						<ReactSelect
+						isMulti
+						options={taxOptionList}
+						value={ selectedRestrictTaxonomies }
+						onChange={ setRestrictTaxonomies }
+						/>	
+					</BaseControl>
+				)
+            }
+
+			{
+				(restrictTermOptionList.length > 1) && (
+					<BaseControl label="Restrict terms">
+						<ReactSelect
+						isMulti
+						options={restrictTermOptionList}
+						value={ selectedRestrictTerms }
+						onChange={ setRestrictTerms }
+						/>	
+					</BaseControl>
+				)
+            }
+
+
 			</PanelBody>
 		</InspectorControls>
 	);
