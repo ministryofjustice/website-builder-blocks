@@ -19,20 +19,19 @@
     "@wordpress/scripts": "*",
     "classnames": "*",
     "copy-webpack-plugin": "*",
-    "imagemin-mozjpeg": "*",
-    "imagemin-webpack-plugin": "*",
     "import-glob-loader": "*",
-    "jsdoc": "*",
     "laravel-mix": "*",
-    "laravel-mix-glob": "*",
-    "laravel-mix-imagemin": "*",
-    "resolve-url-loader": "*",
     "sass": "*",
     "sass-loader": "*",
-    "wp-hookdoc": "*",
-    "react-select": "*"
+    "react-select": "*",
+    "tailwindcss": "^4.0.17",
+    "@tailwindcss/cli": "^4.1.11"
   },
   "scripts": {
-    "build": "wp-scripts build && NODE_ENV=production webpack --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "build:tailwind": "npx tailwindcss -i ./assets/scss/tailwind.css -o ./build/main.min.css --minify",
+    "build:tailwind:backend": "npx tailwindcss -i ./assets/scss/tailwind-gutenberg.css -o ./build/main-gutenberg.min.css --minify",
+    "build:block:js": "wp-scripts build",
+    "build:block:styles": "NODE_ENV=production webpack --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "build": "npm run build:block:js && npm run build:block:styles && npm run build:tailwind && npm run build:tailwind:backend"
   }
 }

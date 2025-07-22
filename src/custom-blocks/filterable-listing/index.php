@@ -30,8 +30,6 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
     // code below as you would in any other PHP file rather then having to use the sprintf() syntax
     ob_start();
 
-    var_dump($attribute_box_listingRestrictTaxonomies);
-    var_dump($attribute_box_listingRestrictTerms);
     if(!empty($attribute_box_listingPostType)){ ?>
 
     <div class="grid grid-cols-3 gap-4">
@@ -152,7 +150,7 @@ function wb_blocks_filterable_listing_block_filters($filters){
     ?>
 
     <!-- Lefthand column with filters and search -->
-    <div class="col-span-2 p-4">
+    <div class="col-span-1 p-4">
     <form action="<?= esc_url(get_permalink()); ?>" method="GET">
 
     <?php

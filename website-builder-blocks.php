@@ -141,7 +141,7 @@ function wb_blocks_gutenberg_editor_styles()
 {
     wp_enqueue_style(
         'wb-blocks-block-editor-styles',
-        plugins_url('build/style-gutenburg.css', __FILE__),
+        plugins_url('build/main-gutenberg.min.css', __FILE__),
         false,
         '1.2',
         'all'
@@ -156,9 +156,9 @@ add_action('enqueue_block_editor_assets', 'wb_blocks_gutenberg_editor_styles');
  */
 function wb_blocks_register_style()
 {
-    if (!is_admin()) {
-        wp_register_style('wb-blocks', plugins_url('build/style.min.css', __FILE__));
-    }
+    
+    wp_register_style('wb-blocks', plugins_url('build/main.min.css', __FILE__));
+    
 }
 
 add_action('init', 'wb_blocks_register_style');
@@ -168,7 +168,10 @@ function wb_blocks_enqueue_style()
     // Make Dashicons available on the frontend
     wp_enqueue_style('dashicons');
 
-    // Load MoJ block styles
+    // Load Tailwind styles
+    wp_enqueue_style('wb-blocks-tailwind');
+
+    // Load WB block styles
     wp_enqueue_style('wb-blocks');
 }
 

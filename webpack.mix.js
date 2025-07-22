@@ -18,8 +18,8 @@ mix_.webpackConfig({
 })
 
 .setPublicPath('build/')
-.sass('style.scss', 'style.min.css')
-.sass('style-gutenburg.scss', 'style-gutenburg.css')
+.sass('style.scss', 'style-frontend.min.css')
+.sass('style-gutenburg.scss', 'style-gutenburg.min.css')
 
 if (mix_.inProduction()) {
     mix_.version();

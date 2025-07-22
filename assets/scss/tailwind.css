@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+	--content: "./*.php" "./**/*.php" "./**/*.html" "./**/*.js";
+}
+
+/* Import the compiled Sass theme */
+@import "../../build/style-frontend.min.css";
