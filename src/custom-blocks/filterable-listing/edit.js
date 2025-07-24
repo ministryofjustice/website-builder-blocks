@@ -30,6 +30,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingPostType,
 		listingFilters,
 		listingDisplayFields,
+		listingDisplayTerms,
 		listingItemsPerPage,
 		listingSortOrder,
 		listingRestrictTaxonomies,
@@ -93,17 +94,24 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		value: ""
 	}]
 
+	const displayFieldsList = [
+		{
+			label: "Published date",
+			value: "published_date"
+		}
+	];
 	const taxOptionList = [];
 	const restrictTermOptionList = [];
 	const selectedListingFilters = [];
 	const selectedDisplayFields = [];
+	const selectedDisplayTerms = [];
 	const selectedRestrictTaxonomies = [];
 	const selectedRestrictTerms = [];
 
 	if (allPostTypes) {
 
-		console.log(allPostTypes);
-		
+		//console.log(allPostTypes);
+
 		allPostTypes.forEach(thisPostType => {
 			if (thisPostType.name != "Posts" && thisPostType.name != "Pages" && thisPostType.name != "Media" && thisPostType.viewable) {
 				itemTypes.push({
@@ -118,6 +126,11 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					allTaxonomies.forEach(taxonomy => {
 						if(taxonomy.slug == postTypeTaxKey){
 							taxOptionList.push({
+								label: taxonomy.name,
+								value: taxonomy.slug
+							})
+
+							displayFieldsList.push({
 								label: taxonomy.name,
 								value: taxonomy.slug
 							})
@@ -137,38 +150,75 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					});
 				});
 			}
-		});
 
-		taxOptionList.forEach((opt) => {
+			//Add ACF Meta Fields
+			if (thisPostType.slug == listingPostType && thisPostType.acfFields.length) {
+				thisPostType.acfFields.forEach(acfField => {
+					displayFieldsList.push({
+						label: acfField.label,
+						value: acfField.key
+					})
 
-			if (listingFilters?.includes(opt.value)) {
-				selectedListingFilters.push(opt);
-			}
-			if (listingDisplayFields?.includes(opt.value)) {
-				selectedDisplayFields.push(opt);
-			}
-			if (listingRestrictTaxonomies?.includes(opt.value)) {
-				selectedRestrictTaxonomies.push(opt);
-			}
-		  });
-
-		restrictTermOptionList.forEach((opt) => {
-
-			if (listingRestrictTerms?.includes(opt.value)) {
-				selectedRestrictTerms.push(opt);
+				});
 			}
 		});
+
+		//Seperate loops to keep the selection order
+
+		listingFilters.forEach((field) => {
+			for (const opt of taxOptionList) {
+				if(field == opt.value){
+					selectedListingFilters.push(opt);
+					break;
+				}
+			}
+		});
+
+		listingDisplayTerms.forEach((field) => {
+			for (const opt of taxOptionList) {
+				if(field == opt.value){
+					selectedDisplayTerms.push(opt);
+					break;
+				}
+			}
+		});
+
+		listingRestrictTaxonomies.forEach((field) => {
+			for (const opt of taxOptionList) {
+				if(field == opt.value){
+					selectedRestrictTaxonomies.push(opt);
+					break;
+				}
+			}
+		});
+
+		listingDisplayFields.forEach((field) => {
+			for (const opt of displayFieldsList) {
+				if(field == opt.value){
+					selectedDisplayFields.push(opt);
+					break;
+				}
+			}
+		});
+
+		listingRestrictTerms.forEach((field) => {
+			for (const opt of restrictTermOptionList) {
+				if(field == opt.value){
+					selectedRestrictTerms.push(opt);
+					break;
+				}
+			}
+		});
+		
 	}
 
 	const setListingPostType = newPostType => {
 		setAttributes({ listingPostType: newPostType });
+		setAttributes({ listingFilters: [] });
+		setAttributes({ listingDisplayFields: [] });
+		setAttributes({ listingRestrictTaxonomies: [] });
+		setAttributes({ listingRestrictTerms: [] });
 	};
-
-	/*
-	const setListingFilters = newListingFilters => {
-		setAttributes({ listingFilters: newListingFilters });
-
-	};*/
 
 	const setListingFilters = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
@@ -178,6 +228,11 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const setListingDisplayFields = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingDisplayFields: values });
+	};
+
+	const setListingDisplayTerms = (selectedItems) => {
+		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+		setAttributes({ listingDisplayTerms: values });
 	};
 
 	const setItemsPerPage = (newItemsPerPage) => {
@@ -198,6 +253,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const setRestrictTaxonomies = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingRestrictTaxonomies: values });
+		setAttributes({ listingRestrictTerms: [] });
 	};
 
 	const setRestrictTerms = (selectedItems) => {
@@ -232,32 +288,32 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					)
             	}
 				</PanelBody>
-				{/*
-				{
-					(taxOptionList.length > 1) && (
-						<SelectControl
-						multiple
-						label="Listing Filters"
-						value={ listingFilters }
-						options={ taxOptionList }
-						onChange={ setListingFilters }
-						/>
-					)
-            	}
-				*/}
+
 				<PanelBody
 				title={__('Results display settings')}
 				initialOpen={true}
 				>
 				{
-					(taxOptionList.length > 1) && (
+					(displayFieldsList.length > 1) && (
 						<BaseControl label="Display Fields">
 							<ReactSelect
 							isMulti
-							label="Display Fields"
 							value={ selectedDisplayFields }
-							options={ taxOptionList }
+							options={ displayFieldsList }
 							onChange={ setListingDisplayFields }
+							/>
+						</BaseControl>
+					)
+            	}
+
+				{
+					(taxOptionList.length > 1) && (
+						<BaseControl label="Display Terms">
+							<ReactSelect
+							isMulti
+							value={ selectedDisplayTerms }
+							options={ taxOptionList }
+							onChange={ setListingDisplayTerms }
 							/>
 						</BaseControl>
 					)
@@ -325,8 +381,8 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	return (
 		<Fragment >
 			{ inspectorControls }
-			<div className={`mojblocks-filterable-listing ${className}`}>
-				<div className="govuk-width-container govuk-!-margin-0">
+			<div className={`wb-blocks-filterable-listing ${className}`}>
+				<div className="">
 					Filterable Listing 
 				</div>
 			</div>

@@ -177,3 +177,45 @@ function wb_blocks_enqueue_style()
 
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
+add_action('rest_api_init', function () {
+    register_rest_field('type', 'acfFields', [
+        'get_callback'    => 'add_acf_fields_to_post_type',
+        'schema'          => null,
+    ]);
+});
+
+
+function add_acf_fields_to_post_type($object, $field_name, $request) {
+    // Only apply to GET requests to /wp/v2/types (not individual post types)
+    $route = $request->get_route();
+    $method = $request->get_method();
+
+    if ($method !== 'GET' || $route !== '/wp/v2/types') {
+        return null;
+    }
+
+    if (!function_exists('acf_get_field_groups')) {
+        return null;
+    }
+
+    $post_type = $object['slug'];
+    $groups = acf_get_field_groups(['post_type' => $post_type]);
+
+    $fields = [];
+
+    foreach ($groups as $group) {
+        $group_fields = acf_get_fields($group['key']);
+        if ($group_fields) {
+            foreach ($group_fields as $field) {
+                $fields[] = [
+                    'key' => $field['key'],
+                    'label' => $field['label'],
+                    'name'  => $field['name'],
+                    'type'  => $field['type'],
+                ];
+            }
+        }
+    }
+
+    return $fields;
+}

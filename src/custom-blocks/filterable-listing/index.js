@@ -25,6 +25,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "array",
       default: ""
     },
+    listingDisplayTerms: {
+      type: "array",
+      default: ""
+    },
     listingItemsPerPage: {
       type: "number",
       default: 10
