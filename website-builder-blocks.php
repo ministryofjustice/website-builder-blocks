@@ -168,9 +168,6 @@ function wb_blocks_enqueue_style()
     // Make Dashicons available on the frontend
     wp_enqueue_style('dashicons');
 
-    // Load Tailwind styles
-    wp_enqueue_style('wb-blocks-tailwind');
-
     // Load WB block styles
     wp_enqueue_style('wb-blocks');
 }
@@ -179,13 +176,13 @@ add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style');
 
 add_action('rest_api_init', function () {
     register_rest_field('type', 'acfFields', [
-        'get_callback'    => 'add_acf_fields_to_post_type',
+        'get_callback'    => 'wb_blocks_add_acf_fields_to_post_type',
         'schema'          => null,
     ]);
 });
 
 
-function add_acf_fields_to_post_type($object, $field_name, $request) {
+function wb_blocks_add_acf_fields_to_post_type($object, $field_name, $request) {
     // Only apply to GET requests to /wp/v2/types (not individual post types)
     $route = $request->get_route();
     $method = $request->get_method();

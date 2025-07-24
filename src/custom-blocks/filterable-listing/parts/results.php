@@ -11,7 +11,6 @@
  *
  */
 
-
 function wb_blocks_filterable_listing_block_results($listing_settings, $active_filters)
 {
 
@@ -63,10 +62,10 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         wb_blocks_filterable_listing_pagination($listing_query);
     }
     else { ?>
-        <h2 class="govuk-heading-l">
+        <h2 class="">
             <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'hale'); ?>
         </h2>
-        <p class="govuk-body">
+        <p class="">
             <?php _e('Try searching again with expanded criteria.', 'hale'); ?>
         </p>
         <?php

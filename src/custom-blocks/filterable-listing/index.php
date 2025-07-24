@@ -54,6 +54,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
     <div class="col-span-2 p-4"> 
         <?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters);  ?> 
     </div>
+    </div>
     <?php
     }
 

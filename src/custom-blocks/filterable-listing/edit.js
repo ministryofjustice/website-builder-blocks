@@ -110,8 +110,6 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 	if (allPostTypes) {
 
-		//console.log(allPostTypes);
-
 		allPostTypes.forEach(thisPostType => {
 			if (thisPostType.name != "Posts" && thisPostType.name != "Pages" && thisPostType.name != "Media" && thisPostType.viewable) {
 				itemTypes.push({
@@ -165,50 +163,62 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 		//Seperate loops to keep the selection order
 
-		listingFilters.forEach((field) => {
-			for (const opt of taxOptionList) {
-				if(field == opt.value){
-					selectedListingFilters.push(opt);
-					break;
+		if(listingFilters.length > 0){
+			listingFilters.forEach((field) => {
+				for (const opt of taxOptionList) {
+					if(field == opt.value){
+						selectedListingFilters.push(opt);
+						break;
+					}
 				}
-			}
-		});
+			});
+		}
 
-		listingDisplayTerms.forEach((field) => {
-			for (const opt of taxOptionList) {
-				if(field == opt.value){
-					selectedDisplayTerms.push(opt);
-					break;
+		if(listingDisplayTerms.length > 0){
+			listingDisplayTerms.forEach((field) => {
+				for (const opt of taxOptionList) {
+					if(field == opt.value){
+						selectedDisplayTerms.push(opt);
+						break;
+					}
 				}
-			}
-		});
+			});
+		}
 
-		listingRestrictTaxonomies.forEach((field) => {
-			for (const opt of taxOptionList) {
-				if(field == opt.value){
-					selectedRestrictTaxonomies.push(opt);
-					break;
+		if(listingRestrictTaxonomies.length > 0){
+			listingRestrictTaxonomies.forEach((field) => {
+				for (const opt of taxOptionList) {
+					if(field == opt.value){
+						selectedRestrictTaxonomies.push(opt);
+						break;
+					}
 				}
-			}
-		});
+			});
+		}
 
-		listingDisplayFields.forEach((field) => {
-			for (const opt of displayFieldsList) {
-				if(field == opt.value){
-					selectedDisplayFields.push(opt);
-					break;
-				}
-			}
-		});
+		if(listingDisplayFields.length > 0){
 
-		listingRestrictTerms.forEach((field) => {
-			for (const opt of restrictTermOptionList) {
-				if(field == opt.value){
-					selectedRestrictTerms.push(opt);
-					break;
+			listingDisplayFields.forEach((field) => {
+				for (const opt of displayFieldsList) {
+					if(field == opt.value){
+						selectedDisplayFields.push(opt);
+						break;
+					}
 				}
-			}
-		});
+			});
+
+		}
+
+		if(listingRestrictTerms.length > 0){
+			listingRestrictTerms.forEach((field) => {
+				for (const opt of restrictTermOptionList) {
+					if(field == opt.value){
+						selectedRestrictTerms.push(opt);
+						break;
+					}
+				}
+			});
+		}
 		
 	}
 
@@ -389,36 +399,4 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		</Fragment>
 	);
 	
-}
-
-
-function datify(x,d) {
-	if (!x) return "Date";
-
-	var month = new Array();
-	month[1] = "January";
-	month[2] = "February";
-	month[3] = "March";
-	month[4] = "April";
-	month[5] = "May";
-	month[6] = "June";
-	month[7] = "July";
-	month[8] = "August";
-	month[9] = "September";
-	month[10] = "October";
-	month[11] = "November";
-	month[12] = "December";
-
-	var x = x.split("-");
-
-	if (x.length != 3) {
-	//wrong format, return today
-	return d.toLocaleString('en-GB', {day: '2-digit', month: 'long' });
-	}
-
-	var day = x[2].substring(0, 2);
-	var month = " " + month[parseInt(x[1])];
-	var year = " " + x[0];
-
-	return day + month + year;
 }
