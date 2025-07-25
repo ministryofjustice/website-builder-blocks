@@ -120,6 +120,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 			if (thisPostType.slug == listingPostType && thisPostType.taxonomies.length && allTaxonomies) {
 
+				//console.log(thisPostType);
 				thisPostType.taxonomies.forEach(postTypeTaxKey => {
 					allTaxonomies.forEach(taxonomy => {
 						if(taxonomy.slug == postTypeTaxKey){
@@ -148,7 +149,6 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					});
 				});
 			}
-
 			//Add ACF Meta Fields
 			if (thisPostType.slug == listingPostType && thisPostType.acfFields.length) {
 				thisPostType.acfFields.forEach(acfField => {
@@ -285,7 +285,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 				/>
 
 				{
-					(taxOptionList.length > 1) && (
+					(taxOptionList.length > 0) && (
 						<BaseControl label="Listing Filters">
 							<ReactSelect
 							isMulti
@@ -300,13 +300,13 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 				</PanelBody>
 
 				{
-					(listingPostType.length > 1) && (
+					(listingPostType.length > 0) && (
 						<PanelBody
 						title={__('Results display settings')}
 						initialOpen={true}
 						>
 						{
-							(displayFieldsList.length > 1) && (
+							(displayFieldsList.length > 0) && (
 								<BaseControl label="Display Fields">
 									<ReactSelect
 									isMulti
@@ -319,7 +319,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 						}
 
 						{
-							(taxOptionList.length > 1) && (
+							(taxOptionList.length > 0) && (
 								<BaseControl label="Display Terms">
 									<ReactSelect
 									isMulti
@@ -336,7 +336,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 				)
 			}
 			{
-					(listingPostType.length > 1) && (
+					(listingPostType.length > 0) && (
 			<PanelBody
 				title={__('Results settings')}
 				initialOpen={true}
@@ -361,14 +361,14 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 				)
 			}
 			{
-					(listingPostType.length > 1) && (
+					(listingPostType.length > 0) && (
 			<PanelBody
 				title={__('Restrict results settings')}
 				initialOpen={true}
 			>
 
 			{
-				(taxOptionList.length > 1) && (
+				(taxOptionList.length > 0) && (
 					<BaseControl label="Restrict by">
 						<ReactSelect
 						isMulti
@@ -381,7 +381,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
             }
 
 			{
-				(restrictTermOptionList.length > 1) && (
+				(restrictTermOptionList.length > 0) && (
 					<BaseControl label="Restrict terms">
 						<ReactSelect
 						isMulti
