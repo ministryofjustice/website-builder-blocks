@@ -299,38 +299,44 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
             	}
 				</PanelBody>
 
-				<PanelBody
-				title={__('Results display settings')}
-				initialOpen={true}
-				>
 				{
-					(displayFieldsList.length > 1) && (
-						<BaseControl label="Display Fields">
-							<ReactSelect
-							isMulti
-							value={ selectedDisplayFields }
-							options={ displayFieldsList }
-							onChange={ setListingDisplayFields }
-							/>
-						</BaseControl>
-					)
-            	}
+					(listingPostType.length > 1) && (
+						<PanelBody
+						title={__('Results display settings')}
+						initialOpen={true}
+						>
+						{
+							(displayFieldsList.length > 1) && (
+								<BaseControl label="Display Fields">
+									<ReactSelect
+									isMulti
+									value={ selectedDisplayFields }
+									options={ displayFieldsList }
+									onChange={ setListingDisplayFields }
+									/>
+								</BaseControl>
+							)
+						}
 
-				{
-					(taxOptionList.length > 1) && (
-						<BaseControl label="Display Terms">
-							<ReactSelect
-							isMulti
-							value={ selectedDisplayTerms }
-							options={ taxOptionList }
-							onChange={ setListingDisplayTerms }
-							/>
-						</BaseControl>
-					)
-            	}
-					
-					
-			</PanelBody>
+						{
+							(taxOptionList.length > 1) && (
+								<BaseControl label="Display Terms">
+									<ReactSelect
+									isMulti
+									value={ selectedDisplayTerms }
+									options={ taxOptionList }
+									onChange={ setListingDisplayTerms }
+									/>
+								</BaseControl>
+							)
+						}
+							
+							
+					</PanelBody>
+				)
+			}
+			{
+					(listingPostType.length > 1) && (
 			<PanelBody
 				title={__('Results settings')}
 				initialOpen={true}
@@ -352,6 +358,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					
 				/>	
 			</PanelBody>
+				)
+			}
+			{
+					(listingPostType.length > 1) && (
 			<PanelBody
 				title={__('Restrict results settings')}
 				initialOpen={true}
@@ -385,6 +395,8 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 
 			</PanelBody>
+				)
+			}
 		</InspectorControls>
 	);
 
