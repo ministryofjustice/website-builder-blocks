@@ -15,25 +15,50 @@ function wb_blocks_filterable_listing_block_filters($listing_settings, $active_f
     if(empty($listing_settings['filters'])){
        return;     
     }
+    
     ?>
 
     <!-- Lefthand column with filters and search -->
     <div class="col-span-1 p-4">
     <form action="<?= esc_url(get_permalink()); ?>" method="GET">
-
     <?php
+   
+    wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
+
     foreach($listing_settings['filters'] as $filter){
-        wb_blocks_filterable_listing_block_taxonomy_filter($filter, $active_filters, $listing_settings);
+
+        if (taxonomy_exists($filter)) {
+            wb_blocks_filterable_listing_block_taxonomy_filter($filter, $active_filters, $listing_settings);
+        }
+        else if($filter == 'published_date'){
+
+            wb_blocks_filterable_listing_block_date_filter("published_date", "", $active_filters);
+
+        }
+        else {
+         
+            $field_object = get_field_object($filter);
+
+            if(!empty($field_object)){
+
+                if($field_object['type'] == 'date_picker'){
+
+                    wb_blocks_filterable_listing_block_date_filter($field_object['name'], $field_object['label'], $active_filters);
+            
+                }
+                
+            }
+        }
     }
     ?>
 
     <div>
-        <button class="bg-blue-600 text-white mr-1 px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <?php _e('Search', 'hale'); ?>
+        <button class="bg-blue-600 text-white mr-1 px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <?php _e('Search', 'wb_blocks'); ?>
         </button>
       
             <a href="<?= esc_url(get_permalink()); ?>" class="">
-                <?php _e('Clear', 'hale'); ?>
+                <?php _e('Clear', 'wb_blocks'); ?>
             </a>
       
     </div>
@@ -42,6 +67,84 @@ function wb_blocks_filterable_listing_block_filters($listing_settings, $active_f
 <?php
 }
 
+function wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings){
+    if($listing_settings['searchTextFilter']){ 
+        $listing_search_text = wb_blocks_filterable_listing_block_get_active_filter_value($active_filters, "listing_search");
+
+        ?>
+        <div class="">
+            <label class="block font-medium text-gray-700 mb-1" for="listing-search-field">
+                <?php _e('Search', 'wb_blocks'); ?>
+            </label>
+            <input id="listing-search-field" name="listing_search" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo $listing_search_text; ?>" type="search">
+        </div>
+        <br/>
+    <?php
+        
+    }
+}
+
+function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_label, $active_filters){
+
+    if(!empty($filter_label)){
+        $from_date_label = $filter_label . " (from)";
+        $to_date_label = $filter_label . " (to)";
+    }
+    else {
+        $from_date_label = "Date from";
+        $to_date_label = "Date to";
+    }
+
+    $from_date_name = $filter_name . "_from_date";
+    $to_date_name = $filter_name . "_to_date";
+
+    $from_date = wb_blocks_filterable_listing_block_get_active_filter_value($active_filters, $from_date_name);
+    $to_date = wb_blocks_filterable_listing_block_get_active_filter_value($active_filters, $to_date_name);
+
+?>
+
+<div class="moj-datepicker" data-module="moj-date-picker">
+    <div class="">
+        <label class="block font-medium text-gray-700 mb-1" for="<?php echo $from_date_name; ?>">
+            <?php echo esc_html($from_date_label); ?>
+        </label>
+        <div id="<?php echo $from_date_name; ?>_hint" class="block font-medium text-gray-700 mb-1">
+            For example, 13/2/2024.
+        </div>
+        <input 
+            class="govuk-input moj-js-datepicker-input" 
+            id="<?php echo $from_date_name; ?>" 
+            name="<?php echo $from_date_name; ?>" 
+            type="text" 
+            aria-describedby="<?php echo $from_date_name; ?>_hint" 
+            autocomplete="off" 
+            value="<?php echo esc_attr($from_date); ?>"
+        >
+    </div>
+</div>
+<br/>
+<div class="moj-datepicker" data-module="moj-date-picker">
+    <div class="">
+        <label class="block font-medium text-gray-700 mb-1" for="<?php echo $to_date_name; ?>">
+            <?php echo esc_html($to_date_label); ?>
+        </label>
+        <div id="<?php echo $to_date_name; ?>_hint" class="block font-medium text-gray-700 mb-1">
+            For example, 13/2/2024.
+        </div>
+        <input 
+            class="govuk-input moj-js-datepicker-input" 
+            id="<?php echo $to_date_name; ?>" 
+            name="<?php echo $to_date_name; ?>" 
+            type="text" 
+            aria-describedby="<?php echo $to_date_name; ?>_hint" 
+            autocomplete="true" 
+            value="<?php echo esc_attr($to_date); ?>"
+        >
+    </div>
+</div>
+<br/>
+<?php
+}
 function wb_blocks_filterable_listing_block_taxonomy_filter($taxonomy_name, $active_filters, $listing_settings){
 
 $taxonomy = get_taxonomy($taxonomy_name);
@@ -83,7 +186,7 @@ if(!empty($listing_settings['restrictTaxonomies']) && !empty($listing_settings['
 $dropdown_args = [
     "name" => $taxonomy->query_var,
     "id" => $parent_class_name,
-    "class" => "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+    "class" => "w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     'taxonomy' => $taxonomy_name,
     'show_option_all' => "Select option",
     'depth' => 1,

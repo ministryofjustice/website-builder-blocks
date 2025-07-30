@@ -30,6 +30,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         
         $listing_settings = [];
         $listing_settings['postType'] = $postType;
+        $listing_settings['searchTextFilter'] = $attributes['listingSearchTextFilter'] ?? true;
         $listing_settings['filters'] = $attributes['listingFilters'] ?? [];
         $listing_settings['displayFields'] = $attributes['listingDisplayFields'] ?? [];
         $listing_settings['displayTerms'] = $attributes['listingDisplayTerms'] ?? [];
@@ -39,8 +40,9 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         $listing_settings['restrictTerms'] = $attributes['listingRestrictTerms'] ?? [];    
 
         $active_filters = [];
-        $active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings['filters']);
+        $active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
         
+        //var_dump($active_filters);
     ?>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

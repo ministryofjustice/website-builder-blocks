@@ -17,6 +17,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "string",
       default: ""
     },
+    listingSearchTextFilter: {
+      type: "boolean",
+      default: true
+    },
     listingFilters: {
       type: "array",
       default: ""
