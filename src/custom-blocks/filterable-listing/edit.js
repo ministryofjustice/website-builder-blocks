@@ -2,7 +2,6 @@ import {
 	PanelBody,
 	SelectControl,
 	RangeControl,
-	TextControl,
 	ToggleControl,
 	BaseControl,
 	Button,
@@ -36,9 +35,11 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingSortOrder,
 		listingRestrictTaxonomies,
 		listingRestrictTerms,
+		stylesResultsShadedBackground,
 		className,
 	} = attributes;
 
+	
 	const {
 		allPostTypes,
 	} = useSelect(
@@ -108,7 +109,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			value: "published_date"
 		}
 	];
-	
+
 	const taxOptionList = [];
 	const restrictTermOptionList = [];
 	const selectedListingFilters = [];
@@ -434,9 +435,28 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		</InspectorControls>
 	);
 
+	const setStylesResultsShadedBackground = newStylesResultsShadedBackground => {
+		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
+	};
+
 	return (
 		<Fragment >
 			{ inspectorControls }
+			<InspectorControls group="styles">
+				<PanelBody
+					title={__('Results styles')}
+					initialOpen={true}
+				>
+						<ToggleControl
+							label="Shaded background"
+							help="Item divider line will be hidden"
+							checked={ stylesResultsShadedBackground }
+							onChange={ setStylesResultsShadedBackground }
+						/>
+						    
+						
+				</PanelBody>
+			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
 				<div className="">
 					Filterable Listing 

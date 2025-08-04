@@ -114,16 +114,44 @@ function wb_blocks_register_blocks()
                 'listingPostType' => [
                     'type' => 'string'
                 ],
+                'listingSearchTextFilter' => [
+                    'type' => 'boolean'
+                ],
                 'listingFilters' => [
                     'type' => 'array'
-                ]
+                ],
+                'listingDisplayFields' => [
+                    'type' => 'array'
+                ],
+                'listingDisplayTerms' => [
+                    'type' => 'array'
+                ],
+                'listingItemsPerPage' => [
+                    'type' => 'number'
+                ],
+                'listingSortOrder' => [
+                    'type' => 'string'
+                ],
+                'listingRestrictTaxonomies' => [
+                    'type' => 'array'
+                ],
+                'listingRestrictTerms' => [
+                    'type' => 'array'
+                ],
+                'stylesResultsShadedBackground' => [
+                    'type' => 'boolean'
+                ],
+
             ]
         ]
     );
 }
 
+
 /**
  * Load PHP code for each custom MoJ block
+ * 
+ * 
  */
 
 include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
