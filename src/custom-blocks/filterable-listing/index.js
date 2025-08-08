@@ -17,6 +17,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "string",
       default: ""
     },
+    listingSearchTextFilter: {
+      type: "boolean",
+      default: true
+    },
     listingFilters: {
       type: "array",
       default: ""
@@ -45,6 +49,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "array",
       default: ""
     },
+    stylesResultsShadedBackground: {
+      type: "boolean",
+      default: false
+    },
     className: {
       type: "string"
     }
@@ -52,4 +60,7 @@ registerBlockType("wb-blocks/filterable-listing", {
   edit, 
   save: () => { return <InnerBlocks.Content />; }
 });
+
+
+
 

@@ -10,4 +10,44 @@ Text Domain: mojblocks
 
 **********************************************************************************************/
 
+
+@import "node_modules/govuk-frontend/dist/govuk/all";
+@import "node_modules/@ministryofjustice/frontend/moj/components/date-picker/date-picker";
+
 @import 'src/**/style.scss';
+
+
+/* Temp styles until form style is decided */
+
+
+.moj-datepicker {
+
+    input {
+      max-width: 100%;
+    }
+    .moj-datepicker__toggle{
+      box-sizing: border-box;
+      //background: #505471;
+      background-color: var(--color-blue-600);
+
+      &:hover {
+        color: #FFFFFF;
+        background-color: var(--color-blue-700);
+      }
+
+      &:focus {
+        color: #FFFFFF;
+        background-color: var(--color-blue-700);
+      }
+
+      .moj-datepicker-icon {
+        width: 50px;
+      }
+    }
+
+}
+
+.govuk-input {
+    border-width: 1px;
+    border-color: var(--color-gray-300);
+}

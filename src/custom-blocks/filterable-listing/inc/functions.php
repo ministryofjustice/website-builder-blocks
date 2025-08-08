@@ -5,8 +5,23 @@
  *
  */
 
-function wb_blocks_filterable_listing_validate_active_filters($listing_filters){
+function wb_blocks_filterable_listing_validate_active_filters($listing_settings){
     $active_filters = [];
+
+    $listing_filters = $listing_settings['filters'];
+
+    if($listing_settings['searchTextFilter']){ 
+        $listing_search_text = get_query_var('listing_search');
+        $listing_search_text = stripslashes(sanitize_text_field(esc_html($listing_search_text)));
+
+        if(!empty($listing_search_text)){
+            $active_filters[] = array(
+                'filterType' => 'search_text',
+                'queryVar' => 'listing_search',
+                'value' => $listing_search_text 
+            );
+        }
+    }
 
     foreach ($listing_filters as $filter) {
 
@@ -14,6 +29,27 @@ function wb_blocks_filterable_listing_validate_active_filters($listing_filters){
             // Create an array of what taxonomies have been selected in dropdown
             wb_blocks_filterable_listing_block_validate_tax_filter($filter, $active_filters);
         
+        }
+        else if($filter == 'published_date'){
+
+            wb_blocks_filterable_listing_block_validate_date_filter($filter . "_from_date", "published_date_from_date", $active_filters);
+            wb_blocks_filterable_listing_block_validate_date_filter($filter . "_to_date", "published_date_to_date", $active_filters);
+
+        }
+        else {
+         
+            $field_object = get_field_object($filter);
+
+            if(!empty($field_object)){
+
+                if($field_object['type'] == 'date_picker'){
+
+                    wb_blocks_filterable_listing_block_validate_date_filter($field_object['name'] . "_from_date", "meta_from_date", $active_filters, $field_object['name']);
+                    wb_blocks_filterable_listing_block_validate_date_filter($field_object['name'] . "_to_date", "meta_to_date", $active_filters, $field_object['name']);
+            
+                }
+                
+            }
         }
     }
 
@@ -71,6 +107,36 @@ function wb_blocks_filterable_listing_block_validate_tax_filter($filter, &$listi
         }
     }
 }
+
+function wb_blocks_filterable_listing_block_validate_date_filter($filter_query_var, $filter_type, &$listing_active_filters, $filter_meta_key="") {
+
+    $date_filter_value = get_query_var($filter_query_var);
+    $date_filter_value = sanitize_text_field(esc_html($date_filter_value));
+
+    if(!empty($date_filter_value)){
+
+        $active_date_filter = array(
+            'filterType' => $filter_type,
+            'queryVar' => $filter_query_var,
+            'metaKey' => $filter_meta_key,
+            'value' => $date_filter_value,
+            'error' => false,
+            'valueTimestamp' => 0
+        );
+
+        $date_filter_timestamp = wb_blocks_filterable_listing_block_validate_date($date_filter_value);
+
+        if($date_filter_timestamp == false){
+            $active_date_filter['error'] = true;
+        }
+        else {
+            $active_date_filter['valueTimestamp'] = $date_filter_timestamp;
+        }
+
+        $listing_active_filters[] = $active_date_filter;
+    }
+
+}
     
 function wb_blocks_filterable_listing_block_get_active_filter_value($listing_active_filters, $query_var) {
     $filter_value = '';
@@ -93,6 +159,9 @@ function wb_blocks_filterable_listing_block_get_listing_query($listing_settings,
     $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 
     $tax_qry_ary = [];
+    $published_date_qry = [];
+    $meta_qry = [];
+    $meta_date_filters = [];
     
     $listing_args = [
         'post_type' => $listing_settings['postType'],
@@ -128,11 +197,94 @@ function wb_blocks_filterable_listing_block_get_listing_query($listing_settings,
                     'terms' => $active_filter['value']
                 );
             }
+            else if($active_filter['filterType'] == 'search_text'){
+                $listing_args['s'] = $active_filter['value'];
+            }
+            else if($active_filter['filterType'] == 'published_date_from_date'){
+                if($active_filter['error'] == false){
+                    $published_date_qry['after'] = $active_filter['valueTimestamp'];
+                }
+            }
+            else if($active_filter['filterType'] == 'published_date_to_date'){
+                if($active_filter['error'] == false){
+                    $published_date_qry['before'] = $active_filter['valueTimestamp'];
+                }
+            }
+            else if($active_filter['filterType'] == 'meta_from_date'){
+                if($active_filter['error'] == false){
+                    
+                    $meta_date_filters[$active_filter['metaKey']]['fromDate'] = $active_filter['valueTimestamp'];
+                }
+            }
+            else if($active_filter['filterType'] == 'meta_to_date'){
+                if($active_filter['error'] == false){
+                    
+                    $meta_date_filters[$active_filter['metaKey']]['toDate'] = $active_filter['valueTimestamp'];
+                }
+            }
+
         }
     }
 
     if (!empty($tax_qry_ary)) {
         $listing_args['tax_query'] = $tax_qry_ary;
+    }
+
+    if (!empty($published_date_qry)) {
+
+        if (array_key_exists('after', $published_date_qry) && array_key_exists('before', $published_date_qry) && $published_date_qry['before'] < $published_date_qry['after']) {
+            // Swap dates if the end date is before the start date
+            [$published_date_qry['after'], $published_date_qry['before']] = [$published_date_qry['before'], $published_date_qry['after']];
+        }
+
+        //convert start date timestamp to Y-M-D format which WP date query requires
+        if (array_key_exists('after', $published_date_qry)){
+            $published_date_qry['after'] = date('Y-m-d', $published_date_qry['after']);
+        }
+
+        //convert end date timestamp to Y-M-D format which WP date query requires
+        if (array_key_exists('before', $published_date_qry)){
+            $published_date_qry['before'] = date('Y-m-d', $published_date_qry['before']);
+        }
+
+        $published_date_qry['inclusive'] = true;
+        $listing_args['date_query'] = $published_date_qry;
+    }
+
+    if (!empty($meta_date_filters)) {
+
+        foreach($meta_date_filters as $meta_key => $meta_date_filter){
+     
+            if (array_key_exists('fromDate', $meta_date_filter) && array_key_exists('toDate', $meta_date_filter) && $meta_date_filter['toDate'] < $meta_date_filter['fromDate']) {
+                // Swap dates if the end date is before the start date
+                [$meta_date_filter['fromDate'], $meta_date_filter['toDate']] = [$meta_date_filter['toDate'], $meta_date_filter['fromDate']];
+            }
+
+            if (array_key_exists('fromDate', $meta_date_filter)){
+
+                $meta_qry[] = [
+                    'key'     => $meta_key,
+                    'value'   => date('Ymd', $meta_date_filter['fromDate']),
+                    'compare' => '>=',
+                    'type'    => 'NUMERIC',
+                ];
+            }
+
+            if (array_key_exists('toDate', $meta_date_filter)){
+
+                $meta_qry[] = [
+                    'key'     => $meta_key,
+                    'value'   => date('Ymd', $meta_date_filter['toDate']),
+                    'compare' => '<=',
+                    'type'    => 'NUMERIC',
+                ];
+            }
+
+        }
+    }
+
+    if (!empty($meta_qry)) {
+        $listing_args['meta_query'] = $meta_qry;
     }
 
     if ($listing_settings['sortOrder'] == 'title') {
@@ -182,6 +334,88 @@ function wb_blocks_filterable_listing_block_get_display_fields($display_fields){
     }
 
     return $display_fields_arry;
+}
+
+/**
+ * Adds a custom query variables for listing block
+ *
+ * @param array $vars The existing query variables.
+ * @return array The modified query variables.
+ */
+function wb_blocks_filterable_listing_block_add_query_vars($vars)
+{
+    $vars[] = "listing_search";
+    $vars[] = "published_date_from_date";
+    $vars[] = "published_date_to_date";
+
+    $args = array(
+        'public'   => true
+    ); 
+
+   $post_types = get_post_types($args, 'objects');
+
+    foreach($post_types as $post_type) {
+
+        $fields = wb_blocks_filterable_listing_block_get_post_type_date_fields($post_type->name);
+        
+        if (!empty($fields)) {
+            foreach($fields as $field){
+                if($field['type'] == "date_picker"){
+                    $vars[] = $field['name'] . "_from_date";
+                    $vars[] = $field['name'] . "_to_date";
+                }
+            }
+        }
+
+    }
+
+    return $vars;
+}
+
+add_filter('query_vars', 'wb_blocks_filterable_listing_block_add_query_vars');
+
+function wb_blocks_filterable_listing_block_get_post_type_date_fields($post_type_name){
+
+    $date_fields = [];
+
+    $groups = acf_get_field_groups(array('post_type' => $post_type_name)); 
+
+    if(is_array($groups) && count($groups) > 0){
+    
+            foreach($groups as $group) {
+    
+                $fields = acf_get_fields($group['key']);
+    
+                if (empty($fields)) {
+                    continue;
+                }
+    
+                foreach($fields as $field){
+                    
+                    if($field['type'] == "date_picker"){
+                        $date_fields[] = $field;
+                    }
+                }
+            }
+    }
+
+    return $date_fields;
+}
+
+
+function wb_blocks_filterable_listing_block_validate_date($date) {
+
+    $formats = ['d-m-Y', 'd/m/Y', 'd m Y'];
+    
+    // Loop through each format and check validity
+    foreach ($formats as $format) {
+        $dateCheck = DateTime::createFromFormat($format, $date);
+        if ($dateCheck) {
+            return $dateCheck->getTimestamp();
+        }
+    }
+
+    return false; // Invalid date
 }
 ?>
 

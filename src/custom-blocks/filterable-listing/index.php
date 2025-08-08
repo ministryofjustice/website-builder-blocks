@@ -30,30 +30,36 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         
         $listing_settings = [];
         $listing_settings['postType'] = $postType;
+        $listing_settings['searchTextFilter'] = $attributes['listingSearchTextFilter'] ?? true;
         $listing_settings['filters'] = $attributes['listingFilters'] ?? [];
         $listing_settings['displayFields'] = $attributes['listingDisplayFields'] ?? [];
         $listing_settings['displayTerms'] = $attributes['listingDisplayTerms'] ?? [];
         $listing_settings['itemsPerPage'] = $attributes['listingItemsPerPage'] ?? 10;
         $listing_settings['sortOrder'] = $attributes['listingSortOrder'] ?? 'published_date';
         $listing_settings['restrictTaxonomies'] = $attributes['listingRestrictTaxonomies'] ?? [];
-        $listing_settings['restrictTerms'] = $attributes['listingRestrictTerms'] ?? [];    
+        $listing_settings['restrictTerms'] = $attributes['listingRestrictTerms'] ?? [];  
+        $listing_settings['styles']['stylesResultsShadedBackground'] = $attributes['stylesResultsShadedBackground'] ?? false;   
 
+        $block_classes = $attributes['className'] ?? '';  
+        
         $active_filters = [];
-        $active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings['filters']);
+        $active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
         
     ?>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="<?php _e(esc_html($block_classes)) ; ?> wb-block-filterable-listing">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-    <?php
+        <?php
 
-        wb_blocks_filterable_listing_block_filters($listing_settings, $active_filters);
+            wb_blocks_filterable_listing_block_filters($listing_settings, $active_filters);
 
-    ?>
+        ?>
 
-    <div class="col-span-2 p-4"> 
-        <?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters);  ?> 
-    </div>
+        <div class="col-span-2 p-4"> 
+            <?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters);  ?> 
+        </div>
+        </div>
     </div>
     <?php
     }

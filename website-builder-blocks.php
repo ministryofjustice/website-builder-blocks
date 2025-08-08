@@ -114,16 +114,44 @@ function wb_blocks_register_blocks()
                 'listingPostType' => [
                     'type' => 'string'
                 ],
+                'listingSearchTextFilter' => [
+                    'type' => 'boolean'
+                ],
                 'listingFilters' => [
                     'type' => 'array'
-                ]
+                ],
+                'listingDisplayFields' => [
+                    'type' => 'array'
+                ],
+                'listingDisplayTerms' => [
+                    'type' => 'array'
+                ],
+                'listingItemsPerPage' => [
+                    'type' => 'number'
+                ],
+                'listingSortOrder' => [
+                    'type' => 'string'
+                ],
+                'listingRestrictTaxonomies' => [
+                    'type' => 'array'
+                ],
+                'listingRestrictTerms' => [
+                    'type' => 'array'
+                ],
+                'stylesResultsShadedBackground' => [
+                    'type' => 'boolean'
+                ],
+
             ]
         ]
     );
 }
 
+
 /**
  * Load PHP code for each custom MoJ block
+ * 
+ * 
  */
 
 include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
@@ -170,7 +198,44 @@ function wb_blocks_enqueue_style()
 
     // Load WB block styles
     wp_enqueue_style('wb-blocks');
+
+    if ( is_singular() ) {
+        global $post;
+
+        // Check for the block in the post content
+        if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
+            wp_enqueue_script(
+                'moj-frontend-js',
+                plugins_url('/build/moj-frontend.js', __FILE__),
+                array(),
+                '1.0',
+                true
+            );
+        }
+    }
 }
+
+function wb_blocks_footer_scripts(){ 
+	
+	if ( is_singular() ) {
+        global $post;
+
+        // Check for the block in the post content
+        if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
+	?>
+
+		<script type="module">
+			window.MOJFrontend.initAll();
+		</script>
+
+<?php 
+	    }
+    }
+} 
+
+add_action('wp_footer', 'wb_blocks_footer_scripts'); 
+
+
 
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
@@ -216,3 +281,5 @@ function wb_blocks_add_acf_fields_to_post_type($object, $field_name, $request) {
 
     return $fields;
 }
+
+

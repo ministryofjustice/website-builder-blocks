@@ -2,7 +2,6 @@ import {
 	PanelBody,
 	SelectControl,
 	RangeControl,
-	TextControl,
 	ToggleControl,
 	BaseControl,
 	Button,
@@ -28,6 +27,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 	const {
 		listingPostType,
+		listingSearchTextFilter,
 		listingFilters,
 		listingDisplayFields,
 		listingDisplayTerms,
@@ -35,9 +35,11 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingSortOrder,
 		listingRestrictTaxonomies,
 		listingRestrictTerms,
+		stylesResultsShadedBackground,
 		className,
 	} = attributes;
 
+	
 	const {
 		allPostTypes,
 	} = useSelect(
@@ -100,6 +102,14 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			value: "published_date"
 		}
 	];
+
+	const filterOptionList = [
+		{
+			label: "Published date",
+			value: "published_date"
+		}
+	];
+
 	const taxOptionList = [];
 	const restrictTermOptionList = [];
 	const selectedListingFilters = [];
@@ -129,6 +139,11 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 								value: taxonomy.slug
 							})
 
+							filterOptionList.push({
+								label: taxonomy.name,
+								value: taxonomy.slug
+							})
+
 							displayFieldsList.push({
 								label: taxonomy.name,
 								value: taxonomy.slug
@@ -152,6 +167,12 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			//Add ACF Meta Fields
 			if (thisPostType.slug == listingPostType && thisPostType.acfFields.length) {
 				thisPostType.acfFields.forEach(acfField => {
+					
+					filterOptionList.push({
+						label: acfField.label,
+						value: acfField.key
+					})
+
 					displayFieldsList.push({
 						label: acfField.label,
 						value: acfField.key
@@ -165,7 +186,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 		if(listingFilters.length > 0){
 			listingFilters.forEach((field) => {
-				for (const opt of taxOptionList) {
+				for (const opt of filterOptionList) {
 					if(field == opt.value){
 						selectedListingFilters.push(opt);
 						break;
@@ -230,6 +251,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
+	const setListingSearchTextFilter = newSearchTextFilter => {
+		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
+	};
+
 	const setListingFilters = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingFilters: values });
@@ -285,12 +310,22 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 				/>
 
 				{
-					(taxOptionList.length > 0) && (
+					(listingPostType.length > 0) && (	
+						<ToggleControl
+							label="Search Text Filter"
+							checked={ listingSearchTextFilter }
+							onChange={ setListingSearchTextFilter }
+						/>
+					)
+				}
+
+				{
+					(filterOptionList.length > 0) && (
 						<BaseControl label="Listing Filters">
 							<ReactSelect
 							isMulti
 							label="Filters"
-							options={taxOptionList}
+							options={filterOptionList}
 							value={ selectedListingFilters }
 							onChange={ setListingFilters }
 							/>	
@@ -400,9 +435,28 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		</InspectorControls>
 	);
 
+	const setStylesResultsShadedBackground = newStylesResultsShadedBackground => {
+		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
+	};
+
 	return (
 		<Fragment >
 			{ inspectorControls }
+			<InspectorControls group="styles">
+				<PanelBody
+					title={__('Results styles')}
+					initialOpen={true}
+				>
+						<ToggleControl
+							label="Shaded background"
+							help="Item divider line will be hidden"
+							checked={ stylesResultsShadedBackground }
+							onChange={ setStylesResultsShadedBackground }
+						/>
+						    
+						
+				</PanelBody>
+			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
 				<div className="">
 					Filterable Listing 

@@ -37,12 +37,23 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
             <?php echo esc_html($item_count_text); ?>
         </div>
         
-        <div class="filterable-listing-results-list ">
+        <div class="">
             <?php
             while ($listing_query->have_posts()) {
-                $listing_query->the_post();?>
-            <div class="filterable-listing-results-list-item border-b border-gray-300 mb-4 pb-2">
-                <h2 class="filterable-listing-results-list-item-title">
+                $listing_query->the_post();
+                
+                $list_item_classes = "";
+
+                if($listing_settings['styles']['stylesResultsShadedBackground'] == true){
+                    $list_item_classes = "bg-gray-100 p-4";
+                }
+                else {
+                    $list_item_classes = "border-b border-gray-300 pb-2";
+                }
+                
+                ?>
+            <div class="<?php echo $list_item_classes; ?> mb-4">
+                <h2 class="">
                         <a href="<?php echo get_permalink(); ?>">
                             <?php echo get_the_title(); ?>
                         </a>
@@ -105,7 +116,7 @@ function wb_blocks_filterable_listing_item_details($display_fields){
         }
         else if($display_field['type'] =='published_date'){
         
-            $field_value =  '<time class="entry-date published-date" datetime="' . get_the_date( DATE_W3C ) . '">' . get_the_date() . '</time>';
+            $field_value =  '<time class="entry-date" datetime="' . get_the_date( DATE_W3C ) . '">' . get_the_date() . '</time>';
         }
         else if($display_field['type'] == 'meta'){
             $field_value = get_field($display_field['name']);
@@ -113,9 +124,9 @@ function wb_blocks_filterable_listing_item_details($display_fields){
      
         if(!empty( $field_value )){ 
     ?>
-        <div class="list-item-detail detail-<?php echo $field['name']; ?> flex gap-2">
+        <div class="flex gap-2">
             <?php if(!empty( $field_label )){ ?>
-                <div class="list-item-detail-label font-semibold">
+                <div class="font-semibold">
                     <?php echo __($field_label,'wb_blocks'); ?>:
                 </div>
             <?php }?>
