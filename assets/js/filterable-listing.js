@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   // Get the taxonomies and their terms from the localized script object
-  const taxonomies = listing_page_object.taxonomies;
+  const taxonomies = filterable_listing_object.taxonomies;
 
   // Function to handle changes in the parent topic dropdown
   function handleTopicChange(parentClass, childClass, selected_topic) {
@@ -80,18 +80,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Attach change event listeners to each parent topic dropdown
-  Object.keys(taxonomies).forEach(taxonomy => {
-    const parentClass = `#${taxonomy}-filter-topic`;
-    const childClass = `#${taxonomy}-filter-subtopic`;
+  const blocks = document.querySelectorAll('div.wb-block-filterable-listing');
 
-    const parentEl = document.querySelector(parentClass);
-    if (parentEl) {
-      parentEl.addEventListener("change", function () {
-        const selected_topic = this.value;
-        handleTopicChange(parentClass, childClass, selected_topic);
+  blocks.forEach(block => {
+    const blockId = block.getAttribute('data-block-id');
+    const taxFilters = block.getAttribute('data-tax-filters');
+
+    if (taxFilters && taxFilters !== '') {
+      const taxFilterArray = taxFilters.split(',');
+      
+      taxFilterArray.forEach(taxonomy => {
+      
+        const parentClass = `#${taxonomy}-filter-topic-${blockId}`;
+        const childClass = `#${taxonomy}-filter-subtopic-${blockId}`;
+
+        const parentEl = document.querySelector(parentClass);
+        const childEl = document.querySelector(childClass);
+
+        if (parentEl && childEl) {
+          parentEl.addEventListener("change", function () {
+            const selected_topic = this.value;
+            handleTopicChange(parentClass, childClass, selected_topic);
+          });
+        }
+
       });
     }
+
   });
 
 });

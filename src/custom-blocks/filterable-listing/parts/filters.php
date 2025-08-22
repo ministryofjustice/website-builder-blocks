@@ -11,7 +11,7 @@
  *
  */
 
-function wb_blocks_filterable_listing_block_filters($listing_settings, $active_filters){
+function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters){
     if(empty($listing_settings['filters'])){
        return;     
     }
@@ -28,7 +28,7 @@ function wb_blocks_filterable_listing_block_filters($listing_settings, $active_f
     foreach($listing_settings['filters'] as $filter){
 
         if (taxonomy_exists($filter)) {
-            wb_blocks_filterable_listing_block_taxonomy_filter($filter, $active_filters, $listing_settings);
+            wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
         }
         else if($filter == 'published_date'){
 
@@ -145,12 +145,12 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 <br/>
 <?php
 }
-function wb_blocks_filterable_listing_block_taxonomy_filter($taxonomy_name, $active_filters, $listing_settings){
+function wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $taxonomy_name, $active_filters, $listing_settings){
 
 $taxonomy = get_taxonomy($taxonomy_name);
 
-$parent_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-topic');
-$child_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-subtopic');
+$parent_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-topic-' . $block_id);
+$child_class_name = str_replace(' ', '-',  $taxonomy->name . '-filter-subtopic-' . $block_id);
 
 // Get the selected parent topic
 $selected_topic = wb_blocks_filterable_listing_block_get_active_filter_value($active_filters, $taxonomy->query_var);
@@ -186,7 +186,7 @@ if(!empty($listing_settings['restrictTaxonomies']) && !empty($listing_settings['
 $dropdown_args = [
     "name" => $taxonomy->query_var,
     "id" => $parent_class_name,
-    "class" => "w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+    "class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     'taxonomy' => $taxonomy_name,
     'show_option_all' => "Select option",
     'depth' => 1,

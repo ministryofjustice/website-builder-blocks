@@ -237,7 +237,7 @@ function wb_blocks_enqueue_style()
     
             wp_localize_script(
                 'filterable-listing-js',
-                'listing_page_object',
+                'filterable_listing_object',
                 array(
                     'taxonomies' => $all_terms
                 )
