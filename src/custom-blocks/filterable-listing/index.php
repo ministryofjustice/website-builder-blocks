@@ -44,15 +44,26 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         
         $active_filters = [];
         $active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
-        
+
+        $block_id = rand();
+        $tax_filters = [];
+        foreach($listing_settings['filters'] as $filter){
+
+            if (taxonomy_exists($filter)) {
+                $tax_filters[] = $filter;
+            }
+        }
     ?>
 
-    <div class="<?php _e(esc_html($block_classes)) ; ?> wb-block-filterable-listing">
+    <div class="<?php _e(esc_html($block_classes)) ; ?> wb-block-filterable-listing" 
+    data-block-id="<?php _e(esc_html($block_id)) ; ?>"
+    data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(',', $tax_filters) : ''); ?>"
+    >
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
         <?php
 
-            wb_blocks_filterable_listing_block_filters($listing_settings, $active_filters);
+            wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
 
         ?>
 

@@ -110,7 +110,7 @@ function wb_blocks_filterable_listing_item_details($display_fields){
                 }
 
                 if(!empty($term_names)){
-                    $field_value = implode("," , $term_names);
+                    $field_value = implode(", " , $term_names);
                 }
             }
         }
