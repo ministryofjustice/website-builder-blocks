@@ -369,6 +369,16 @@ function wb_blocks_filterable_listing_block_add_query_vars($vars)
 
     }
 
+    $taxonomies = get_taxonomies(array('public' => true), 'objects');
+
+    foreach ($taxonomies as $taxonomy) {
+        // Register the main taxonomy query var
+        $vars[] = $taxonomy->query_var;
+
+        // Register the subtopic query var
+        $vars[] = $taxonomy->query_var . '_subtopic';
+    }
+
     return $vars;
 }
 

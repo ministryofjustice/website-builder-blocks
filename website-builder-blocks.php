@@ -211,6 +211,39 @@ function wb_blocks_enqueue_style()
                 '1.0',
                 true
             );
+            
+            wp_register_script('filterable-listing-js', plugins_url('/build/filterable-listing.js', __FILE__), array(), '1.0', true);
+
+            $taxonomies = get_taxonomies(array('public' => true));
+
+            if (!empty($taxonomies) && is_array($taxonomies)) {
+    
+                $all_terms = [];
+    
+                foreach ($taxonomies as $tax_name) {
+    
+                    $terms = get_terms(array(
+                        'taxonomy' => $tax_name,
+                        'hide_empty' => false,
+                    ));
+                    
+                    if (!is_wp_error($terms)) {
+                        $all_terms[$tax_name] = $terms;
+                    }
+                }
+            } else {
+                $all_terms = [];
+            }
+    
+            wp_localize_script(
+                'filterable-listing-js',
+                'listing_page_object',
+                array(
+                    'taxonomies' => $all_terms
+                )
+            );
+
+            wp_enqueue_script('filterable-listing-js');
         }
     }
 }

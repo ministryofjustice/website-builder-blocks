@@ -210,9 +210,6 @@ if($taxonomy_name == "category"){
 echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($parent_class_name) . '">' . esc_html($filter_label) . '</label>';
 wp_dropdown_categories($dropdown_args);
 
-/*
-
-TODO - subtopics
 
 $all_terms = get_terms(array(
     'taxonomy' => $taxonomy_name,
@@ -231,15 +228,14 @@ foreach ($all_terms as $term) {
 
 if ($has_subtopics) {
     $disabled_subtopics = 'disabled="disabled"';
-    $subtopic_wrapper_classes = '';
+    $subtopic_wrapper_classes = 'hidden';
 
     $sub_topics = [];
 
     if (is_numeric($selected_topic) && $selected_topic > 0) {
         $sub_topics = get_terms(array(
             'taxonomy' => $taxonomy_name,
-            'parent' => $selected_topic,
-            'hide_empty' => false,
+            'parent' => $selected_topic
         ));
 
         if (!empty($sub_topics)) {
@@ -261,9 +257,10 @@ if ($has_subtopics) {
 
     $wrapper_id = $child_class_name . '-wrapper';
     
+    echo '<br/><br/>';
     echo '<div id="' . $wrapper_id . '" class="' . $subtopic_wrapper_classes . '">';
-    echo '<label class="" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
-    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="filter-subtopic" ' . $disabled_subtopics . '>';
+    echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
+    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" ' . $disabled_subtopics . '>';
     echo '<option value="0"' . selected($selected_sub_topic, 0, false) . '>Select option</option>';
 
     foreach ($sub_topics as $sub_topic) {
@@ -274,7 +271,7 @@ if ($has_subtopics) {
     echo '</select>';
     echo '</div>';
 
-}*/
+}
 
 echo '<br/><br/>';
 }
