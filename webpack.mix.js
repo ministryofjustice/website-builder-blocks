@@ -21,6 +21,7 @@ mix_.webpackConfig({
 .sass('style.scss', 'style-frontend.min.css')
 .sass('style-gutenburg.scss', 'style-gutenburg.min.css')
 .copy('./node_modules/@ministryofjustice/frontend/moj/all.js', 'build/moj-frontend.js')
+.copy('./assets/js/filterable-listing.js', 'build/filterable-listing.js')
 
 if (mix_.inProduction()) {
     mix_.version();

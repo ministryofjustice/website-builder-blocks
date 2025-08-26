@@ -11,7 +11,7 @@
  *
  */
 
-function wb_blocks_filterable_listing_block_filters($listing_settings, $active_filters){
+function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters){
     if(empty($listing_settings['filters'])){
        return;     
     }
@@ -28,7 +28,7 @@ function wb_blocks_filterable_listing_block_filters($listing_settings, $active_f
     foreach($listing_settings['filters'] as $filter){
 
         if (taxonomy_exists($filter)) {
-            wb_blocks_filterable_listing_block_taxonomy_filter($filter, $active_filters, $listing_settings);
+            wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
         }
         else if($filter == 'published_date'){
 
@@ -145,12 +145,12 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 <br/>
 <?php
 }
-function wb_blocks_filterable_listing_block_taxonomy_filter($taxonomy_name, $active_filters, $listing_settings){
+function wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $taxonomy_name, $active_filters, $listing_settings){
 
 $taxonomy = get_taxonomy($taxonomy_name);
 
-$parent_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-topic');
-$child_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-subtopic');
+$parent_class_name = str_replace(' ', '-', $taxonomy->name . '-filter-topic-' . $block_id);
+$child_class_name = str_replace(' ', '-',  $taxonomy->name . '-filter-subtopic-' . $block_id);
 
 // Get the selected parent topic
 $selected_topic = wb_blocks_filterable_listing_block_get_active_filter_value($active_filters, $taxonomy->query_var);
@@ -186,7 +186,7 @@ if(!empty($listing_settings['restrictTaxonomies']) && !empty($listing_settings['
 $dropdown_args = [
     "name" => $taxonomy->query_var,
     "id" => $parent_class_name,
-    "class" => "w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+    "class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     'taxonomy' => $taxonomy_name,
     'show_option_all' => "Select option",
     'depth' => 1,
@@ -210,9 +210,6 @@ if($taxonomy_name == "category"){
 echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($parent_class_name) . '">' . esc_html($filter_label) . '</label>';
 wp_dropdown_categories($dropdown_args);
 
-/*
-
-TODO - subtopics
 
 $all_terms = get_terms(array(
     'taxonomy' => $taxonomy_name,
@@ -231,15 +228,14 @@ foreach ($all_terms as $term) {
 
 if ($has_subtopics) {
     $disabled_subtopics = 'disabled="disabled"';
-    $subtopic_wrapper_classes = '';
+    $subtopic_wrapper_classes = 'hidden';
 
     $sub_topics = [];
 
     if (is_numeric($selected_topic) && $selected_topic > 0) {
         $sub_topics = get_terms(array(
             'taxonomy' => $taxonomy_name,
-            'parent' => $selected_topic,
-            'hide_empty' => false,
+            'parent' => $selected_topic
         ));
 
         if (!empty($sub_topics)) {
@@ -261,9 +257,10 @@ if ($has_subtopics) {
 
     $wrapper_id = $child_class_name . '-wrapper';
     
+    echo '<br/><br/>';
     echo '<div id="' . $wrapper_id . '" class="' . $subtopic_wrapper_classes . '">';
-    echo '<label class="" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
-    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="filter-subtopic" ' . $disabled_subtopics . '>';
+    echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
+    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" ' . $disabled_subtopics . '>';
     echo '<option value="0"' . selected($selected_sub_topic, 0, false) . '>Select option</option>';
 
     foreach ($sub_topics as $sub_topic) {
@@ -274,7 +271,7 @@ if ($has_subtopics) {
     echo '</select>';
     echo '</div>';
 
-}*/
+}
 
 echo '<br/><br/>';
 }
