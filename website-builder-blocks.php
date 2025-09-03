@@ -173,6 +173,18 @@ function wb_blocks_register_blocks()
             ]
         ]
     );
+    register_block_type(
+        'wb-blocks/table-of-contents-section',
+        [
+            'editor_script' => 'wb-blocks-editor-script',
+            'render_callback' => 'wb_blocks_render_callback_toc_section_block',
+            'attributes' => [
+                'size' => [
+                    'type' => 'string'
+                ]
+            ]
+        ]
+    );
 }
 
 
@@ -182,15 +194,19 @@ function wb_blocks_register_blocks()
  * 
  */
 
-//include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
-//include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents/index.php';
+/*
+include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
+include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents/index.php';
+include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents-section/index.php';
+/**/
 $dir_path = plugin_dir_path(__FILE__) . 'src/custom-blocks/';
 $dir_listing = scandir($dir_path);
 foreach($dir_listing as $file) {
     if(is_dir($dir_path.$file) && !str_contains($file, ".")) {
-        include $dir_path.$file."/index.php";
+        if(file_exists($dir_path.$file."/index.php")) include $dir_path.$file."/index.php";
     }
 }
+/**/
 
 /**
  * Load PHP extended core blocks
