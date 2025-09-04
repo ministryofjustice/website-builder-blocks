@@ -29,11 +29,11 @@ Block: Filterable Listing (Frontend styles)
 
 		&__list {
 			margin-bottom: 2rem;
+			list-style-type: none;
 
-			&.govuk-list {
-				&--number {
-					padding-left: 0;
-				}
+			&--number {
+				list-style-type: decimal;
+				padding-left: 0;
 			}
 		}
 		&__item {
