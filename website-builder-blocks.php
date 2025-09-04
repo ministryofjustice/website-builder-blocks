@@ -196,7 +196,6 @@ function wb_blocks_register_blocks()
 
 /*
 include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
-include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents/index.php';
 include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents-section/index.php';
 /**/
 $dir_path = plugin_dir_path(__FILE__) . 'src/custom-blocks/';

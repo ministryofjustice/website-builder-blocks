@@ -65,7 +65,7 @@
 
 		$toc = "<div id='table-of-contents' class='wb-table-of-contents'>
 				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>Table of contents</h2>
-				<ol class='hale-table-of-contents__list govuk-list $list_class $print_columns'>$list_of_headings</ol>
+				<ol class='wb-table-of-contents__list $list_class $print_columns'>$list_of_headings</ol>
 			</div>";
 
 		return $toc;

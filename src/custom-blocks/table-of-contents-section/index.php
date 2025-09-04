@@ -26,10 +26,10 @@ function wb_blocks_render_callback_toc_section_block($attributes, $content)
 
 	?>
 		<div class="wp-block-columns is-layout-flex wp-block-columns-is-layout-flex">
-			<div class="<?php _e($attribute_className);?> wb-toc-table-section wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+			<div class="<?php _e($attribute_className);?> wb-toc-table-section wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:25%;">
 				<?php echo wb_toc_section_make_table_of_contents($content_data["index"]); ?>
 			</div>
-			<div class="wb-toc-content-section wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+			<div class="wb-toc-content-section wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:75%;">
 				<?php echo $content_data["content"]; ?>
 			</div>
 		</div>
