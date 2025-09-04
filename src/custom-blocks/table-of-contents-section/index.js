@@ -24,15 +24,25 @@ registerBlockType("wb-blocks/table-of-contents-section", {
             className
         } = props;
 
-        // Load allowed blocks to be added to banner content
+        // Load allowed blocks to be added to content
         const allowedBlocks = [ 'core/heading', 'core/paragraph' ];
 
         return ([
           <div className={"wp-block-columns is-layout-flex wp-block-columns-is-layout-flex"}>
-            <div className={`${className} wb-toc-table-section wp-block-column is-layout-flow wp-block-column-is-layout-flow`}>
+            <div
+              className={`${className} wb-toc-table-section wp-block-column is-layout-flow wp-block-column-is-layout-flow`}
+              style={{
+                flexBasis: '25%',
+              }}
+            >
               Table of contents
             </div>
-            <div className={"wb-toc-content-section wp-block-column is-layout-flow wp-block-column-is-layout-flow"}>
+            <div
+              className={"wb-toc-content-section wp-block-column is-layout-flow wp-block-column-is-layout-flow"}
+              style={{
+                flexBasis: '75%',
+              }}
+            >
               <InnerBlocks />
             </div>
           </div>
