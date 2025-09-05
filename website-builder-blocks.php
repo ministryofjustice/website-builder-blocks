@@ -190,22 +190,20 @@ function wb_blocks_register_blocks()
 
 /**
  * Load PHP code for each custom block
- * 
+ * Goes through the custom blocks directory and pulls in all blocks' index.php file
  * 
  */
-
-/*
-include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
-include plugin_dir_path(__FILE__) . 'src/custom-blocks/table-of-contents-section/index.php';
-/**/
 $dir_path = plugin_dir_path(__FILE__) . 'src/custom-blocks/';
 $dir_listing = scandir($dir_path);
 foreach($dir_listing as $file) {
-    if(is_dir($dir_path.$file) && !str_contains($file, ".")) {
-        if(file_exists($dir_path.$file."/index.php")) include $dir_path.$file."/index.php";
+    if(
+        !str_contains($file, ".") &&
+        is_dir($dir_path.$file) &&
+        file_exists($dir_path.$file."/index.php")
+    ) {
+        include $dir_path.$file."/index.php";
     }
 }
-/**/
 
 /**
  * Load PHP extended core blocks
