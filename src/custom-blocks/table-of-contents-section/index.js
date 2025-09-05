@@ -37,7 +37,10 @@ registerBlockType("wb-blocks/table-of-contents-section", {
           return tmp.textContent || tmp.innerText || '';
         }
         innerBlockCount.forEach(element => {
-          if (element.name == "core/heading" && element.originalContent.substring(0,3) == "<h2") {
+          if (
+            typeof element.name !== 'undefined' && element.name == "core/heading" && 
+            typeof element.originalContent !== 'undefined' && element.originalContent.substring(0,3) == "<h2"
+          ) {
             headingList.push("<li>"+removeHTML(element.originalContent)+"</li>");
           }
         });
@@ -50,7 +53,7 @@ registerBlockType("wb-blocks/table-of-contents-section", {
               }}
             >
               <h2>Table of contents</h2>
-              <ol dangerouslySetInnerHTML={{__html: headingList.join("")}} />
+              <ol className="wb-table-of-contents__list" dangerouslySetInnerHTML={{__html: headingList.join("")}} />
             </div>
             <div
               className={"wb-toc-content-section wp-block-column is-layout-flow wp-block-column-is-layout-flow"}
