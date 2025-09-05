@@ -49,7 +49,7 @@ Block: Filterable Listing (Frontend styles)
 	}
 }
 
-#table-of-contents {
+.wb-toc-table-section>#table-of-contents {
 	position: sticky;
 	top: 2rem;
 	overflow-y: auto;
