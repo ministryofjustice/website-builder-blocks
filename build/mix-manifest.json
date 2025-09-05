@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=8088bc142b801f4f043b8129c10d0a1a",
-    "/style-frontend.min.css": "/style-frontend.min.css?id=f4912d0a2393b03625992b1172e1b636",
-=======
-    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=888e55e129605fbd5a2974d49b8c5a43",
-    "/style-frontend.min.css": "/style-frontend.min.css?id=882d787b2c0282886b08886866c9b3df",
->>>>>>> a39e181 (Table of contents)
+    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=2a36641deb3dff77c8dabbede4aced50",
+    "/style-frontend.min.css": "/style-frontend.min.css?id=6516a85015b4df6912289036843adf8d",
     "/moj-frontend.js": "/moj-frontend.js?id=29197821c95f733a7bf23b58fd05a861",
     "/filterable-listing.js": "/filterable-listing.js?id=4ed31c2bb06c03f07e9d5c6b0a95de4e"
 }

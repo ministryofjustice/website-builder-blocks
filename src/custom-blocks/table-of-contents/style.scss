@@ -52,11 +52,14 @@ Block: Filterable Listing (Frontend styles)
 #table-of-contents {
 	top: 2rem;
 	overflow-y: auto;
-	&.is-style-sticky {
+	&.toc-sticky {
 		position: sticky;
+		.wb-jump-link {
+			display: none;
+		}
 	}
 }
 
 .wb-jump-link {
-	display: none;
+	display: inline;
 }
