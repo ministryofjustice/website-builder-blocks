@@ -1,0 +1,27 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Reveal (Gutenberg editor styles)
+
+**********************************************************************************************/
+
+@import 'style.scss';
+
+.wb-details{
+	&[open] > .wb-details__summary:before {
+		display: block;
+		width: 0;
+		height: 0;
+		-webkit-clip-path: polygon(0 0, 50% 100%, 100% 0);
+		clip-path: polygon(0 0, 50% 100%, 100% 0);
+		border-color: transparent;
+		border-style: solid;
+		border-width: 12.124px 7px 0;
+		border-top-color: inherit;
+	}
+
+	&:not([open]):after {
+		content: "⚠️ Section content hidden - click to display";
+		display: block;
+	}
+}

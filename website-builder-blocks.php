@@ -106,6 +106,22 @@ function wb_blocks_register_blocks()
     );
 
     register_block_type(
+        'wb-blocks/reveal',
+        [
+            'editor_script' => 'wb-blocks-editor-script',
+            'render_callback' => 'wb_blocks_render_callback_reveal_block',
+            'attributes' => [
+                'revealClassName' => [
+                    'type' => 'string'
+                ],
+                'revealTitle' => [
+                    'type' => 'string'
+                ]
+            ]
+        ]
+    );
+
+    register_block_type(
         'wb-blocks/filterable-listing',
         [
             'editor_script' => 'wb-blocks-editor-script',
@@ -149,13 +165,21 @@ function wb_blocks_register_blocks()
 
 
 /**
- * Load PHP code for each custom MoJ block
- * 
+ * Load PHP code for each custom block
+ * Goes through the custom blocks directory and pulls in all blocks' index.php file
  * 
  */
-
-include plugin_dir_path(__FILE__) . 'src/custom-blocks/filterable-listing/index.php';
-
+$dir_path = plugin_dir_path(__FILE__) . 'src/custom-blocks/';
+$dir_listing = scandir($dir_path);
+foreach($dir_listing as $file) {
+    if(
+        !str_contains($file, ".") &&
+        is_dir($dir_path.$file) &&
+        file_exists($dir_path.$file."/index.php")
+    ) {
+        include $dir_path.$file."/index.php";
+    }
+}
 
 /**
  * Load PHP extended core blocks
