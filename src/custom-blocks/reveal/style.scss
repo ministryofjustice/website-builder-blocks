@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Reveal (Frontend styles)
+
+**********************************************************************************************/
+
+.wb-details__summary-text {
+	cursor: pointer;
+	&>* {
+		display:inline;
+	}
+}
+
+.wb-details__text {
+	padding: 0.25rem 0 0.25rem 1rem;
+	border-left: 5px solid #b1b4b6;
+}

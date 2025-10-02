@@ -3,3 +3,4 @@
  */
 
 import "./filterable-listing";
+import "./reveal";
