@@ -45,6 +45,9 @@
 		$xpath = new DOMXPath($dom);
 		$tags = $xpath->query('//h2');
 		foreach($tags as $tag) {
+			$heading_class = $tag->getAttribute('class');
+			if (str_contains($heading_class,"wb-toc-ignore")) continue; // We ignore headings with the class "wb-toc-ignore"
+
 			$tag->setAttribute('class', "wb-toc-heading");
 			$title = $tag->nodeValue;
 			$id = preg_replace('/[^a-zA-Z0-9]/', '', remove_accents($title));

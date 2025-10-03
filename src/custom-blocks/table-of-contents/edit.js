@@ -10,10 +10,11 @@ import {
 const { Fragment } = wp.element;
 const d = new Date();
 
-export default function filterableListingEdit({ attributes, setAttributes} ) {
+export default function tocEdit({ attributes, setAttributes} ) {
 
 	const {
 		sticky,
+		scrollSpy,
 		tocClassName,
 	} = attributes;
 
@@ -29,6 +30,9 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			setAttributes({stickyClass: ""})
 		}*/
 	};
+	const setScrollSpy = newScrollSpy => {
+		setAttributes({ scrollSpy: newScrollSpy });
+	};
 	const inspectorControls = (
 		<InspectorControls>
 			<PanelBody
@@ -40,6 +44,12 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					help="Designed for the ToC to be in its own column"
 					checked={ sticky }
 					onChange={ setSticky }
+				/>
+				<ToggleControl
+					label="Highlight the current position"
+					help="Marks the current ToC item as you scroll down the page, designed to be used with the above where the ToC is always visible on Desktop displays."
+					checked={ scrollSpy }
+					onChange={ setScrollSpy }
 				/>
 			</PanelBody>
 		</InspectorControls>

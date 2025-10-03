@@ -1,8 +1,9 @@
 const { registerBlockType, registerBlockStyle } = wp.blocks;
 const { __ } = wp.i18n;
 
-import { InnerBlocks } from "@wordpress/block-editor";
-
+/**
+ * Internal dependencies
+ */
 import edit from './edit';
 
 registerBlockType("wb-blocks/table-of-contents", {
@@ -14,6 +15,9 @@ registerBlockType("wb-blocks/table-of-contents", {
 
   attributes: {
     sticky: {
+      type: "boolean"
+    },
+    scrollSpy: {
       type: "boolean"
     },
     tocClassName: {
