@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Filterable Listing (Gutenberg editor styles)
+
+**********************************************************************************************/
+
+@import 'style.scss';
+
+// This mimicks the sticky behaviour, moving out of the way of the block controls if selected.
+div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
+	position: sticky;
+	top:12px;
+
+	&.is-selected {
+		top:60px;
+	}
+}
