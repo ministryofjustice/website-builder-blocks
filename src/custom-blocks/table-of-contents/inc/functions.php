@@ -3,34 +3,11 @@
 	function wb_filter_add_index_for_h2_elements( $content ) {
 		// Check if we're inside the main loop in a single Post.
 		if ( is_singular() && in_the_loop() && is_main_query()) {
-			
-			if(is_page()){
-				global $post;
-
-				$numbered_headings = false;
-
-				$display_numbered_headings = get_post_meta($post->ID, 'page_numbered_headings', true);
-
-				if(!empty($display_numbered_headings)){
-					$numbered_headings = $display_numbered_headings;
-				}
-				$numbered_headings = true; //TEMP - not for this block
-				
-				if(!is_page_template( 'page-toc.php' ) && !$numbered_headings){
-					return $content;
-				}
-
-				return wb_get_ordered_content($content, $numbered_headings)["content"];
-			}
-			$numbered_headings = true; //TEMP - not for this block
-			$table_of_contents = true; //NEEDS SETTING???
-
-			if (!$table_of_contents && !$numbered_headings) return $content;
-			return wb_get_ordered_content($content, $numbered_headings)["content"];
+			return wb_get_ordered_content($content)["content"];
 		}
 	}
 
-	function wb_get_ordered_content($content, $numbered_headings) {
+	function wb_get_ordered_content($content) {
 		$index = [];
 		if (empty($content)) {
 			return ["index" => $index, "content" => $content];
@@ -53,8 +30,7 @@
 			$id = preg_replace('/[^a-zA-Z0-9]/', '', remove_accents($title));
 			$id = ++$count."-$id"; //$count is incremented & added to ID (this ensures no duplicates)
 			$index[] = ["title"=>$title,"id"=>$id];
-			if ($numbered_headings) $tag->prepend($count.". "); //adds the index number before the title if $ordered set
-	
+
 			//Jump to top link
 			$jump_link = $dom->createElement("a",esc_html("Back to top")); //SETTING TO SET TEXT NEEDED
 			$jump_link->setAttribute('href', '#table-of-contents-heading'); //link to the table of contents title
@@ -81,10 +57,10 @@
 	 * gets from the above funciton
 	 */
 
-	function wb_table_of_contents($content, $class="", $ordered = false, $print = false) {
+	function wb_table_of_contents($content, $class="") {
 		$list_class = "";
 
-		$index = wb_get_ordered_content($content,$ordered)["index"];
+		$index = wb_get_ordered_content($content)["index"];
 
 		// Create the table of contents
 		$list_of_headings = "";
@@ -110,5 +86,3 @@
 		return $toc;
 	}
 ?>
-
-

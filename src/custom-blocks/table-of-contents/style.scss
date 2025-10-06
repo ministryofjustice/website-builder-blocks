@@ -63,3 +63,8 @@ Block: Filterable Listing (Frontend styles)
 .wb-jump-link {
 	display: inline;
 }
+body:has(.toc-sticky) .wb-jump-link {
+	@media (min-width:600px) {
+		display: none;
+	}
+}
