@@ -173,18 +173,6 @@ function wb_blocks_register_blocks()
             ]
         ]
     );
-    register_block_type(
-        'wb-blocks/table-of-contents-section',
-        [
-            'editor_script' => 'wb-blocks-editor-script',
-            'render_callback' => 'wb_blocks_render_callback_toc_section_block',
-            'attributes' => [
-                'size' => [
-                    'type' => 'string'
-                ]
-            ]
-        ]
-    );
 }
 
 
