@@ -167,6 +167,9 @@ function wb_blocks_register_blocks()
             'editor_script' => 'wb-blocks-editor-script',
             'render_callback' => 'wb_blocks_render_callback_toc_block',
             'attributes' => [
+                'tocClassName' => [
+                    'type' => 'string'
+                ],
                 'size' => [
                     'type' => 'string'
                 ]

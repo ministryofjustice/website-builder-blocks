@@ -16,19 +16,14 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		sticky,
 		scrollSpy,
 		tocClassName,
+		className
 	} = attributes;
 
 	// Set className attribute for PHP frontend to use
-    //setAttributes({ tocClassName: className });
+    setAttributes({ tocClassName: className });
 
 	const setSticky = newSticky => {
 		setAttributes({ sticky: newSticky });
-		/*
-		if (newSticky) {
-			setAttributes({stickyClass: "toc-sticky"})
-		} else {
-			setAttributes({stickyClass: ""})
-		}*/
 	};
 	const setScrollSpy = newScrollSpy => {
 		setAttributes({ scrollSpy: newScrollSpy });
