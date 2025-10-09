@@ -3,7 +3,7 @@
 	function wb_filter_add_index_for_h2_elements( $content ) {
 		// Check if we're inside the main loop in a single Post.
 		if ( is_singular() && in_the_loop() && is_main_query()) {
-			$back_to_top_text = get_back_to_top_text();
+			$back_to_top_text = get_text()["back-to-top"];
 			return wb_get_ordered_content($content,$back_to_top_text)["content"];
 		}
 	}
@@ -24,7 +24,10 @@
 		$tags = $xpath->query('//h2');
 		foreach($tags as $tag) {
 			$heading_class = $tag->getAttribute('class');
-			if (str_contains($heading_class,"wb-toc-ignore")) continue; // We ignore headings with the class "wb-toc-ignore"
+			if (
+				str_contains($heading_class,"wb-toc-ignore") ||
+				str_contains($heading_class,"wb-table-of-contents__heading")
+				) continue; // We ignore headings with the class "wb-toc-ignore" and the ToC's own H2
 
 			$tag->setAttribute('class', $heading_class." wb-toc-heading");
 			$title = $tag->nodeValue;
@@ -79,19 +82,28 @@
 		if ($count_headings > 15) $print_columns = "wb-print-col wb-print-col--2";
 		if ($count_headings > 25) $print_columns = "wb-print-col wb-print-col--3";
 
+		$toc_title = get_text()["title"];
 		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class'>
-				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>Table of contents</h2>
+				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>$toc_title</h2>
 				<ol class='wb-table-of-contents__list $list_class $print_columns'>$list_of_headings</ol>
 			</div>";
 
 		return $toc;
 	}
 
-	function get_back_to_top_text() {
+	function get_text() {
 		$lang = get_locale(); // gets page language
 		if (substr($lang,0,2) == "cy")
-			// transation from https://www.legislation.gov.uk/cy/ukpga/1991/34/part/II/crossheading/new-enforcement-powers/1991-09-25/data.htm?wrap=true#top
-			return "Yn ôl i’r brig";
-		return "Back to top";
+			// transations from https://www.legislation.gov.uk/cy/ukpga/1991/34/part/II/crossheading/new-enforcement-powers/1991-09-25/data.htm?wrap=true#top & https://xerte.bangor.ac.uk/xerte/play.php?template_id=175#page1
+			return array(
+				"title"=>"Tabl cynnwys",
+				"back-to-top"=>"Yn ôl i’r brig"
+			);
+
+		// English
+		return array(
+			"title"=>"Table of contents",
+			"back-to-top"=>"Back to top"
+		);
 	}
 ?>
