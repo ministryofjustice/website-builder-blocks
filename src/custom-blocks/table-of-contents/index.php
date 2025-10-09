@@ -23,9 +23,7 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
     
 	if ($attribute_sticky) $attribute_className .= " toc-sticky";
 	if ($attribute_scrollSpy) $attribute_className .= " toc-scrollspy";
-	$$attribute_className = trim($attribute_className);
-	
-	add_filter( 'the_content', 'wb_filter_add_index_for_h2_elements', 1 );
+	$attribute_className = trim($attribute_className);
 	
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your

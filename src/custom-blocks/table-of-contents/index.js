@@ -15,10 +15,12 @@ registerBlockType("wb-blocks/table-of-contents", {
 
   attributes: {
     sticky: {
-      type: "boolean"
+      type: "boolean",
+      default: false
     },
     scrollSpy: {
-      type: "boolean"
+      type: "boolean",
+      default: false
     },
     tocClassName: {
       type: "string"

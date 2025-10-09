@@ -3,11 +3,12 @@
 	function wb_filter_add_index_for_h2_elements( $content ) {
 		// Check if we're inside the main loop in a single Post.
 		if ( is_singular() && in_the_loop() && is_main_query()) {
-			return wb_get_ordered_content($content)["content"];
+			$back_to_top_text = get_back_to_top_text();
+			return wb_get_ordered_content($content,$back_to_top_text)["content"];
 		}
 	}
 
-	function wb_get_ordered_content($content) {
+	function wb_get_ordered_content($content, $back_to_top_text = "Back to top") {
 		$index = [];
 		if (empty($content)) {
 			return ["index" => $index, "content" => $content];
@@ -32,7 +33,7 @@
 			$index[] = ["title"=>$title,"id"=>$id];
 
 			//Jump to top link
-			$jump_link = $dom->createElement("a",esc_html("Back to top")); //SETTING TO SET TEXT NEEDED
+			$jump_link = $dom->createElement("a",esc_html($back_to_top_text));
 			$jump_link->setAttribute('href', '#table-of-contents-heading'); //link to the table of contents title
 			$tag_suffix = $dom->createElement("span"," (");
 			$tag_suffix->setAttribute('class', 'wb-jump-link has-small-font-size');
@@ -84,5 +85,13 @@
 			</div>";
 
 		return $toc;
+	}
+
+	function get_back_to_top_text() {
+		$lang = get_locale(); // gets page language
+		if (substr($lang,0,2) == "cy")
+			// transation from https://www.legislation.gov.uk/cy/ukpga/1991/34/part/II/crossheading/new-enforcement-powers/1991-09-25/data.htm?wrap=true#top
+			return "Yn ôl i’r brig";
+		return "Back to top";
 	}
 ?>
