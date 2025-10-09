@@ -17,6 +17,8 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 {
 
 	// Parse attributes found in index.js
+	$attribute_title = $attributes['tocTitle'] ?? 'Table of contents';
+    $attribute_backToTopText = $attributes['backToTopText'] ?? 'Back to top';
     $attribute_className = $attributes['tocClassName'] ?? '';
     $attribute_sticky = $attributes['sticky'] ?? false;
     $attribute_scrollSpy = $attributes['scrollSpy'] ?? false;
@@ -30,7 +32,7 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
 	ob_start();
 
-	echo wb_table_of_contents(get_the_content(),$class=$attribute_className); //This creates the table of contents
+	echo wb_table_of_contents(get_the_content(),$class=$attribute_className,$title=$attribute_title,$top=esc_html($attribute_backToTopText)); //This creates the table of contents
 
 	// Get all the html/content that has been captured in the buffer and output via return
 	$output = ob_get_contents();

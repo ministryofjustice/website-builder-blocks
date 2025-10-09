@@ -48,7 +48,7 @@ registerBlockType('wb-blocks/reveal', {
                         <span className="wb-details__summary-text">
                             <RichText
                             value={ revealTitle }
-                            placeholder={ __('Add reveal title', 'mojblocks') }
+                            placeholder={ __('Add reveal title') }
                             keepPlaceholderOnFocus
                             onChange={ onChangeRevealTitle }
                             />

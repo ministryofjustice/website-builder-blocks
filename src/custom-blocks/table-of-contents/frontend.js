@@ -15,7 +15,6 @@ document.addEventListener('scroll', function() {
 
 function indicateCurrentLocation(){
 	if (!document.querySelector("#table-of-contents.toc-scrollspy")) {
-		console.log("No ToC with ScrollSpy found");
 		return;
 	}
 	let toc = document.querySelector("#table-of-contents");

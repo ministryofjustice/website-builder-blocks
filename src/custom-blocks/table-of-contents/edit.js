@@ -1,9 +1,11 @@
 import {
 	PanelBody,
-	ToggleControl
+	ToggleControl,
+	TextControl
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import {
+	RichText,
 	InspectorControls
 } from '@wordpress/block-editor';
 
@@ -13,6 +15,8 @@ const d = new Date();
 export default function tocEdit({ attributes, setAttributes} ) {
 
 	const {
+		tocTitle,
+		backToTopText,
 		sticky,
 		scrollSpy,
 		tocClassName,
@@ -22,6 +26,12 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	// Set className attribute for PHP frontend to use
     setAttributes({ tocClassName: className });
 
+	const setTocTitle = newTocTitle => {
+		setAttributes({ tocTitle: newTocTitle });
+	};
+	const setBackToTopText = newBackToTopText => {
+		setAttributes({ backToTopText: newBackToTopText });
+	};
 	const setSticky = newSticky => {
 		setAttributes({ sticky: newSticky });
 	};
@@ -46,6 +56,14 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					checked={ scrollSpy }
 					onChange={ setScrollSpy }
 				/>
+				<TextControl
+					__nextHasNoMarginBottom
+					__next40pxDefaultSize
+					label="Back to top link text"
+					help="What text should be used for the link to skip back to the table of contents"
+					value={ backToTopText }
+					onChange={ setBackToTopText }
+				/>
 			</PanelBody>
 		</InspectorControls>
 	);
@@ -56,7 +74,10 @@ export default function tocEdit({ attributes, setAttributes} ) {
 			{ inspectorControls }
 			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''}`}>
 				<div className="">
-					Table of contents 
+					<RichText
+						value={ tocTitle }
+						onChange={ setTocTitle }
+					/>
 				</div>
 			</div>
 		</Fragment>

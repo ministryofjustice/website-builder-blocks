@@ -14,6 +14,14 @@ registerBlockType("wb-blocks/table-of-contents", {
   keywords: [__('contents')],
 
   attributes: {
+    tocTitle: {
+      type: "string",
+      default: "Table of contents"
+    },
+    backToTopText: {
+      type: "string",
+      default: "Back to top"
+    },
     sticky: {
       type: "boolean",
       default: false
