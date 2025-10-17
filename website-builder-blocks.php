@@ -174,10 +174,10 @@ function wb_blocks_register_blocks()
                     'type' => 'string'
                 ],
                 'sticky' => [
-                    'type' => 'string'
+                    'type' => 'boolean'
                 ],
                 'scrollSpy' => [
-                    'type' => 'string'
+                    'type' => 'boolean'
                 ],
                 'tocClassName' => [
                     'type' => 'string'
