@@ -21,6 +21,7 @@ function indicateCurrentLocation(){
 	let sectionHeadings = document.querySelectorAll(".wb-toc-heading:not(.wb-toc-ignore)"); //list of all headings which are indexed in the Toc
 	let contents = toc.querySelectorAll("li"); //list of all items in the ToC
 	if (contents.length === 0 || sectionHeadings.length === 0) return; //guard against empty lists
+	let i;
 	for (i=0; i+1<sectionHeadings.length; i++) {
 		let nextPosition = sectionHeadings[i+1].getBoundingClientRect().top;
 		if (nextPosition > 150) break; //we stop counting when the next one is above 150 as we are on the current item

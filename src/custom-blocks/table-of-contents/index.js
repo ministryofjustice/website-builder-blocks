@@ -7,11 +7,11 @@ const { __ } = wp.i18n;
 import edit from './edit';
 
 registerBlockType("wb-blocks/table-of-contents", {
-  title: __("Table of contents", "wb_block"),
-  description: __('Table of contents'),
+  title: "Table of contents",
+  description: 'Table of contents',
   category: "wb-blocks",
   icon: "id-alt",
-  keywords: [__('contents'),__('toc'),__('table of contents'),__('side navigation'),__('side nav')],
+  keywords: ['contents','toc','table of contents','side navigation'],
 
   attributes: {
     tocTitle: {
