@@ -3,7 +3,9 @@
 ## Features
 
 This plugin adds the following custom blocks,
-* Filterable Listing
+* Filterable listing
+* Reveal
+* Table of contents
 
 ## Issues
 Raise issues via
