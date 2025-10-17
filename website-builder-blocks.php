@@ -167,17 +167,25 @@ function wb_blocks_register_blocks()
             'editor_script' => 'wb-blocks-editor-script',
             'render_callback' => 'wb_blocks_render_callback_toc_block',
             'attributes' => [
-                'tocClassName' => [
+                'tocTitle' => [
                     'type' => 'string'
                 ],
-                'size' => [
+                'backToTopText' => [
+                    'type' => 'string'
+                ],
+                'sticky' => [
+                    'type' => 'string'
+                ],
+                'scrollSpy' => [
+                    'type' => 'string'
+                ],
+                'tocClassName' => [
                     'type' => 'string'
                 ]
             ]
         ]
     );
 }
-
 
 /**
  * Load PHP code for each custom block
