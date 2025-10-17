@@ -1,10 +1,18 @@
 <?php
 	add_filter( 'the_content', 'wb_filter_add_index_for_h2_elements', 100 );
 	function wb_filter_add_index_for_h2_elements( $content ) {
-		// Check if we're inside the main loop in a single Post.
-		if ( is_singular() && in_the_loop() && is_main_query()) {
-			return wb_get_ordered_content($content)["content"];
+		if ( empty( $content ) ) {
+			return $content;
 		}
+
+		if ( is_singular() && in_the_loop() && is_main_query() ) {
+			$result = wb_get_ordered_content( $content );
+
+			if ( isset( $result['content'] ) && is_string( $result['content'] ) ) {
+				return $result['content'];
+			}
+		}
+		return $content;
 	}
 
 	function wb_get_ordered_content($content) {
@@ -61,8 +69,6 @@
 		// This is the content with IDs for all h2 elements (or whatever was set in $tags)
 		$changed_content = trim($dom->saveHtml());
 
-		//$changed_content = wb_toc_column_layout($changed_content);
-	
 		return array("index"=>$index,"content"=>$changed_content);
 	}
 
@@ -81,7 +87,9 @@
 		$list_of_headings = "";
 		$count_headings = 0;
 		foreach ($index as $content_item) {
-			$list_of_headings .= '<li class="wb-table-of-contents__item"><a id="anchor-for-'.$content_item["id"].'" class="govuk-link govuk-link--no-visited-state" href="#'.$content_item["id"].'">'.$content_item["title"].'</a></li>';
+			$this_id = esc_attr($content_item["id"]);
+			$this_title = esc_html($content_item["title"]);
+			$list_of_headings .= '<li class="wb-table-of-contents__item"><a id="anchor-for-'.$this_id.'" class="govuk-link govuk-link--no-visited-state" href="#'.$this_id.'">'.$this_title.'</a></li>';
 			$count_headings++;
 		}
 

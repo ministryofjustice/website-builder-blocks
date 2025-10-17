@@ -20,13 +20,11 @@ function indicateCurrentLocation(){
 	let toc = document.querySelector("#table-of-contents");
 	let sectionHeadings = document.querySelectorAll(".wb-toc-heading:not(.wb-toc-ignore)"); //list of all headings which are indexed in the Toc
 	let contents = toc.querySelectorAll("li"); //list of all items in the ToC
-	console.log(contents.length);
-	console.log(sectionHeadings.length);
+	if (contents.length === 0 || sectionHeadings.length === 0) return; //guard against empty lists
 	for (i=0; i+1<sectionHeadings.length; i++) {
 		let nextPosition = sectionHeadings[i+1].getBoundingClientRect().top;
 		if (nextPosition > 150) break; //we stop counting when the next one is above 150 as we are on the current item
 	}
-
 	// A small bit of code to ensure the last item is always "current" when at the very bottom of the page.
 	const documentHeight = Math.max(
 		document.body.scrollHeight,
@@ -46,4 +44,3 @@ function indicateCurrentLocation(){
 	});
 	contents[i].classList.add("wb-table-of-contents__item--current");
 }
-/**/

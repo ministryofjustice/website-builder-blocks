@@ -41,9 +41,11 @@ Block: Filterable Listing (Frontend styles)
 			padding-top: 0.2rem;
 			padding-bottom: 0.2rem;
 		
-			&--current {
-				padding-left: 10px;
-				border-left: 5px solid;
+			@media (min-width:782px) {
+				&--current {
+					padding-left: 10px;
+					border-left: 5px solid;
+				}
 			}
 		}
 	}

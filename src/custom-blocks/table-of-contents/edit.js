@@ -10,7 +10,6 @@ import {
 } from '@wordpress/block-editor';
 
 const { Fragment } = wp.element;
-const d = new Date();
 
 export default function tocEdit({ attributes, setAttributes} ) {
 
