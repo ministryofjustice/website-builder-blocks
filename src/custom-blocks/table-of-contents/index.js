@@ -11,7 +11,7 @@ registerBlockType("wb-blocks/table-of-contents", {
   description: 'Table of contents',
   category: "wb-blocks",
   icon: "id-alt",
-  keywords: ['contents','toc','table of contents','side navigation'],
+  keywords: ['contents','toc','side navigation'],
 
   attributes: {
     tocTitle: {
