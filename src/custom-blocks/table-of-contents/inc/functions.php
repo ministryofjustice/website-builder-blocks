@@ -89,7 +89,7 @@
 		foreach ($index as $content_item) {
 			$this_id = esc_attr($content_item["id"]);
 			$this_title = esc_html($content_item["title"]);
-			$list_of_headings .= '<li class="wb-table-of-contents__item"><a id="anchor-for-'.$this_id.'" class="govuk-link govuk-link--no-visited-state" href="#'.$this_id.'">'.$this_title.'</a></li>';
+			$list_of_headings .= '<li class="wb-table-of-contents__item"><a id="anchor-for-'.$this_id.'" href="#'.$this_id.'">'.$this_title.'</a></li>';
 			$count_headings++;
 		}
 

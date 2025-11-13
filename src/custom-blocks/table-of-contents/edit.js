@@ -3,6 +3,7 @@ import {
 	ToggleControl,
 	TextControl
 } from '@wordpress/components';
+import { useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	RichText,
@@ -12,6 +13,22 @@ import {
 const { Fragment } = wp.element;
 
 export default function tocEdit({ attributes, setAttributes} ) {
+
+	const blockRef = useRef();
+	useEffect(() => {
+		let contentArea = document.querySelector('.editor-visual-editor');
+		if (!contentArea) {
+			return;
+		}
+		let headings = contentArea.querySelectorAll("h2");
+
+		let contentsList = document.getElementById("table-of-contents-contents-list");
+
+		for(let i=0;i<headings.length;i++) {
+			if (headings[i].innerHTML.includes(tocTitle)) continue;
+			contentsList.innerHTML += '<li class="wb-table-of-contents__item"><a href="#'+headings[i].id+'">'+headings[i].innerHTML+'</a></li>';
+		}
+	}, []);
 
 	const {
 		tocTitle,
@@ -67,16 +84,19 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		</InspectorControls>
 	);
 
-
 	return (
 		<Fragment >
 			{ inspectorControls }
 			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''}`}>
-				<div className="">
-					<RichText
-						value={ tocTitle }
-						onChange={ setTocTitle }
-					/>
+				<div id="table-of-contents" class="wb-table-of-contents toc-sticky toc-scrollspy">
+					<h2 class="wb-table-of-contents__heading" id="table-of-contents-heading">
+						<RichText
+							value={tocTitle}
+							onChange={ setTocTitle }
+						/>
+					</h2>
+					<ol id="table-of-contents-contents-list" class="wb-table-of-contents__list">
+					</ol>
 				</div>
 			</div>
 		</Fragment>
