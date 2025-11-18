@@ -3,7 +3,7 @@ import {
 	ToggleControl,
 	TextControl
 } from '@wordpress/components';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	RichText,
@@ -14,20 +14,26 @@ const { Fragment } = wp.element;
 
 export default function tocEdit({ attributes, setAttributes} ) {
 
-	const blockRef = useRef();
 	useEffect(() => {
 		let contentArea = document.querySelector('.editor-visual-editor');
 		if (!contentArea) {
 			return;
 		}
-		let headings = contentArea.querySelectorAll("h2");
-
 		let contentsList = document.getElementById("table-of-contents-contents-list");
+		const mutationObserver = new MutationObserver((mutationList) => {
+			let headingItems = contentArea.querySelectorAll("h2:not(.wb-toc-ignore)");
+			let contentItems = contentsList.querySelectorAll("li");
+			if (headingItems.length != contentItems.length) {
+				contentsList.innerHTML = "";
+				for(let i=0;i<headingItems.length;i++) {
+					if (headingItems[i].innerHTML.includes(tocTitle)) continue;
+					onClassChange(headingItems[i]); // Live updating of contents item if content is changed without re-writing the entire table of contents
+					contentsList.innerHTML += createContentItem(headingItems[i]);
+				}
+			}
 
-		for(let i=0;i<headings.length;i++) {
-			if (headings[i].innerHTML.includes(tocTitle)) continue;
-			contentsList.innerHTML += '<li class="wb-table-of-contents__item"><a href="#'+headings[i].id+'">'+headings[i].innerHTML+'</a></li>';
-		}
+		});
+		mutationObserver.observe(contentArea, { childList: true, subtree: true });
 	}, []);
 
 	const {
@@ -40,7 +46,7 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	} = attributes;
 
 	// Set className attribute for PHP frontend to use
-    setAttributes({ tocClassName: className });
+	setAttributes({ tocClassName: className });
 
 	const setTocTitle = newTocTitle => {
 		setAttributes({ tocTitle: newTocTitle });
@@ -89,7 +95,7 @@ export default function tocEdit({ attributes, setAttributes} ) {
 			{ inspectorControls }
 			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''}`}>
 				<div id="table-of-contents" class="wb-table-of-contents toc-sticky toc-scrollspy">
-					<h2 class="wb-table-of-contents__heading" id="table-of-contents-heading">
+					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
 						<RichText
 							value={tocTitle}
 							onChange={ setTocTitle }
@@ -102,4 +108,49 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		</Fragment>
 	);
 	
+}
+
+function createContentItem(heading) {
+	// This function creates the entries for the table of contents.
+	let additionalClass = "";
+	let hintText = "";
+	if (heading.innerText.trim() == "") {
+		additionalClass = "empty";
+		hintText = "Empty item";
+	}
+	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a></li>';
+}
+
+function onClassChange(node) {
+	// Class change happens when any editing is done, so we look for a class change
+	// If a class change is detected we run the alterHeading function
+
+	let lastClassString = node.classList.toString();
+
+	const mutationObserver = new MutationObserver((mutationList) => {
+		for (const item of mutationList) {
+			if (item.attributeName === "class") {
+				const classString = node.classList.toString();
+				if (classString !== lastClassString) {
+					alterHeading(node);
+					lastClassString = classString;
+					break;
+				}
+			}
+		}
+	});
+
+	mutationObserver.observe(node, { attributes: true });
+
+	return mutationObserver;
+}
+function alterHeading(heading) {
+	if (!heading) return;
+	let headingContentItem = document.getElementById("toc-link-for_"+heading.id)
+	if (!headingContentItem) return; // The function will run before the contents list has been created so this is important
+
+	// Check: has the text changed
+	if (heading.innerText != headingContentItem.innerText) {
+		headingContentItem.outerHTML = createContentItem(heading);
+	}
 }
