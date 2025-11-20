@@ -16,3 +16,8 @@ div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
 		top:60px;
 	}
 }
+
+.empty a {
+	color: #b1b4b6;
+	font-style: italic;
+}
