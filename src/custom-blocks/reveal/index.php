@@ -28,9 +28,15 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
     <div class="wb-blocks-reveal <?php _e(esc_html($attribute_reveal_className)); ?>">
         <details class="wb-details">
             <summary class="wb-details__summary">
-                <span class="wb-details__summary-text">
+                <?php
+                    /**
+                     * We are using an anchor tag <a> without an href
+                     * So link colouring is picked up without link behaviour
+                     */
+                ?>
+                <a class="wb-details__summary-text">
                     <?php _e(esc_html($attribute_reveal_revealTitle)); ?>
-                </span>
+                </a>
             </summary>
             <div class="wb-details__text">
                 <?php _e(esc_html($content)); ?>
