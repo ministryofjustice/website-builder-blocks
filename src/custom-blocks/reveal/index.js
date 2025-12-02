@@ -45,14 +45,14 @@ registerBlockType('wb-blocks/reveal', {
             <div className={`mojblocks-reveal`}>
                 <details className="wb-details" open>
                     <summary className="wb-details__summary">
-                        <span className="wb-details__summary-text">
+                        <a className="wb-details__summary-text">
                             <RichText
                             value={ revealTitle }
                             placeholder={ __('Add reveal title') }
                             keepPlaceholderOnFocus
                             onChange={ onChangeRevealTitle }
                             />
-                        </span>
+                        </a>
                     </summary>
                     <div className="wb-details__text">
                         <InnerBlocks
