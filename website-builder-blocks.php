@@ -106,6 +106,22 @@ function wb_blocks_register_blocks()
     );
 
     register_block_type(
+        'wb-blocks/hmg-svg',
+        [
+            'editor_script' => 'wb-blocks-editor-script',
+            'render_callback' => 'wb_blocks_render_callback_hmgsvg',
+            'attributes' => [
+                'className' => [
+                    'type' => 'string'
+                ],
+                'logo' => [
+                    'type' => 'string'
+                ]
+            ]
+        ]
+    );
+
+    register_block_type(
         'wb-blocks/reveal',
         [
             'editor_script' => 'wb-blocks-editor-script',
