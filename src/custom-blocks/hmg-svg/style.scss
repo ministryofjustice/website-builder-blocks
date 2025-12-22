@@ -4,6 +4,11 @@
 Block: Government SVGs
 
 **********************************************************************************************/
-img.crest {
-	max-width: 130px;
+
+.wb-hmg-svg {
+	display: inline-block;
+	svg {
+		min-width: 45px;
+		max-width: 260px;
+	}
 }

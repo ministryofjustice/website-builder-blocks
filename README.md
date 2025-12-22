@@ -4,6 +4,7 @@
 
 This plugin adds the following custom blocks,
 * Filterable listing
+* HM Government logo SVG
 * Reveal
 * Table of contents
 

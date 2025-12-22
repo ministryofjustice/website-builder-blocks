@@ -1,17 +1,18 @@
 /**
- * Reveal
+ * HMG logo SVG
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls } from '@wordpress/blockEditor';
 import { SelectControl, PanelBody, PanelRow } from '@wordpress/components';
+import { RawHTML } from '@wordpress/element';
 import crest from './svg/crest.svg';
 import govuk from './svg/govuk.svg';
 import ogl from './svg/ogl.svg';
 import crown from './svg/crown.svg';
 
 registerBlockType('wb-blocks/hmg-svg', {
-    title: __('HM Government logo SVGs', 'wb_block'),
+    title: __('HM Government logo SVG', 'wb_block'),
     description: __("The SVGs associated with government websites (for use in the footer)"),
     category: 'wb-blocks',
     icon: (
@@ -54,10 +55,10 @@ registerBlockType('wb-blocks/hmg-svg', {
             setAttributes({ logo: newLogo });
         };
         const logoOptions = [
-            { label: "Crown", value: 'crown' },
             { label: "Government coat-of-arms", value: 'crest' },
-            { label: "Open Government Licence Logo", value: 'ogl'},
+            { label: "Crown", value: 'crown' },
             { label: "GOV.UK logo", value: 'govuk'},
+            { label: "Open Government Licence Logo", value: 'ogl'},
         ]
         
         return ([
@@ -75,11 +76,17 @@ registerBlockType('wb-blocks/hmg-svg', {
                 </PanelBody>
             </InspectorControls>,
             <div className={`wb-hmg-svg ${className} ${logo}`}>
-                <img src={`${crest}`} alt="Government crest" class="crest"/>
-                <img src={`${govuk}`} alt="GOV.UK logo" class="govuk"/>
-                <img src={`${crown}`} alt="Tudor crown" class="crown"/>
-                <img src={`${ogl}`} alt="OGL logo" class="ogl"/>
-            </div>
+                <RawHTML>
+					{
+					logo == "crest" ? decodeBase64Svg(crest) :
+					logo == "crown" ? decodeBase64Svg(crown) :
+					logo == "govuk" ? decodeBase64Svg(govuk) :
+					logo == "ogl" ? decodeBase64Svg(ogl) :
+					""
+					}
+				</RawHTML>
+
+			</div>
         ]);
     },
 
@@ -87,3 +94,16 @@ registerBlockType('wb-blocks/hmg-svg', {
     save: () => null
 });
 
+function decodeBase64Svg(base64) {
+    // Remove data URL prefix if present
+    const clean = base64
+        .replace(/^data:image\/svg\+xml;base64,/, '')
+        .replace(/\s/g, '');
+
+    // Decode Base64 → UTF-8
+    return decodeURIComponent(
+        Array.from(atob(clean), c =>
+            '%' + c.charCodeAt(0).toString(16).padStart(2, '0')
+        ).join('')
+    );
+}

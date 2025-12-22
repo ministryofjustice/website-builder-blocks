@@ -6,29 +6,3 @@ Block: Government SVGs
 **********************************************************************************************/
 
 @import 'style.scss';
-
-.wb-hmg-svg {
-	img {
-		display:none;
-	}
-	&.crest {
-		img.crest {
-			display:block;
-		}
-	}
-	&.crown {
-		img.crown {
-			display:block;
-		}
-	}
-	&.ogl {
-		img.ogl {
-			display:block;
-		}
-	}
-	&.govuk {
-		img.govuk {
-			display:block;
-		}
-	}
-}
