@@ -42,7 +42,7 @@ registerBlockType('wb-blocks/reveal', {
         };
 
         return ([
-            <div className={`mojblocks-reveal`}>
+            <div className={`revealClassName`}>
                 <details className="wb-details" open>
                     <summary className="wb-details__summary">
                         <a className="wb-details__summary-text">
