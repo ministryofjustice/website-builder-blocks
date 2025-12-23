@@ -7,7 +7,7 @@
  * Uses WordPress' dynamic block method
  * https://developer.wordpress.org/block-editor/tutorials/block-tutorial/creating-dynamic-blocks/
  *
- * @package mojblocks
+ * @package wb_blocks
  *
  */
 
