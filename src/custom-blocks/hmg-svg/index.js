@@ -16,7 +16,7 @@ registerBlockType('wb-blocks/hmg-svg', {
     description: __("The SVGs associated with government websites (for use in the footer)"),
     category: 'wb-blocks',
     icon: (
-        <svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 60" height="30" width="32" fill="currentcolor" class="govuk-header__logotype" aria-label="GOV.UK"><title>GOV.UK</title>
+        <svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 60" height="30" width="32" fill="currentcolor" aria-label="GOV.UK"><title>GOV.UK</title>
             <g>
                 <circle cx="20" cy="17.6" r="3.7"></circle>
                 <circle cx="10.2" cy="23.5" r="3.7"></circle>
@@ -63,10 +63,10 @@ registerBlockType('wb-blocks/hmg-svg', {
         
         return ([
             <InspectorControls>
-                <PanelBody title={ __( 'Logo' ) } initialOpen={true} >
+                <PanelBody title={ __( 'Government identity' ) } initialOpen={true} >
                     <PanelRow>
                         <SelectControl
-                            label={__("Logo", "mojblocks" )}
+                            label={__("Identity mark", "mojblocks" )}
                             help=""
                             value={ logo }
                             options={ logoOptions }
@@ -75,7 +75,7 @@ registerBlockType('wb-blocks/hmg-svg', {
                     </PanelRow>
                 </PanelBody>
             </InspectorControls>,
-            <div className={`wb-hmg-svg ${className} ${logo}`}>
+            <div className={`wb-hmg-svg ${className || ''} ${logo}`}>
                 <RawHTML>
 					{
 					logo == "crest" ? decodeBase64Svg(crest) :
