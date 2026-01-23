@@ -3,3 +3,4 @@
  */
 
 import "./custom-blocks/index";
+import "./extended-core-blocks/index";

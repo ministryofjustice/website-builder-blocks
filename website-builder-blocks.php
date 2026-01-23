@@ -309,6 +309,19 @@ function wb_blocks_enqueue_style()
             wp_enqueue_script('filterable-listing-js');
         }
     }
+
+
+    /**
+     * Enqueue functionality for navigation block
+     */
+
+    wp_enqueue_script(
+        'drawer-menu',
+        plugins_url('src/extended-core-blocks/navigation/functionality.js', __FILE__),
+        [ 'wp-dom-ready'],
+        false,
+        true
+    );
 }
 
 function wb_blocks_footer_scripts(){ 
@@ -330,8 +343,6 @@ function wb_blocks_footer_scripts(){
 } 
 
 add_action('wp_footer', 'wb_blocks_footer_scripts'); 
-
-
 
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
@@ -377,5 +388,3 @@ function wb_blocks_add_acf_fields_to_post_type($object, $field_name, $request) {
 
     return $fields;
 }
-
-
