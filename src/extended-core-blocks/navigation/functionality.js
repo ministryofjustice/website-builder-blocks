@@ -16,14 +16,16 @@ if (drawerNav) {
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
 	const openToggle = drawerNav.querySelector(".wp-block-navigation-submenu__toggle");
 
-	window.addEventListener('resize', () => {
+	const resizeObserver = new ResizeObserver(entries => {
 		makeSubMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
 	});
+
+	resizeObserver.observe(drawerNav);
 
 	const observer = new MutationObserver(mutations => {
 		makeSubMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
 	});
-	  
+
 	observer.observe(openToggle, {
 		attributes: true
 	});
@@ -39,6 +41,7 @@ function makeSubMenuDrawer(drawerNav, subMenus, initialPadding) {
 			let subMenuHeight = subMenu.offsetHeight;
 			drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
 			subMenu.style.marginTop = initialPadding + "px";
+			subMenu.style.width = getComputedStyle(drawerNav).width;
 		}
 	});
 	if (!subMenuOpen) {
