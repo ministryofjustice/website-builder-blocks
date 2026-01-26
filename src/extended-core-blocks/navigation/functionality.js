@@ -14,6 +14,7 @@ if (drawerNav) {
 	const navInitialStyles = getComputedStyle(drawerNav);
 	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
+	const openToggle = drawerNav.querySelector(".wp-block-navigation-submenu__toggle");
 
 	window.addEventListener('resize', () => {
 		makeSubMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
@@ -23,11 +24,8 @@ if (drawerNav) {
 		makeSubMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
 	});
 	  
-	observer.observe(drawerNav, {
-		childList: true,
-		subtree: true,
-		attributes: true,
-		characterData: true
+	observer.observe(openToggle, {
+		attributes: true
 	});
 }
 
