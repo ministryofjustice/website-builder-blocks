@@ -57,4 +57,35 @@ nav.is-style-drawer {
 		// So we change this to static so it positioned relative to the whole nav.
 		position: static;
 	}
+
+/********
+Mobile styles - overriding the modal window
+********/
+
+	// Make the mobile menu behave like normal content
+	.wp-block-navigation__responsive-container.is-menu-open {
+		position: relative !important;
+		background: transparent;
+		padding: 0;
+
+		@media not (prefers-reduced-motion) {
+			// overrides default
+			animation: none;
+		}
+
+		.wp-block-navigation__responsive-container-content {
+			padding-top: 1rem;
+			padding-bottom: 1rem;
+		}
+	}
+
+	// Remove the dark overlay
+	.wp-block-navigation__responsive-container-close {
+		display: none;
+	}
+}
+
+// Allow page scrolling when menu is open
+html.has-modal-open:has(nav.is-style-drawer .wp-block-navigation__responsive-container.is-menu-open) {
+	overflow: auto !important;
 }
