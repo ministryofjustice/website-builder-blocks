@@ -47,5 +47,8 @@ function makeSubMenuDrawer(drawerNav, subMenus, initialPadding) {
 	if (!subMenuOpen) {
 		// No submenu is opened
 		drawerNav.style.paddingBottom = initialPadding + "px"; //Restore the bottom padding to original
+		subMenus.forEach(subMenu => {
+			subMenu.style.width = "";
+		});
 	}
 }
