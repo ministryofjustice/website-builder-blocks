@@ -1,0 +1,32 @@
+header {
+
+	.header-search-toggle {
+		display: block;
+
+		/* Responsive spacing adjustments */
+		@media (min-width: 768px) {
+			display: none;
+		}
+	}
+	.search-form-wrapper {
+		//display: none;
+
+		@media (max-width: 767px) {
+			max-width: 100%;
+			position: absolute;
+			top: 110px;
+			right: 0;
+			border: 3px solid red;
+			z-index: 99;
+		}
+
+		/* Responsive spacing adjustments */
+		@media (min-width: 768px) {
+			display: block;
+		}
+		.wp-block-search__inside-wrapper {
+			width: 100%;
+			color: black;
+		}
+	}
+}
