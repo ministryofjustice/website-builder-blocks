@@ -68,21 +68,3 @@ function closeSearchDrawer() {
     headerSearchInsideWrapper.style.width = originaSearchWidth;
     headerSearchToggleButton.setAttribute("aria-label", "Open search");
 }
-
-
-if (headerSearchToggle && "IntersectionObserver" in window) {
-	const observer = new IntersectionObserver(
-		([entry]) => {
-            //close search draw if toggle hidden
-			if (!entry.isIntersecting) {
-                 headerSearchBlockWrapper.classList.remove("search-drawer-open");
-                closeSearchDrawer();
-			} 
-		},
-		{
-			threshold: 0
-		}
-	);
-
-	observer.observe(headerSearchToggle);
-}
