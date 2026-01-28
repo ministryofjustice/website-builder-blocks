@@ -6,7 +6,7 @@
 const header = document.querySelector("header");
 const headerSearchBlockWrapper = document.querySelector("header .wb-search-block-wrapper");
 const headerSearchToggle = document.querySelector("header .wb-search-toggle");
-const headerSearchToggleButton = document.querySelector("header .wb-search-toggle .wp-block-search__button");
+const headerSearchToggleButton = document.querySelector("header .wb-search-toggle .wp-block-search-toggle-button");
 const headerSearchFormWrapper = document.querySelector("header .wb-search-form-wrapper");
 const headerSearchForm = document.querySelector("header .wb-search-form-wrapper .wp-block-search");
 const headerSearchLabel = document.querySelector("header .wb-search-form-wrapper .wp-block-search__label");
