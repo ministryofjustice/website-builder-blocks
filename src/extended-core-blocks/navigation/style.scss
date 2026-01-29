@@ -64,9 +64,8 @@ Mobile styles - overriding the modal window
 
 	// Make the mobile menu behave like normal content
 	.wp-block-navigation__responsive-container.is-menu-open {
-		position: relative !important;
-		background: transparent;
-		padding: 0;
+		position: absolute;
+		height: fit-content;
 
 		@media not (prefers-reduced-motion) {
 			// overrides default
@@ -83,6 +82,15 @@ Mobile styles - overriding the modal window
 	.wp-block-navigation__responsive-container-close {
 		display: none;
 	}
+
+	&:has(.wp-block-navigation__responsive-container.is-menu-open) {
+		position: static;
+	}
+}
+
+//position drawer in relation to header
+header:has(nav.is-style-drawer .wp-block-navigation__responsive-container.is-menu-open) {
+	position: relative;
 }
 
 // Allow page scrolling when menu is open
