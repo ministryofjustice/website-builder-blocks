@@ -66,6 +66,7 @@ Mobile styles - overriding the modal window
 	.wp-block-navigation__responsive-container.is-menu-open {
 		position: absolute;
 		height: fit-content;
+		top: 100%;
 
 		@media not (prefers-reduced-motion) {
 			// overrides default

@@ -9,6 +9,8 @@
 
 // The first nav with the class "drawer"
 const drawerNav = document.querySelector("nav.is-style-drawer");
+const headerInitialStyles = getComputedStyle(header);
+const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
 
 if (drawerNav) {
 	const navInitialStyles = getComputedStyle(drawerNav);
@@ -23,13 +25,26 @@ if (drawerNav) {
 
 	resizeObserver.observe(drawerNav);
 
-	const observer = new MutationObserver(mutations => {
+	const subMenuObserver = new MutationObserver(mutations => {
 		makeSubMenuDrawer(drawerNav, subMenus, popupMenu, navInitialPaddingBottom);
 	});
 
-	observer.observe(openToggle, {
+	subMenuObserver.observe(openToggle, {
 		attributes: true
 	});
+
+	const mobileMenuObserver = new MutationObserver(mutations => {
+		makeMainMenuDrawer(drawerNav, popupMenu);
+	});
+
+	mobileMenuObserver.observe(popupMenu, {
+		attributes: true
+	});
+}
+
+function makeMainMenuDrawer(drawerNav, popupMenu) {
+	const popupMenuHeight = popupMenu.offsetHeight;
+	header.style.marginBottom = (headerInitialMarginBottom + popupMenuHeight) + "px";
 }
 
 function makeSubMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
