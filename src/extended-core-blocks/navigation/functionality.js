@@ -1,4 +1,3 @@
-
 /**
  * Functionality for the drawer nav,
  * This:
@@ -20,36 +19,24 @@ if (drawerNav) {
 	const popupMenu = drawerNav.querySelector(".wp-block-navigation__responsive-container");
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeSubMenuDrawer(drawerNav, subMenus, popupMenu, navInitialPaddingBottom);
+		makeMenuDrawer(drawerNav, subMenus, popupMenu, navInitialPaddingBottom);
 	});
 
+	/**
+	 * The following sets the resize observer for all elements which resize
+	 * The same function is triggered, and code in that function differentiates
+	 * between the states.
+	 */
 	resizeObserver.observe(drawerNav);
-
-	const subMenuObserver = new MutationObserver(mutations => {
-		makeSubMenuDrawer(drawerNav, subMenus, popupMenu, navInitialPaddingBottom);
-	});
-
-	subMenuObserver.observe(openToggle, {
-		attributes: true
-	});
-
-	const mobileMenuObserver = new MutationObserver(mutations => {
-		makeMainMenuDrawer(drawerNav, popupMenu);
-	});
-
-	mobileMenuObserver.observe(popupMenu, {
-		attributes: true
+	resizeObserver.observe(popupMenu);
+	subMenus.forEach(subMenu => {
+		resizeObserver.observe(subMenu);
 	});
 }
 
-function makeMainMenuDrawer(drawerNav, popupMenu) {
-	const popupMenuHeight = popupMenu.offsetHeight;
-	header.style.marginBottom = (headerInitialMarginBottom + popupMenuHeight) + "px";
-}
-
-function makeSubMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
+function makeMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
 	let subMenuOpen = false;
-	tradNav = !drawerNav.querySelector(".is-menu-open");
+	let tradNav = !drawerNav.querySelector(".is-menu-open");
 	// tradNav = A traditional submenu has been opened rather than a popup
 	const navBlockWidth = getComputedStyle(drawerNav).width;
 	subMenus.forEach(subMenu => {
@@ -58,20 +45,24 @@ function makeSubMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
 			subMenuOpen = true;
 			let subMenuHeight = subMenu.offsetHeight;
 			if (tradNav) {
-				drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
-				subMenu.style.marginTop = initialPadding + "px";
+				//desktop only
 				subMenu.style.width = navBlockWidth;
+				subMenu.style.marginTop = initialPadding + "px";
+				drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
 			} else {
-				popupMenu.style.top = initialPadding + "px";
-				popupMenu.style.width = document.documentElement.clientWidth;
+				//popup nav (like mobile)
+				const popupMenuHeight = popupMenu.offsetHeight;
+				header.style.marginBottom = (headerInitialMarginBottom + popupMenuHeight) + "px";
 			}
 		}
 	});
 	if (!subMenuOpen) {
 		// No submenu is opened
+		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 		drawerNav.style.paddingBottom = initialPadding + "px"; //Restore the bottom padding to original
 		subMenus.forEach(subMenu => {
 			subMenu.style.width = "";
+			subMenu.style.marginTop = "";
 		});
 	}
 }

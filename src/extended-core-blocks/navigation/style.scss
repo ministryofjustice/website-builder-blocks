@@ -1,6 +1,12 @@
+.has-modal-open .admin-bar nav.is-style-drawer .is-menu-open .wp-block-navigation__responsive-dialog {
+	// This is to override the admin bar specific styling which stops the admin overlapping the default menu
+    margin-top: 0;
+}
+
 nav.is-style-drawer {
 
 	--drawer-menu-gap: 1.5rem;
+	--drawer-menu-mobile-gap: 0.5rem;
 	/**
 	* This file contains all the required styles for the drawer nav except colour, which is in the theme.
 	*/
@@ -12,51 +18,53 @@ nav.is-style-drawer {
 		transform: rotate(180deg);
 	}
 
-	.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
-		flex-direction: row;
-		flex-wrap: wrap;
-		gap: var(--drawer-menu-gap) 0;
-		padding: var(--drawer-menu-gap) 0;
-		border: none;
-		font-weight: 700;
-		width: calc(1px + var(--size-content)); //max width set by JS to exclude scrollbar
-		left: -1px;
+	.wp-block-navigation__responsive-container:not(.is-menu-open) {
+		.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: var(--drawer-menu-gap) 0;
+			padding: var(--drawer-menu-gap) 0;
+			border: none;
+			font-weight: 700;
+			width: calc(1px + var(--size-content)); //max width set by JS to exclude scrollbar
+			left: -1px;
 
-		.wp-block-navigation-item  {
-			text-wrap: balance;
-			inline-size: 25%;
-			align-items: baseline;
-			
-			@media (width > 800px) {
-				// This is within a media query as it won't be overwritten by the next media query.
-				&:nth-child(4n+1) .wp-block-navigation-item__content {
-					padding-left: 0;
-				}
-				&:nth-child(4n) .wp-block-navigation-item__content {
-					padding-right: 0;
-				}
-			}
-			@media (width <= 800px) {	
-				inline-size: 33%;
+			.wp-block-navigation-item  {
+				text-wrap: balance;
+				inline-size: 25%;
 				align-items: baseline;
 
-				&:nth-child(3n+1) .wp-block-navigation-item__content {
-					padding-left: 0;
+				@media (width > 800px) {
+					// This is within a media query as it won't be overwritten by the next media query.
+					&:nth-child(4n+1) .wp-block-navigation-item__content {
+						padding-left: 0;
+					}
+					&:nth-child(4n) .wp-block-navigation-item__content {
+						padding-right: 0;
+					}
 				}
-				&:nth-child(3n) .wp-block-navigation-item__content {
-					padding-right: 0;
+				@media (width <= 800px) {
+					inline-size: 33%;
+					align-items: baseline;
+
+					&:nth-child(3n+1) .wp-block-navigation-item__content {
+						padding-left: 0;
+					}
+					&:nth-child(3n) .wp-block-navigation-item__content {
+						padding-right: 0;
+					}
 				}
 			}
 		}
+		.wp-block-navigation .wp-block-navigation-item {
+			// The drawer effect needs the submenu to be aligned with the whole menu.
+			// Absolute positioning is already used out-of-the-box.
+			// But that is relative to its direct parent (this).
+			// So we change this to static so it positioned relative to the whole nav.
+			position: static;
+		}
 	}
 
-	.wp-block-navigation .wp-block-navigation-item {
-		// The drawer effect needs the submenu to be aligned with the whole menu.
-		// Absolute positioning is already used out-of-the-box.
-		// But that is relative to its direct parent (this).
-		// So we change this to static so it positioned relative to the whole nav.
-		position: static;
-	}
 
 /********
 Mobile styles - overriding the modal window
@@ -72,10 +80,72 @@ Mobile styles - overriding the modal window
 			// overrides default
 			animation: none;
 		}
+		.wp-block-navigation__responsive-container-content,
+		.wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container {
+			padding: 0;
+		}
 
-		.wp-block-navigation__responsive-container-content {
-			padding-top: 1rem;
-			padding-bottom: 1rem;
+		.wp-block-navigation__container {
+			width: 100%;
+			gap:0;
+
+			.wp-block-navigation-item__content,
+			.wp-block-navigation-submenu__toggle,
+			.wp-block-navigation__submenu-container {
+				width: 100%;
+			}
+
+			>.wp-block-navigation-item {
+				width:100%;
+				font-weight: 700;
+
+				&:not(:last-child) {
+					border-bottom: 1px solid;
+				}
+			}
+			.wp-block-navigation-submenu__toggle,
+			.wp-block-navigation-item__content {
+				padding: var(--drawer-menu-mobile-gap) 0;
+			}
+			.wp-block-navigation-submenu__toggle {
+				padding-right: 30px;
+				position:relative;
+				&:after {
+					content:"";
+					width: 10px;
+					height: 10px;
+					border-right:4px solid;
+					border-bottom:4px solid;
+					transform: rotate(-135deg);
+					position: absolute;
+					right: 15px;
+					top: calc(var(--drawer-menu-mobile-gap) + 0.3rem);
+				}
+			}
+			.wp-block-navigation-submenu__toggle[aria-expanded=false] {
+				&:after {
+					transform: rotate(45deg);
+				}
+				~ .wp-block-navigation-submenu {
+					display:none;
+				}
+			}
+		}
+
+
+
+		.wp-block-navigation-submenu {
+			.wp-block-navigation__submenu-container {
+
+				.wp-block-navigation-item {
+					border-top: 1px solid;
+					font-weight: 100;
+
+					.wp-block-navigation-item__content {
+						padding: var(--drawer-menu-mobile-gap) 0;
+					}
+				}
+			}
 		}
 	}
 
