@@ -1,3 +1,5 @@
+///////// TO DO: We need to split this file up
+
 /**
  * Functionality for the drawer nav,
  * This:
@@ -7,7 +9,11 @@
  */
 
 // The first nav with the class "drawer"
-const drawerNav = document.querySelector("nav.is-style-drawer");
+const drawerNav = document.querySelector("nav.is-style-drawer"); 
+///////// TO DO: We need to ensure that it is the first visible - hidden ones might come before!
+const detachedNav = document.querySelector("nav.is-style-detached");
+///////// TO DO: We need to ensure that it is the first visible - hidden ones might come before!
+
 const headerInitialStyles = getComputedStyle(header);
 const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
 
@@ -15,11 +21,9 @@ if (drawerNav) {
 	const navInitialStyles = getComputedStyle(drawerNav);
 	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
-	const openToggle = drawerNav.querySelector(".wp-block-navigation-submenu__toggle");
-	const popupMenu = drawerNav.querySelector(".wp-block-navigation__responsive-container");
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDrawer(drawerNav, subMenus, popupMenu, navInitialPaddingBottom);
+		makeMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
 	});
 
 	/**
@@ -28,32 +32,23 @@ if (drawerNav) {
 	 * between the states.
 	 */
 	resizeObserver.observe(drawerNav);
-	resizeObserver.observe(popupMenu);
 	subMenus.forEach(subMenu => {
 		resizeObserver.observe(subMenu);
 	});
+
 }
 
-function makeMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
+function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 	let subMenuOpen = false;
-	let tradNav = !drawerNav.querySelector(".is-menu-open");
-	// tradNav = A traditional submenu has been opened rather than a popup
 	const navBlockWidth = getComputedStyle(drawerNav).width;
 	subMenus.forEach(subMenu => {
 		if (getComputedStyle(subMenu).visibility != "hidden") {
 			// The submenu has been opened
 			subMenuOpen = true;
 			let subMenuHeight = subMenu.offsetHeight;
-			if (tradNav) {
-				//desktop only
-				subMenu.style.width = navBlockWidth;
-				subMenu.style.marginTop = initialPadding + "px";
-				drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
-			} else {
-				//popup nav (like mobile)
-				const popupMenuHeight = popupMenu.offsetHeight;
-				header.style.marginBottom = (headerInitialMarginBottom + popupMenuHeight) + "px";
-			}
+			subMenu.style.width = navBlockWidth;
+			subMenu.style.marginTop = initialPadding + "px";
+			drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
 		}
 	});
 	if (!subMenuOpen) {
@@ -67,8 +62,38 @@ function makeMenuDrawer(drawerNav, subMenus, popupMenu, initialPadding) {
 	}
 }
 
+if (detachedNav) {
+	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
+	const navInitialStyles = getComputedStyle(drawerNav);
+	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
+
+	const resizeObserver = new ResizeObserver(entries => {
+		makeMenuDetached(detachedNav, popupMenu, navInitialPaddingBottom);
+	});
+
+	/**
+	 * The following sets the resize observer for all elements which resize
+	 * The same function is triggered, and code in that function differentiates
+	 * between the states.
+	 */
+	resizeObserver.observe(popupMenu);
+}
+
+function makeMenuDetached(drawerNav, popupMenu, initialPadding) {
+	let menuOpen = false;
+	if (getComputedStyle(popupMenu).visibility != "hidden") {
+		// The menu has been opened
+		menuOpen = true;
+		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
+	}
+	if (!menuOpen) {
+		// Menu is not opened
+		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+	}
+}
+
 document.addEventListener("click", function (e) {
-	if(e.target.matches(".wp-block-navigation__responsive-container-open")) {
+	if(e.target.matches(".is-style-detached .wp-block-navigation__responsive-container-open")) {
 		// adds the close functionality to the open button, changes the aria-label accordingly
 		let openMenu = document.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
 		let button = document.querySelector(".wp-block-navigation__responsive-container-open");

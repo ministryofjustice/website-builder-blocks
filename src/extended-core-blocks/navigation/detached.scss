@@ -1,0 +1,108 @@
+// TO DO - We need to ensure the open on click is checked - and that it doesn't break/hide submenus if it isn't checked
+
+nav.is-style-detached {
+	--detached-menu-gap: 0.5rem;
+
+	// Make the mobile menu behave like normal content
+	.wp-block-navigation__responsive-container.is-menu-open {
+		position: absolute;
+		height: fit-content;
+		top: 100%;
+
+		@media not (prefers-reduced-motion) {
+			// overrides default
+			animation: none;
+		}
+		.wp-block-navigation__responsive-container-content,
+		.wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-container {
+			padding: 0;
+		}
+
+		.wp-block-navigation__container {
+			width: 100%;
+			gap:0;
+
+			.wp-block-navigation-item__content,
+			.wp-block-navigation-submenu__toggle,
+			.wp-block-navigation__submenu-container {
+				width: 100%;
+			}
+
+			>.wp-block-navigation-item {
+				width:100%;
+				font-weight: 700;
+
+				&:not(:last-child) {
+					border-bottom: 1px solid;
+				}
+			}
+			.wp-block-navigation-submenu__toggle,
+			.wp-block-navigation-item__content {
+				padding: var(--detached-menu-gap) 0;
+			}
+			.wp-block-navigation-submenu__toggle {
+				padding-right: 30px;
+				position:relative;
+				&:after {
+					content:"";
+					width: 10px;
+					height: 10px;
+					border-right:4px solid;
+					border-bottom:4px solid;
+					transform: rotate(-135deg);
+					position: absolute;
+					right: 15px;
+					top: calc(var(--detached-menu-gap) + 0.3rem);
+				}
+			}
+			.wp-block-navigation-submenu__toggle[aria-expanded=false] {
+				&:after {
+					transform: rotate(45deg);
+				}
+				~ .wp-block-navigation-submenu {
+					display:none;
+				}
+			}
+		}
+
+
+
+		.wp-block-navigation-submenu {
+			.wp-block-navigation__submenu-container {
+
+				.wp-block-navigation-item {
+					border-top: 1px solid;
+					font-weight: 100;
+
+					.wp-block-navigation-item__content {
+						padding: var(--detached-menu-gap) 0;
+					}
+				}
+			}
+		}
+	}
+
+	// Remove the dark overlay
+	.wp-block-navigation__responsive-container-close {
+		display: none;
+	}
+
+	&:has(.wp-block-navigation__responsive-container.is-menu-open) {
+		position: static;
+	}
+}
+
+//position nav in relation to header
+header:has(nav.is-style-detached .wp-block-navigation__responsive-container.is-menu-open) {
+	position: relative;
+}
+
+// Allow page scrolling when menu is open
+html.has-modal-open:has(nav.is-style-detached .wp-block-navigation__responsive-container.is-menu-open) {
+	overflow: auto !important;
+}
+
+// This is to override the admin bar specific styling which stops the admin overlapping the default menu
+.has-modal-open .admin-bar nav.is-style-detached .is-menu-open .wp-block-navigation__responsive-dialog {
+	margin-top: 0;
+}

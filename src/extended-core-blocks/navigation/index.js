@@ -6,6 +6,11 @@
 import { registerBlockStyle } from '@wordpress/blocks';
 
 registerBlockStyle( 'core/navigation', {
-    name: 'drawer',
-    label: 'Drawer',
+	name: 'drawer',
+	label: 'Drawer',
+});
+
+registerBlockStyle( 'core/navigation', {
+	name: 'detached',
+	label: 'Detached',
 });
