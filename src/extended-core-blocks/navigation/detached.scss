@@ -3,6 +3,16 @@
 nav.is-style-detached {
 	--detached-menu-gap: 0.5rem;
 
+	.wp-block-navigation__responsive-container-open {
+		&[aria-expanded=false] svg.wb-close-icon {
+			display:none;
+		}
+
+		&[aria-expanded=true] svg:not(.wb-close-icon) {
+			display:none;
+		}
+	}
+
 	// Make the mobile menu behave like normal content
 	.wp-block-navigation__responsive-container.is-menu-open {
 		position: absolute;
@@ -52,12 +62,13 @@ nav.is-style-detached {
 					transform: rotate(-135deg);
 					position: absolute;
 					right: 15px;
-					top: calc(var(--detached-menu-gap) + 0.3rem);
+					top: calc(var(--detached-menu-gap) + 0.6rem);
 				}
 			}
 			.wp-block-navigation-submenu__toggle[aria-expanded=false] {
 				&:after {
 					transform: rotate(45deg);
+					top: calc(var(--detached-menu-gap) + 0.3rem);
 				}
 				~ .wp-block-navigation-submenu {
 					display:none;

@@ -64,11 +64,10 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 
 if (detachedNav) {
 	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
-	const navInitialStyles = getComputedStyle(drawerNav);
-	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
+	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDetached(detachedNav, popupMenu, navInitialPaddingBottom);
+		makeMenuDetached(detachedNav, popupMenu, button);
 	});
 
 	/**
@@ -79,31 +78,28 @@ if (detachedNav) {
 	resizeObserver.observe(popupMenu);
 }
 
-function makeMenuDetached(drawerNav, popupMenu, initialPadding) {
-	let menuOpen = false;
-	if (getComputedStyle(popupMenu).visibility != "hidden") {
+function makeMenuDetached(detachedNav, popupMenu, button) {
+	if (getComputedStyle(popupMenu).display != "none") {
 		// The menu has been opened
-		menuOpen = true;
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
-	}
-	if (!menuOpen) {
+		button.setAttribute("aria-label", detachedNav.dataset.closeText);
+		button.setAttribute("aria-expanded", "true");
+	} else {
 		// Menu is not opened
 		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+		button.setAttribute("aria-label", detachedNav.dataset.openText);
+		button.setAttribute("aria-expanded", "false");
 	}
 }
 
 document.addEventListener("click", function (e) {
 	if(e.target.matches(".is-style-detached .wp-block-navigation__responsive-container-open")) {
-		// adds the close functionality to the open button, changes the aria-label accordingly
-		let openMenu = document.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
-		let button = document.querySelector(".wp-block-navigation__responsive-container-open");
+		// adds the close functionality to the open button
+		const openMenu = document.querySelector(".is-style-detached .wp-block-navigation__responsive-container.is-menu-open");
+
 		if (openMenu) {
 			// the menu is open, so we close it
-			button.setAttribute("aria-label", "Open menu");
 			document.querySelector(".wp-block-navigation__responsive-container-close").click();
-		} else {
-			// the menu is not open
-			button.setAttribute("aria-label", "Close menu");
 		}
 	}
 });

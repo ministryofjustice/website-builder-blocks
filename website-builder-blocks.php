@@ -401,3 +401,4 @@ function wb_blocks_add_acf_fields_to_post_type($object, $field_name, $request) {
  * Load PHP extended core blocks
  */
 include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/search/index.php';
+include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/navigation/index.php';
