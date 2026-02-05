@@ -8,11 +8,12 @@
  * - function for opening a submenu, including extra padding to push page content down
  */
 
-// The first nav with the class "drawer"
+// The first nav with the class "drawer" there should be only one on a page
 const drawerNav = document.querySelector("nav.is-style-drawer"); 
-///////// TO DO: We need to ensure that it is the first visible - hidden ones might come before!
-const detachedNav = document.querySelector("nav.is-style-detached");
-///////// TO DO: We need to ensure that it is the first visible - hidden ones might come before!
+
+// It is reasonable to have more than one detached nav, so we apply functionality to all of them
+const detachedNavs = document.querySelectorAll("nav.is-style-detached");
+
 
 const headerInitialStyles = getComputedStyle(header);
 const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
@@ -62,20 +63,22 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 	}
 }
 
-if (detachedNav) {
-	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
-	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
+for (const detachedNav of detachedNavs) {
+	if (detachedNav) {
+		const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
+		const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
-	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDetached(detachedNav, popupMenu, button);
-	});
+		const resizeObserver = new ResizeObserver(entries => {
+			makeMenuDetached(detachedNav, popupMenu, button);
+		});
 
-	/**
-	 * The following sets the resize observer for all elements which resize
-	 * The same function is triggered, and code in that function differentiates
-	 * between the states.
-	 */
-	resizeObserver.observe(popupMenu);
+		/**
+		 * The following sets the resize observer for all elements which resize
+		 * The same function is triggered, and code in that function differentiates
+		 * between the states.
+		 */
+		resizeObserver.observe(popupMenu);
+	}
 }
 
 function makeMenuDetached(detachedNav, popupMenu, button) {
@@ -84,22 +87,38 @@ function makeMenuDetached(detachedNav, popupMenu, button) {
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
 		button.setAttribute("aria-label", detachedNav.dataset.closeText);
 		button.setAttribute("aria-expanded", "true");
+		button.addEventListener('click', () => {
+			const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
+			if (openMenu) {
+				// the menu is open, so we close it
+				detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
+			}
+		});
 	} else {
-		// Menu is not opened
+		// Menu is not open
 		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 		button.setAttribute("aria-label", detachedNav.dataset.openText);
 		button.setAttribute("aria-expanded", "false");
 	}
-}
 
-document.addEventListener("click", function (e) {
-	if(e.target.matches(".is-style-detached .wp-block-navigation__responsive-container-open")) {
-		// adds the close functionality to the open button
-		const openMenu = document.querySelector(".is-style-detached .wp-block-navigation__responsive-container.is-menu-open");
-
+	/**
+	 * WORK AROUND
+	 *
+	 * Issue: when a menu is clicked when a submenu above it is already open, that is closed
+	 * before the click is registered, meaning that the link doesn't receive the mouse up event,
+	 * so the click isn't completed (bad).
+	 *
+	 * Fix: we look for that state of affairs and trigger the click on the mousedown event.
+	 */
+	detachedNav.addEventListener("mousedown", function (e) {
+		const openMenu = detachedNav.querySelector(".wp-block-navigation-submenu button[aria-expanded=true]");
 		if (openMenu) {
-			// the menu is open, so we close it
-			document.querySelector(".wp-block-navigation__responsive-container-close").click();
+			openMenu.parentNode.classList.add("temp-open-menu");
+			if (e.target.matches(".temp-open-menu ~ .wp-block-navigation-submenu > .wp-block-navigation-submenu__toggle")) {
+				//This is the link which would have been opened had the menu just not changed shape - so we trigger a click event.
+				e.target.click();
+			}
+			openMenu.parentNode.classList.remove("temp-open-menu");
 		}
-	}
-});
+	});
+}
