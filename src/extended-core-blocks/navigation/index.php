@@ -48,7 +48,7 @@ function wb_extend_nav_block( $block_content, $block ) {
 		$button->setAttribute('aria-expanded', 'false'); //default state is not expanded
 		$button->setAttribute('aria-controls', $menu_popup_id);
 		$button->removeAttribute('aria-haspopup'); //it is no longer a modal window
-		wb_add_class($button,"wp-element-button qweqwe"); //button styling
+		wb_add_class($button,"wp-element-button"); //button styling
 
 		//Add the close SVG
 		$svg = $dom->createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -76,9 +76,6 @@ function wb_extend_nav_block( $block_content, $block ) {
 		$svg->appendChild($line1);
 		$svg->appendChild($line2);
 		$button->appendChild($svg);
-
-		//$closeSVG = '<svg class="wb-close-icon" xmlns="http://www.w3.org/2000/svg" height="24px" aria-hidden="true" focusable="false" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"></path></svg>';
-		//$block_content = str_replace("</svg>","</svg>$closeSVG",$block_content);
 
 		$block_content = $dom->saveHTML();
 	}
