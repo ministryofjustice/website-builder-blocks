@@ -155,12 +155,7 @@ import { __, sprintf } from "@wordpress/i18n";
     // Get block props - this makes our div THE block wrapper
     const blockProps = useBlockProps({
       ref: wrapperRef,
-      className: "has-prefix",
-      style: {
-        display: "flex",
-        alignItems: "baseline",
-        gap: "0.25em",
-      },
+      className: "wp-block-post-date--has-prefix",
     });
 
     return el(

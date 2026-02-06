@@ -10,6 +10,8 @@ Text Domain: mojblocks
 // Target backend (editor) styles
 .edit-post-visual-editor,
 .block-editor-block-styles,
+// For the pattern edit screen - unsure if I need to be this specific.
+.block-editor-iframe__body.editor-styles-wrapper, 
 .block-editor-inserter__menu-help-panel {
 
     // load variables
