@@ -125,13 +125,13 @@ import { __, sprintf } from "@wordpress/i18n";
    */
   const addPrefixControl = (BlockEdit) => (props) => {
     if (props.name !== "core/post-date") {
-      return el(BlockEdit, props);
+      return <BlockEdit {...props} />;
     }
 
     const attributes = props.attributes || {};
 
     if (attributes.hasPrefix !== true) {
-      return el(BlockEdit, props);
+      return <BlockEdit {...props} />;
     }
 
     const wrapperRef = useRef(null);
@@ -143,8 +143,11 @@ import { __, sprintf } from "@wordpress/i18n";
     useEffect(() => {
       const inner = wrapperRef.current?.querySelector(":scope > [data-block]");
       if (inner) {
+        // Remove the inner block attributes, they are now on the wrapper block.
         inner.removeAttribute("id");
         inner.removeAttribute("tabindex");
+        inner.removeAttribute('role');
+        inner.removeAttribute('aria-label');
         inner.setAttribute("draggable", "false");
       }
     }, []);
@@ -155,22 +158,20 @@ import { __, sprintf } from "@wordpress/i18n";
       className: "wp-block-post-date--has-prefix",
     });
 
-    return el(
-      "div",
-      blockProps,
-      el(RichText, {
-        tagName: "span",
-        className: "wp-block-post-date__prefix",
-        value: attributes.prefix || "",
-        onChange: (value) => {
+    return <div {...blockProps}>
+      <RichText
+        tagName="span"
+        className="wp-block-post-date__prefix"
+        value={attributes.prefix || ""}
+        onChange={(value) => {
           props.setAttributes({ prefix: value });
-        },
-        placeholder: __("Prefix…", "wb_blocks"),
-        allowedFormats: ["core/bold", "core/italic"],
-        disableLineBreaks: true,
-      }),
-      el(BlockEdit, props),
-    );
+        }}
+        placeholder={__("Prefix…", "wb_blocks")}
+        allowedFormats={["core/bold", "core/italic"]}
+        disableLineBreaks={true}
+      />
+      <BlockEdit {...props} />
+    </div>;
   };
 
   addFilter(
