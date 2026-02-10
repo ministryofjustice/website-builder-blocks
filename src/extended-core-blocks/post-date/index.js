@@ -9,8 +9,6 @@ import { createElement as el, useEffect, useRef } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
 
-/* Override a core variation's isActive for core/post-date */
-/* global wp */
 (function () {
   const CORE_VARIATION_NAMES = ["post-date", "post-date-modified"];
 
