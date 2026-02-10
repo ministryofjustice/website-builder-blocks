@@ -83,14 +83,13 @@ import { __, sprintf } from "@wordpress/i18n";
       };
 
       const isModified = variationName === "post-date-modified";
-      // TODO - update language domain
-      const vTitle = sprintf(__("%s with Prefix", "govwind"), original.title);
+      const vTitle = sprintf(__("%s with Prefix", "wb_blocks"), original.title);
       const vDesc = isModified
-        ? __("Displays the modified date prefixed with a label.", "govwind")
-        : __("Displays the post's date prefixed with a label.", "govwind");
+        ? __("Display a post's last updated date with a label.", "wb_blocks")
+        : __("Display a post's published date with a label.", "wb_blocks");
       const defaultPrefix = isModified
-        ? __("Updated:", "govwind")
-        : __("Published:", "govwind");
+        ? __("Updated:", "wb_blocks")
+        : __("Published:", "wb_blocks");
 
       const withPrefix = {
         ...original,
@@ -168,7 +167,7 @@ import { __, sprintf } from "@wordpress/i18n";
         onChange: (value) => {
           props.setAttributes({ prefix: value });
         },
-        placeholder: __("Prefix…", "govwind"),
+        placeholder: __("Prefix…", "wb_blocks"),
         allowedFormats: ["core/bold", "core/italic"],
         disableLineBreaks: true,
       }),

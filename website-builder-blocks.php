@@ -9,6 +9,7 @@
  * Version:     1.1.3
  * Author:      Ministry of Justice
  * Text domain: wb_blocks
+ * Domain Path: /languages
  * Author URI:  https://github.com/ministryofjustice
  * License:     MIT Licence
  * License URI: https://opensource.org/licenses/MIT
@@ -104,6 +105,9 @@ function wb_blocks_register_blocks()
         $meta['version'] ?? '20200723',
         true
     );
+
+    // Make the block's strings available for translation in JavaScript
+    wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
 
     register_block_type(
         'wb-blocks/hmg-svg',

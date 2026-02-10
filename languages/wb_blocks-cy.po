@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 00:00+0000\n"
+"PO-Revision-Date: 2026-02-09 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Welsh\n"
+"Language: cy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/post-date/index.js
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+# The block variation label
+# Translation from The Electoral Commission at
+# https://www.electoralcommission.org.uk/cy/guidance-returning-officers-administering-a-greater-london-authority-gla-election/enwebiadau/ffurflenni-enwebu/ffurflen-enwebu-enwr-ymgeisydd
+#: build/index.js
+msgid "%s with Prefix"
+msgstr "%s gyda Rhagddodiad"
+
+# The block variation description (published)
+# Based on WP's translations, appended with "with a label".
+#: build/index.js
+msgid "Display a post's published date with a label."
+msgstr "Dangos dyddiad cyhoeddi cofnod gyda label."
+
+# The block variation description (updated)
+# Based on WP's translations, appended with "with a label".
+#: build/index.js
+msgid "Display a post's last updated date with a label."
+msgstr "Displays the modified date prefixed with a label gyda label."
+
+# A block variation default value
+# Translation from Welsh Police site (https://www.south-wales.police.uk/cy-GB/news/chwilio-newyddion/?ct=Apeliadau)
+#: build/index.js
+msgid "Published:"
+msgstr "Cyhoeddwyd:"
+
+# A block variation default value
+# Translation from GOV UK document at
+# https://www.gov.uk/government/publications/stubbing-out-the-problem-a-new-strategy-to-tackle-illicit-tobacco/b1254291-3ea7-4a5d-a37f-24418728638a
+#: build/index.js
+msgid "Updated:"
+msgstr "Diweddarwyd:"
+
+# The prefix placeholder
+#: build/index.js
+msgid "Prefix…"
+msgstr "Rhagddodiad…"
