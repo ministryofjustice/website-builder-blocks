@@ -15,37 +15,35 @@ msgstr ""
 # Translations for src/extended-core-blocks/post-date/index.js
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-# The block variation label
-# Translation from The Electoral Commission at
-# https://www.electoralcommission.org.uk/cy/guidance-returning-officers-administering-a-greater-london-authority-gla-election/enwebiadau/ffurflenni-enwebu/ffurflen-enwebu-enwr-ymgeisydd
+# Control Panel title
 #: build/index.js
-msgid "%s with Prefix"
-msgstr "%s gyda Rhagddodiad"
+msgid "Date prefix"
+msgstr "Rhagddodiad y dyddiad"
 
-# The block variation description (published)
-# Based on WP's translations, appended with "with a label".
+# Toggle label
 #: build/index.js
-msgid "Display a post's published date with a label."
-msgstr "Dangos dyddiad cyhoeddi cofnod gyda label."
+msgid "Show prefix before date"
+msgstr "Dangos y rhagddodiad cyn y dyddiad"
 
-# The block variation description (updated)
-# Based on WP's translations, appended with "with a label".
+# Example prefix (for Post Date)
 #: build/index.js
-msgid "Display a post's last updated date with a label."
-msgstr "Displays the modified date prefixed with a label gyda label."
+msgid "Published"
+msgstr "Cyhoeddwyd"
 
-# A block variation default value
-# Translation from Welsh Police site (https://www.south-wales.police.uk/cy-GB/news/chwilio-newyddion/?ct=Apeliadau)
+# Example prefix (for Modified Date)
 #: build/index.js
-msgid "Published:"
-msgstr "Cyhoeddwyd:"
+msgid "Updated"
+msgstr "Diweddarwyd"
 
-# A block variation default value
-# Translation from GOV UK document at
-# https://www.gov.uk/government/publications/stubbing-out-the-problem-a-new-strategy-to-tackle-illicit-tobacco/b1254291-3ea7-4a5d-a37f-24418728638a
+# Help text (for Post Date)
 #: build/index.js
-msgid "Updated:"
-msgstr "Diweddarwyd:"
+msgid "Type the prefix inline before the date (e.g., %s)."
+msgstr "Teipiwch y rhagddodiad yn syth cyn y dyddiad (e.e., %s)."
+
+# Help text (for Modified Date)
+#: build/index.js
+msgid "Adds text (e.g. %s) before the post date."
+msgstr "Yn ychwanegu testun (e.e. %s) cyn dyddiad y post."
 
 # The prefix placeholder
 #: build/index.js
