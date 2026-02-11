@@ -15,14 +15,6 @@ function wb_extend_nav_block( $block_content, $block ) {
 
 	$block_class_array = explode(" ", $block['attrs']['className']);
 
-	if (in_array("is-style-drawer",$block_class_array)) {
-		/**
-		 * Here we override WP functionality which aren't designed for these navigation styles
-		 */
-		$block['attrs']['openSubmenusOnClick'] = true; // these only work if click to open is enabled.
-		$block['attrs']['overlayMenu'] = "never"; // these only work if they are NOT opened by a button.
-	}
-
 	if(in_array("is-style-detached",$block_class_array)) {
 		$dom = new DOMDocument();
 		$dom->loadHTML($block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -82,12 +74,6 @@ function wb_extend_nav_block( $block_content, $block ) {
 		$button->appendChild($svg);
 
 		$block_content = $dom->saveHTML();
-
-		/**
-		 * Here we override WP functionality which aren't designed for these navigation styles
-		 */
-		$block['attrs']['openSubmenusOnClick'] = true; // these only work if click to open is enabled.
-		$block['attrs']['overlayMenu'] = "always"; // these only work if they are opened by a button.
 	}
 	// We need to add something to identify every drawer type element, so it can be closed when another is opened
 	return $block_content;
