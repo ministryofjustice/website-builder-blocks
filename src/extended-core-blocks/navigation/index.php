@@ -16,8 +16,13 @@ function wb_extend_nav_block( $block_content, $block ) {
 	$block_class_array = explode(" ", $block['attrs']['className']);
 
 	if(in_array("is-style-detached",$block_class_array)) {
+
 		$dom = new DOMDocument();
+		// block_content will be in HTML5, DOMDocument defaults to XML rules and isn’t HTML5-aware.
+		// so we handle the erros to prevent them from appearing anywhere.
+		libxml_use_internal_errors(true);
 		$dom->loadHTML($block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		libxml_clear_errors();
 
 		$root = $dom->documentElement;
 		$xpath = new DOMXPath( $dom );
