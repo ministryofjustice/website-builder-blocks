@@ -1,4 +1,27 @@
-.wp-block-query-total {
-    opacity: 0.5;
-    border: 2px solid tomato!important;
+/* Positioning context for the overlay */
+.wb-query-total__editor-wrap {
+    opacity: 1!important;
+    position: relative;
+}
+
+/* Keep BlockEdit mounted (for toolbar/movers/selection), hide content visually */
+.wb-query-total__orig {
+    color: transparent !important;           /* preserves layout/height */
+}
+
+/* Overlay your client-rendered text */
+.wb-query-total__preview {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    /* Ensure the overlay doesn't block selecting/dragging the block */
+    pointer-events: none;
+}
+
+/* Optional: match typical paragraph styling for a natural look */
+.wb-query-total__preview {
+    font: inherit;
+    line-height: inherit;
+    color: inherit;
 }

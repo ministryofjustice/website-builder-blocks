@@ -74,7 +74,22 @@ const addFormatControl = (BlockEdit) => (props) => {
 
     return <>
         {/* Using this means i have the toolbar, but text is not updated to reflect the user's choice */}
-        <BlockEdit {...props} />
+        {/* <BlockEdit {...props} /> */}
+
+
+        {/* Plain wrapper: NOT a block wrapper (no useBlockProps()) */}
+        <div className="wb-query-total__editor-wrap"  style={{opacity: 0}}>
+            {/* Keep original edit output mounted for block chrome; hide it visually */}
+            <div className="wb-query-total__orig" aria-hidden="true">
+                <BlockEdit {...props} />
+            </div>
+
+            {/* Our custom client-rendered preview, overlayed */}
+            <div className="wb-query-total__preview" aria-hidden="true" >
+                <RawHTML>{previewHtml}</RawHTML>
+            </div>
+        </div>
+
 
         {/* Using this means I do not have the toolbar, but text is updated to reflect the user's choice  */}
         {/* <div {...blockProps}>
