@@ -9,7 +9,7 @@
  */
 
 // The first nav with the class "drawer" there should be only one on a page
-const drawerNav = document.querySelector("nav.is-style-drawer"); 
+const drawerNavs = document.querySelectorAll("nav.is-style-drawer");
 
 // It is reasonable to have more than one detached nav, so we apply functionality to all of them
 const detachedNavs = document.querySelectorAll("nav.is-style-detached");
@@ -18,7 +18,7 @@ const detachedNavs = document.querySelectorAll("nav.is-style-detached");
 const headerInitialStyles = getComputedStyle(header);
 const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
 
-if (drawerNav) {
+for (const drawerNav of drawerNavs) {
 	const navInitialStyles = getComputedStyle(drawerNav);
 	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
@@ -64,21 +64,19 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 }
 
 for (const detachedNav of detachedNavs) {
-	if (detachedNav) {
-		const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
-		const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
+	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
+	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
-		const resizeObserver = new ResizeObserver(entries => {
-			makeMenuDetached(detachedNav, popupMenu, button);
-		});
+	const resizeObserver = new ResizeObserver(entries => {
+		makeMenuDetached(detachedNav, popupMenu, button);
+	});
 
-		/**
-		 * The following sets the resize observer for all elements which resize
-		 * The same function is triggered, and code in that function differentiates
-		 * between the states.
-		 */
-		resizeObserver.observe(popupMenu);
-	}
+	/**
+	 * The following sets the resize observer for all elements which resize
+	 * The same function is triggered, and code in that function differentiates
+	 * between the states.
+	 */
+	resizeObserver.observe(popupMenu);
 }
 
 function makeMenuDetached(detachedNav, popupMenu, button) {

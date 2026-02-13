@@ -3,18 +3,47 @@
  *  https://wordpress.org/documentation/article/navigation-block/
  *
  */
-import { registerBlockStyle } from '@wordpress/blocks';
+import { registerBlockVariation } from '@wordpress/blocks';
 const { createHigherOrderComponent } = wp.compose;
 const { useEffect } = wp.element;
 
-registerBlockStyle( 'core/navigation', {
-	name: 'drawer',
-	label: 'Drawer',
+registerBlockVariation('core/navigation', {
+	// This is the out-of-the-box WordPress style, no special stuff
+	name: 'original-navigation',
+	title: 'WordPress navigation',
+	description: 'Navigation used as default by WordPress',
+	attributes: {
+		className: 'is-style-wordpress'
+	},
+	scope: ['transform'],
+	isActive: (blockAttributes) =>
+	(!blockAttributes?.className?.includes('is-style-drawer') && !blockAttributes?.className?.includes('is-style-detached')),
 });
-
-registerBlockStyle( 'core/navigation', {
-	name: 'detached',
-	label: 'Detached',
+registerBlockVariation('core/navigation', {
+	name: 'drawer-navigation',
+	title: 'Drawer navigation',
+	description: 'Navigation where the submenu opens in a drawer',
+	attributes: {
+		openSubmenusOnClick: true,
+		overlayMenu: 'never',
+		className: 'is-style-drawer'
+	},
+	scope: ['transform'],
+	isActive: (blockAttributes) =>
+		blockAttributes?.className?.includes('is-style-drawer'),
+});
+registerBlockVariation('core/navigation', {
+	name: 'detached-navigation',
+	title: 'Detached navigation',
+	description: 'Navigation opened and closed by a button',
+	attributes: {
+		openSubmenusOnClick: true,
+		overlayMenu: 'always',
+		className: 'is-style-detached'
+	},
+	scope: ['transform'],
+	isActive: (blockAttributes) =>
+		blockAttributes?.className?.includes('is-style-detached'),
 });
 
 /**
@@ -33,7 +62,6 @@ const syncOptionsWithClass = createHigherOrderComponent((BlockEdit) => {
 
 		const hasDrawerStyle = className?.includes('is-style-drawer');
 		const hasDetachedStyle = className?.includes('is-style-detached');
-
 		useEffect(() => {
 			// Upon selecting either of these styles, the relevant options are selected
 			if (hasDrawerStyle) {

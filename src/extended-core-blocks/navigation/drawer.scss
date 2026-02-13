@@ -7,12 +7,7 @@ nav.is-style-drawer {
 
 	padding: var(--drawer-menu-gap) 0;
 
-	.wp-block-navigation-submenu__toggle[aria-expanded=true]+.wp-block-navigation__submenu-icon {
-		// When the submenu is open, we rotate the icon.
-		transform: rotate(180deg);
-	}
-
-	.wp-block-navigation__responsive-container:not(.is-menu-open) {
+	.wp-block-navigation__container {
 		.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -50,7 +45,7 @@ nav.is-style-drawer {
 				}
 			}
 		}
-		.wp-block-navigation .wp-block-navigation-item {
+		.wp-block-navigation-item {
 			// The drawer effect needs the submenu to be aligned with the whole menu.
 			// Absolute positioning is already used out-of-the-box.
 			// But that is relative to its direct parent (this).
