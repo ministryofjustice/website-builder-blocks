@@ -89,7 +89,7 @@ function makeMenuDetached(detachedNav, popupMenu, button) {
 		button.setAttribute("aria-expanded", "true");
 		button.addEventListener('click', () => {
 			const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
-			if (openMenu) {
+			if (openMenu && button.getAttribute("aria-expanded") == "true") {
 				// the menu is open, so we close it
 				detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
 			}
