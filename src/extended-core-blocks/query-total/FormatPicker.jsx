@@ -50,44 +50,69 @@ export default function QueryRangeFormatPicker({
 }
 
 function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
-  const suggestedOptions = [
+  const defaultOptions = [
     {
       key: 1,
       formatSingle: "Displaying %1$s of %2$s",
       formatRange: "Displaying %1$s – %2$s of %3$s",
-      name: sprintf(__("Displaying %1$s – %2$s of %3$s"), 1, 10, 12),
-      hint: "Default",
+      name: sprintf(
+        __("Displaying %1$s – %2$s of %3$s", "wb_blocks"),
+        "1",
+        "10",
+        12,
+      ),
+      hint: __("Default"),
     },
     {
       key: 2,
       formatSingle: "Displaying <strong>%1$s</strong> of <strong>%2$s</strong>",
       formatRange:
         "Displaying <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>",
-      name: sprintf(__("Displaying %1$s – %2$s of %3$s*"), 1, 10, 12),
-      hint: "Default - with bold numbers",
+      name: sprintf(
+        __("Displaying %1$s – %2$s of %3$s", "wb_blocks"),
+        "1",
+        "10",
+        "12*",
+      ),
+      hint: __("Default - with bold numbers", "wb_blocks"),
     },
     {
       key: 3,
       formatSingle: "Showing %1$s of %2$s",
       formatRange: "Showing %1$s – %2$s of %3$s",
-      name: sprintf(__("Showing %1$s – %2$s of %3$s"), 1, 10, 12),
-      hint: '"Showing" prefix',
+      name: sprintf(
+        __("Showing %1$s – %2$s of %3$s", "wb_blocks"),
+        "1",
+        "10",
+        12,
+      ),
+      hint: __('"Showing" prefix', "wb_blocks"),
     },
     {
       key: 4,
       formatSingle: "Showing <strong>%1$s</strong> of <strong>%2$s</strong>",
       formatRange:
         "Showing <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>",
-      name: sprintf(__("Showing %1$s – %2$s of %3$s*"), 1, 10, 12),
-      hint: '"Showing" prefix - with bold numbers',
+      name: sprintf(
+        __("Showing %1$s – %2$s of %3$s", "wb_blocks"),
+        "1",
+        "10",
+        "12*",
+      ),
+      hint: __('"Showing" prefix - with bold numbers', "wb_blocks"),
     },
   ];
+
+  // Filter out duplicates based on name
+  const suggestedOptions = defaultOptions.filter(
+    (obj1, i, arr) => arr.findIndex((obj2) => obj2.name === obj1.name) === i,
+  );
 
   const customOption = {
     key: "custom",
     name: __("Custom"),
     style: { borderTop: "1px solid #ddd" },
-    hint: __("Enter your own phrase format"),
+    hint: __("Enter your own phrase format", "wb_blocks"),
   };
 
   const [isCustom, setIsCustom] = useState(
@@ -137,7 +162,7 @@ function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
               "wb_blocks",
             )}
             placeholder={__("Displaying %1$s of %2$s", "wb_blocks")}
-            value={rangeFormatSingle}
+            value={__(rangeFormatSingle, "wb_blocks")}
             onChange={(value) =>
               onChange({ rangeFormatSingle: value, rangeFormatMulti })
             }
@@ -150,7 +175,7 @@ function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
               "wb_blocks",
             )}
             placeholder={__("Displaying %1$s – %2$s of %3$s", "wb_blocks")}
-            value={rangeFormatMulti}
+            value={__(rangeFormatMulti, "wb_blocks")}
             onChange={(value) =>
               onChange({ rangeFormatSingle, rangeFormatMulti: value })
             }

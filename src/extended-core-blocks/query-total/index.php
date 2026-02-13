@@ -71,10 +71,10 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
         //  - "Displaying %1$s of %2$s"
         //  - "Displaying %1$s – %2$s of %3$s"
         if ($text === 'Displaying %1$s of %2$s' && ! empty($ctx['single'])) {
-            return wp_kses($ctx['single'], ['strong' => []]);
+            return wp_kses(__($ctx['single'], "wb_blocks"), ['strong' => []]);
         }
         if ($text === 'Displaying %1$s – %2$s of %3$s' && ! empty($ctx['range'])) {
-            return wp_kses($ctx['range'], ['strong' => []]);
+            return wp_kses(__($ctx['range'], "wb_blocks"), ['strong' => []]);
         }
 
         return $translation;

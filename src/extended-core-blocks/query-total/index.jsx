@@ -57,8 +57,9 @@ const addFormatControl = (BlockEdit) => (props) => {
 
   // Generate the string for the editor canvas preview.
   // Fallback to core's default format strings if attribute from block is empty.
-  const formatRange = rangeFormatMulti || __("Displaying %1$s – %2$s of %3$s");
-  const previewHtml = sprintf(formatRange, 1, 10, 12);
+  const formatRange = rangeFormatMulti || "Displaying %1$s – %2$s of %3$s";
+  // There is a translation for Displaying 1 – 10 of 12, to translate here.
+  const previewHtml = sprintf(__(formatRange, "wb_blocks"), 1, 10, 12);
 
   return (
     <>
