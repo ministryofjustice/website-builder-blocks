@@ -51,34 +51,10 @@ function wb_extend_nav_block( $block_content, $block ) {
 		$button->removeAttribute('aria-haspopup'); //it is no longer a modal window
 		wb_add_class($button,"wp-element-button"); //button styling
 
-		//Add the close SVG
-		$svg = $dom->createElementNS('http://www.w3.org/2000/svg', 'svg');
-		$svg->setAttribute('class', 'wb-close-icon');
-		$svg->setAttribute('width', '24');
-		$svg->setAttribute('height', '24');
-		$svg->setAttribute('aria-hidden', 'true'); //string
-		$svg->setAttribute('focusable', 'false'); //string
-		$svg->setAttribute('viewBox', '0 0 24 24');
-		$svg->setAttribute('stroke', 'currentColor');
-
-		$line1 = $dom->createElementNS('http://www.w3.org/2000/svg', 'line');
-		$line2 = $dom->createElementNS('http://www.w3.org/2000/svg', 'line');
-		$line1->setAttribute('x1', '4');
-		$line1->setAttribute('y1', '4');
-		$line1->setAttribute('x2', '20');
-		$line1->setAttribute('y2', '20');
-		$line1->setAttribute('stroke-width', '4');
-		$line2->setAttribute('x1', '20');
-		$line2->setAttribute('y1', '4');
-		$line2->setAttribute('x2', '4');
-		$line2->setAttribute('y2', '20');
-		$line2->setAttribute('stroke-width', '4');
-
-		$svg->appendChild($line1);
-		$svg->appendChild($line2);
-		$button->appendChild($svg);
-
 		$block_content = $dom->saveHTML();
+
+		$closeSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="wb-close-icon" width="24" height="24" aria-hidden="true" focusable="false" viewBox="0 0 24 24" stroke="currentColor"><line x1="4" y1="4" x2="20" y2="20" stroke-width="4"></line><line x1="20" y1="4" x2="4" y2="20" stroke-width="4"></line></svg>';
+		$block_content = str_replace("</svg>","</svg>$closeSVG",$block_content);
 	}
 	// We need to add something to identify every drawer type element, so it can be closed when another is opened
 	return $block_content;
