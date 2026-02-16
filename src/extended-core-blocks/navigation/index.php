@@ -57,10 +57,13 @@ function wb_extend_nav_block( $block_content, $block ) {
 		$button->removeAttribute('aria-haspopup'); //it is no longer a modal window
 		wb_add_class($button,"wp-element-button"); //button styling
 
-		$block_content = $dom->saveHTML();
-
+		$fragment = $dom->createDocumentFragment();
 		$closeSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="wb-close-icon" width="24" height="24" aria-hidden="true" focusable="false" viewBox="0 0 24 24" stroke="currentColor"><line x1="4" y1="4" x2="20" y2="20" stroke-width="4"></line><line x1="20" y1="4" x2="4" y2="20" stroke-width="4"></line></svg>';
-		$block_content = str_replace("</svg>","</svg>$closeSVG",$block_content);
+		$fragment->appendXML($closeSVG);
+
+		$button->appendChild($fragment);
+
+		$block_content = $dom->saveHTML();
 	}
 	// We need to add something to identify every drawer type element, so it can be closed when another is opened
 	return $block_content;
