@@ -7,6 +7,12 @@
  * @param array  $block         Block data array.
  * @return string Modified HTML.
  */
+
+ // Prevent direct access
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 function wb_extend_nav_block( $block_content, $block ) {
 
 	if (empty($block['attrs']['className'])) {
