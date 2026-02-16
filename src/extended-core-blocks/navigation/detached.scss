@@ -20,6 +20,8 @@ nav.is-style-detached {
 		position: absolute;
 		height: fit-content;
 		top: 100%;
+		padding-right: var(--wp--style--root--padding-right);
+		padding-left: var(--wp--style--root--padding-left);
 
 		@media not (prefers-reduced-motion) {
 			// overrides default
