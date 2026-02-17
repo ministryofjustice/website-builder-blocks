@@ -49,7 +49,7 @@ add_filter('block_type_metadata_settings', function (array $settings, array $met
 function wp_blocks_render_block_core_query_total(array $attributes, string $content, WP_Block $block): string
 {
     // Currently, we only extend the range-display type.
-    if(($attributes['displayType'] ?? '') !== 'range-display') {
+    if (($attributes['displayType'] ?? '') !== 'range-display') {
         // Here, display type is not 'range-display', e.g. 'total-results', 
         //so return early, with the original WP Core renderer.
         return render_block_core_query_total($attributes, $content, $block);
@@ -57,8 +57,9 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
 
     // Build the formats, to pass into the gettext callback function.
     $ctx = [
-        'single' => $attributes['rangeFormatSingle'] ?? null,
-        'range'  => $attributes['rangeFormatMulti']  ?? null,
+        'single'       => $attributes['rangeFormatSingle'] ?? null,
+        'range'        => $attributes['rangeFormatMulti']  ?? null,
+        'bold_numbers' => in_array('is-style-bold-numbers', explode(' ', ($attributes['className'] ?? '')), true)
     ];
 
     // // Define the gettext callback that swaps Core’s own format strings.
@@ -71,10 +72,22 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
         //  - "Displaying %1$s of %2$s"
         //  - "Displaying %1$s – %2$s of %3$s"
         if ($text === 'Displaying %1$s of %2$s' && ! empty($ctx['single'])) {
-            return wp_kses(__($ctx['single'], "wb_blocks"), ['strong' => []]);
+            // Get the translation, before applying html for bold numbers.
+            $translation = __($ctx['single'], "wb_blocks");
+            if ($ctx['bold_numbers']) {
+                // Wrap %1$s, %2$s in b tags.
+                $translation = preg_replace('/(%\d+\$s)/', '<b>$1</b>', $translation);
+            }
+            return wp_kses($translation, ['b' => []]);
         }
         if ($text === 'Displaying %1$s – %2$s of %3$s' && ! empty($ctx['range'])) {
-            return wp_kses(__($ctx['range'], "wb_blocks"), ['strong' => []]);
+            // Get the translation, before applying html for bold numbers.
+            $translation = __($ctx['range'], "wb_blocks");
+            if ($ctx['bold_numbers']) {
+                // Wrap %1$s, %2$s and %3$s in b tags.
+                $translation = preg_replace('/(%\d+\$s)/', '<b>$1</b>', $translation);
+            }
+            return wp_kses($translation, ['b' => []]);
         }
 
         return $translation;

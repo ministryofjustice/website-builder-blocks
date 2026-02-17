@@ -1,10 +1,25 @@
 import { InspectorControls } from "@wordpress/block-editor";
+import { registerBlockStyle } from "@wordpress/blocks";
 import { PanelBody, PanelRow } from "@wordpress/components";
 import { RawHTML } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
 
 import QueryRangeFormatPicker from "./FormatPicker";
+
+
+/**
+ * Register our custom block style.
+ *
+ * When this style is selected, we'll wrap <b> tags around the number placeholders.
+ * e.g. Displaying %1$s – %2$s of %3$s
+ *   -> Displaying <b>%1$s</b> – <b>%2$s</b> of <b>%3$s</b>
+ */
+registerBlockStyle("core/query-total", {
+  name: "bold-numbers",
+  label: __("Bold numbers", "wb_blocks"),
+});
+
 
 /**
  * Extend core/query-total with the attribute
@@ -51,15 +66,31 @@ const addFormatControl = (BlockEdit) => (props) => {
   }
 
   const {
-    attributes: { rangeFormatSingle = null, rangeFormatMulti = null },
+    attributes: {
+      rangeFormatSingle = null,
+      rangeFormatMulti = null,
+      className: blockClassName,
+    },
     setAttributes,
   } = props;
 
   // Generate the string for the editor canvas preview.
   // Fallback to core's default format strings if attribute from block is empty.
-  const formatRange = rangeFormatMulti || "Displaying %1$s – %2$s of %3$s";
-  // There is a translation for Displaying 1 – 10 of 12, to translate here.
-  const previewHtml = sprintf(__(formatRange, "wb_blocks"), 1, 10, 12);
+  const formatRange = rangeFormatMulti
+    ? sanitizeHtml(rangeFormatMulti, ["b"])
+    : "Displaying %1$s – %2$s of %3$s";
+  // Translate the phrase, before number substitution.
+  let previewTranslation = __(formatRange, "wb_blocks");
+  // Infer frm the className, should the numbers be bold.
+  const isStyleBoldNumbers = blockClassName
+    ?.split(" ")
+    .includes("is-style-bold-numbers");
+  if (isStyleBoldNumbers) {
+    // Lets add some b tags round the number placeholders.
+    previewTranslation = previewTranslation.replace(/(%\d+\$s)/g, "<b>$1</b>");
+  }
+  // Substitute numbers into the string.
+  const previewHtml = sprintf(previewTranslation, 1, 10, 12);
 
   return (
     <>
@@ -120,4 +151,46 @@ const CustomBlockWrapper = ({ children, previewHtml }) => {
       </RawHTML>
     </div>
   );
+};
+
+/**
+ * Sanitize user input - for the preview of custom format option
+ *
+ * @param {string} input Unsanitized input
+ * @param {string[]} allowedTags An array of allowed tags
+ * @returns {string|null} The sanitized value
+ */
+const sanitizeHtml = (input, allowedTags = []) => {
+  if (typeof input !== "string" && !input instanceof String) {
+    return null;
+  }
+
+  // Normalize allowed tags to lowercase for easy comparison
+  const allowed = new Set(
+    Array.isArray(allowedTags)
+      ? allowedTags.map((t) => t.toLowerCase())
+      : [allowedTags.toLowerCase()],
+  );
+
+  const doc = new DOMParser().parseFromString(input, "text/html");
+
+  function clean(node) {
+    [...node.childNodes].forEach((child) => {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        const tag = child.tagName.toLowerCase();
+
+        if (!allowed.has(tag)) {
+          // Replace the disallowed element with its text content
+          const text = document.createTextNode(child.textContent);
+          child.replaceWith(text);
+        } else {
+          // Recurse into allowed elements to clean their children
+          clean(child);
+        }
+      }
+    });
+  }
+
+  clean(doc.body);
+  return doc.body.innerHTML;
 };

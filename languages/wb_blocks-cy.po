@@ -17,52 +17,56 @@ msgstr ""
 
 # QueryRangeFormatPicker > NonDefaultControls
 
+# Default format (range)
 #: build/index.js
 msgid "Displaying %1$s – %2$s of %3$s"
 msgstr "Yn dangos %1$s – %2$s o %3$s"
 
-#: build/index.js
-msgid "Showing %1$s – %2$s of %3$s"
-msgstr "Yn dangos %1$s – %2$s o %3$s"
-
+# Default format (single)
 #: build/index.js
 msgid "Displaying %1$s of %2$s"
 msgstr "Yn dangos %1$s o %2$s"
 
+# Alternative format (range)
 #: build/index.js
-msgid "Showing %1$s of %2$s"
+msgid "Showing %1$s to %2$s of %3$s results"
+msgstr "Yn dangos %1$s i %2$s o %3$s o ganlyniadau"
+
+# Alternative format (single)
+#: build/index.js
+msgid "Showing %1$s of %2$s results"
 msgstr "Yn dangos %1$s o %2$s"
 
-#: build/index.js
-msgid "Displaying <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>"
-msgstr "Yn dangos <strong>%1$s</strong> – <strong>%2$s</strong> o <strong>%3$s</strong>"
 
-#: build/index.js
-msgid "Showing <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>"
-msgstr "Yn dangos <strong>%1$s</strong> – <strong>%2$s</strong> o <strong>%3$s</strong>"
-
-#: build/index.js
-msgid "Displaying <strong>%1$s</strong> of <strong>%2$s</strong>"
-msgstr "Yn dangos <strong>%1$s</strong> o <strong>%2$s</strong>"
-
-#: build/index.js
-msgid "Showing <strong>%1$s</strong> of <strong>%2$s</strong>"
-msgstr "Yn dangos <strong>%1$s</strong> o <strong>%2$s</strong>"
-
+# Labels for the custom format
 #: build/index.js
 msgid "Enter your own phrase format"
 msgstr "Rhowch eich fformat ymadrodd eich hun"
 
-
-# Hint text
 #: build/index.js
-msgid "Default - with bold numbers"
-msgstr "Rhagosodiad – gyda rhifau trwm"
+msgid "Single item format"
+msgstr "Fformat eitem sengl"
 
 #: build/index.js
-msgid ""Showing" prefix"
-msgstr "Yn dangos"
+msgid "Range format"
+msgstr "Fformat amrediad"
+
+
+# Help text for the custom format
+#: build/index.js
+msgid "Use placeholders: %1$s (index), %2$s (total)."
+msgstr "efnyddiwch ddewisyddion: %1$s (mynegai), %2$s (cyfanswm)."
 
 #: build/index.js
-msgid ""Showing" prefix - with bold numbers"
-msgstr "Yn dangos – gyda rhifau trwm"
+msgid "Use placeholders: %1$s (start), %2$s (end), %3$s (total)."
+msgstr "Defnyddiwch ddewisyddion: %1$s (cychwyn), %2$s (diwedd), %3$s (cyfanswm)."
+
+#: build/index.js
+msgid "For bold text use tags: <b> & </b>."
+msgstr "Ar gyfer testun trwm defnyddiwch dagiau: <b> a </b>."
+
+
+# Style variation
+#: build/index.js
+msgid "Bold numbers"
+msgstr "Rhifau trwm"

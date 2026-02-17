@@ -29,7 +29,9 @@ export default function QueryRangeFormatPicker({
       <VisuallyHidden as="legend">{__("Query range format")}</VisuallyHidden>
       <ToggleControl
         label={__("Default format")}
-        help={`${__("Example:")}  ${sprintf(defaultFormatRange, 1, 10, 12)}`}
+        help={`${__("Example:")}  ${__(
+          sprintf(defaultFormatRange, 1, 10, 12),
+        )}`}
         checked={checked}
         onChange={(checked) =>
           onChange({
@@ -37,6 +39,7 @@ export default function QueryRangeFormatPicker({
             rangeFormatMulti: checked ? null : defaultFormatRange,
           })
         }
+        __nextHasNoMarginBottom={true}
       />
       {!checked && (
         <NonDefaultControls
@@ -59,47 +62,19 @@ function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
         __("Displaying %1$s – %2$s of %3$s", "wb_blocks"),
         "1",
         "10",
-        12,
+        "12",
       ),
-      hint: __("Default"),
     },
     {
       key: 2,
-      formatSingle: "Displaying <strong>%1$s</strong> of <strong>%2$s</strong>",
-      formatRange:
-        "Displaying <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>",
+      formatSingle: "Showing %1$s of %2$s results",
+      formatRange: "Showing %1$s to %2$s of %3$s results",
       name: sprintf(
-        __("Displaying %1$s – %2$s of %3$s", "wb_blocks"),
+        __("Showing %1$s to %2$s of %3$s results", "wb_blocks"),
         "1",
         "10",
-        "12*",
+        "12",
       ),
-      hint: __("Default - with bold numbers", "wb_blocks"),
-    },
-    {
-      key: 3,
-      formatSingle: "Showing %1$s of %2$s",
-      formatRange: "Showing %1$s – %2$s of %3$s",
-      name: sprintf(
-        __("Showing %1$s – %2$s of %3$s", "wb_blocks"),
-        "1",
-        "10",
-        12,
-      ),
-      hint: __('"Showing" prefix', "wb_blocks"),
-    },
-    {
-      key: 4,
-      formatSingle: "Showing <strong>%1$s</strong> of <strong>%2$s</strong>",
-      formatRange:
-        "Showing <strong>%1$s</strong> – <strong>%2$s</strong> of <strong>%3$s</strong>",
-      name: sprintf(
-        __("Showing %1$s – %2$s of %3$s", "wb_blocks"),
-        "1",
-        "10",
-        "12*",
-      ),
-      hint: __('"Showing" prefix - with bold numbers', "wb_blocks"),
     },
   ];
 
@@ -144,6 +119,11 @@ function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
         onChange={({ selectedItem }) => {
           if (selectedItem === customOption) {
             setIsCustom(true);
+            // Reset the values to the first default option
+            onChange({
+              rangeFormatSingle: suggestedOptions[0].formatSingle,
+              rangeFormatMulti: suggestedOptions[0].formatRange,
+            });
           } else {
             setIsCustom(false);
             onChange({
@@ -157,29 +137,31 @@ function NonDefaultControls({ rangeFormatSingle, rangeFormatMulti, onChange }) {
         <>
           <TextareaControl
             label={__("Single item format", "wb_blocks")}
-            help={__(
+            help={`${__(
               "Use placeholders: %1$s (index), %2$s (total).",
               "wb_blocks",
-            )}
+            )} ${__("For bold text use tags: <b> & </b>.", "wb_blocks")}`}
             placeholder={__("Displaying %1$s of %2$s", "wb_blocks")}
             value={__(rangeFormatSingle, "wb_blocks")}
             onChange={(value) =>
               onChange({ rangeFormatSingle: value, rangeFormatMulti })
             }
-            rows={3}
+            rows={2}
+            __nextHasNoMarginBottom={true}
           />
           <TextareaControl
             label={__("Range format", "wb_blocks")}
-            help={__(
+            help={`${__(
               "Use placeholders: %1$s (start), %2$s (end), %3$s (total).",
               "wb_blocks",
-            )}
+            )} ${__("For bold text use tags: <b> & </b>.", "wb_blocks")}`}
             placeholder={__("Displaying %1$s – %2$s of %3$s", "wb_blocks")}
             value={__(rangeFormatMulti, "wb_blocks")}
             onChange={(value) =>
               onChange({ rangeFormatSingle, rangeFormatMulti: value })
             }
-            rows={3}
+            rows={2}
+            __nextHasNoMarginBottom={true}
           />
         </>
       )}
