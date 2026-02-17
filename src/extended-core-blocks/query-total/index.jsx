@@ -12,8 +12,8 @@ import QueryRangeFormatPicker from "./FormatPicker";
  * Register our custom block style.
  *
  * When this style is selected, we'll wrap <b> tags around the number placeholders.
- * e.g. Displaying %1$s – %2$s of %3$s
- *   -> Displaying <b>%1$s</b> – <b>%2$s</b> of <b>%3$s</b>
+ * e.g. Displaying %1$s - %2$s of %3$s
+ *   -> Displaying <b>%1$s</b> - <b>%2$s</b> of <b>%3$s</b>
  */
 registerBlockStyle("core/query-total", {
   name: "bold-numbers",
