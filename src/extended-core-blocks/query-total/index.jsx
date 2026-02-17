@@ -7,7 +7,6 @@ import { __, sprintf } from "@wordpress/i18n";
 
 import QueryRangeFormatPicker from "./FormatPicker";
 
-
 /**
  * Register our custom block style.
  *
@@ -19,7 +18,6 @@ registerBlockStyle("core/query-total", {
   name: "bold-numbers",
   label: __("Bold numbers", "wb_blocks"),
 });
-
 
 /**
  * Extend core/query-total with the attribute
@@ -50,30 +48,43 @@ addFilter(
 );
 
 /**
- * Filter the Query Total block
- * - Call the custom component that wraps the original BlockEdit.
- * - Render a toggle in the block sidebar.
+ * Custom TotalResults component for preview
+ *
+ * This is a minor change from the original block, 
+ * all we do here is wrap the number in b tags
+ * if the bold-numbers style is active.
  */
-const addFormatControl = (BlockEdit) => (props) => {
-  if (props.name !== "core/query-total") {
-    return <BlockEdit {...props} />;
+const TotalResults = ({ isStyleBoldNumbers, children }) => {
+  // Translate the phrase with the number, that's what WP does.
+  let previewHtml = __("12 results found");
+
+  if (isStyleBoldNumbers) {
+    // Lets add b tags round the number.
+    previewHtml = previewHtml.replace("12", "<b>12</b>");
   }
 
-  // We only want to customize the range-display type.
-  if (props.attributes.displayType !== "range-display") {
-    // Return early if other display type.
-    return <BlockEdit {...props} />;
-  }
+  return (
+    <CustomBlockWrapper previewHtml={previewHtml}>
+      {children}
+    </CustomBlockWrapper>
+  );
+};
 
-  const {
-    attributes: {
-      rangeFormatSingle = null,
-      rangeFormatMulti = null,
-      className: blockClassName,
-    },
-    setAttributes,
-  } = props;
-
+/**
+ * Custom RangeDisplay component
+ *
+ * This component:
+ * 1. Lets us preview the changes to custom format or style
+ * 2. Adds controls to the right side bar for the user to select from
+ *    preset formats or a custom format.
+ */
+const RangeDisplay = ({
+  rangeFormatSingle,
+  rangeFormatMulti,
+  isStyleBoldNumbers,
+  setAttributes,
+  children,
+}) => {
   // Generate the string for the editor canvas preview.
   // Fallback to core's default format strings if attribute from block is empty.
   const formatRange = rangeFormatMulti
@@ -81,21 +92,19 @@ const addFormatControl = (BlockEdit) => (props) => {
     : "Displaying %1$s – %2$s of %3$s";
   // Translate the phrase, before number substitution.
   let previewTranslation = __(formatRange, "wb_blocks");
-  // Infer frm the className, should the numbers be bold.
-  const isStyleBoldNumbers = blockClassName
-    ?.split(" ")
-    .includes("is-style-bold-numbers");
+
   if (isStyleBoldNumbers) {
     // Lets add some b tags round the number placeholders.
     previewTranslation = previewTranslation.replace(/(%\d+\$s)/g, "<b>$1</b>");
   }
+
   // Substitute numbers into the string.
   const previewHtml = sprintf(previewTranslation, 1, 10, 12);
 
   return (
     <>
       <CustomBlockWrapper previewHtml={previewHtml}>
-        <BlockEdit {...props} />
+        {children}
       </CustomBlockWrapper>
 
       <InspectorControls>
@@ -117,9 +126,50 @@ const addFormatControl = (BlockEdit) => (props) => {
   );
 };
 
+/**
+ * Filter the Query Total block
+ * - Call the custom component that wraps the original BlockEdit.
+ * - Render a toggle in the block sidebar.
+ */
+const addFormatControl = (BlockEdit) => (props) => {
+  if (props.name !== "core/query-total") {
+    return <BlockEdit {...props} />;
+  }
+
+  // Infer from the className, should the numbers be bold.
+  const isStyleBoldNumbers = props.attributes?.className
+    ?.split(" ")
+    .includes("is-style-bold-numbers");
+
+  if (props.attributes.displayType === "total-results") {
+    return (
+      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers}>
+        <BlockEdit {...props} />
+      </TotalResults>
+    );
+  }
+
+  // We only want to customize the range-display type.
+  if (props.attributes.displayType === "range-display") {
+    return (
+      <RangeDisplay
+        rangeFormatSingle={props.attributes.rangeFormatSingle ?? null}
+        rangeFormatMulti={props.attributes.rangeFormatMulti ?? null}
+        setAttributes={props.setAttributes}
+        isStyleBoldNumbers={isStyleBoldNumbers}
+      >
+        <BlockEdit {...props} />
+      </RangeDisplay>
+    );
+  }
+
+  // For some reason, the display type is not total-results or range-display, return BlockEdit, unmodified.
+  return <BlockEdit {...props} />;
+};
+
 addFilter(
   "editor.BlockEdit",
-  "wb_blocks/query-total-prefix-controls",
+  "wb_blocks/query-total-format-controls",
   addFormatControl,
 );
 
