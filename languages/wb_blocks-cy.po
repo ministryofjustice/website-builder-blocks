@@ -1,0 +1,72 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 00:00+0000\n"
+"PO-Revision-Date: 2026-02-09 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Welsh\n"
+"Language: cy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/post-date/index.js
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+# QueryRangeFormatPicker > NonDefaultControls
+
+# Default format (range)
+#: build/index.js
+msgid "Displaying %1$s – %2$s of %3$s"
+msgstr "Yn dangos %1$s – %2$s o %3$s"
+
+# Default format (single)
+#: build/index.js
+msgid "Displaying %1$s of %2$s"
+msgstr "Yn dangos %1$s o %2$s"
+
+# Alternative format (range)
+#: build/index.js
+msgid "Showing %1$s to %2$s of %3$s results"
+msgstr "Yn dangos %1$s i %2$s o %3$s o ganlyniadau"
+
+# Alternative format (single)
+#: build/index.js
+msgid "Showing %1$s of %2$s results"
+msgstr "Yn dangos %1$s o %2$s"
+
+
+# Labels for the custom format
+#: build/index.js
+msgid "Enter your own phrase format"
+msgstr "Rhowch eich fformat ymadrodd eich hun"
+
+#: build/index.js
+msgid "Single item format"
+msgstr "Fformat eitem sengl"
+
+#: build/index.js
+msgid "Range format"
+msgstr "Fformat amrediad"
+
+
+# Help text for the custom format
+#: build/index.js
+msgid "Use placeholders: %1$s (index), %2$s (total)."
+msgstr "efnyddiwch ddewisyddion: %1$s (mynegai), %2$s (cyfanswm)."
+
+#: build/index.js
+msgid "Use placeholders: %1$s (start), %2$s (end), %3$s (total)."
+msgstr "Defnyddiwch ddewisyddion: %1$s (cychwyn), %2$s (diwedd), %3$s (cyfanswm)."
+
+#: build/index.js
+msgid "For bold text use tags: <b> & </b>."
+msgstr "Ar gyfer testun trwm defnyddiwch dagiau: <b> a </b>."
+
+
+# Style variation
+#: build/index.js
+msgid "Bold numbers"
+msgstr "Rhifau trwm"

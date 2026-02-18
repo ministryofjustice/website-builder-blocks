@@ -3,3 +3,4 @@
  */
 
 import "./navigation";
+import "./query-total";
