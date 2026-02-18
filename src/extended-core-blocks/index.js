@@ -3,4 +3,5 @@
  */
 
 import "./navigation";
+import "./post-date";
 import "./query-total";

@@ -12,9 +12,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-# Translations for src/extended-core-blocks/post-date/index.js
+# Translations for src/extended-core-blocks/post-date
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+# Control Panel title
+#: build/index.js
+msgid "Date prefix"
+msgstr "Rhagddodiad y dyddiad"
+
+# Toggle label
+#: build/index.js
+msgid "Show prefix before date"
+msgstr "Dangos y rhagddodiad cyn y dyddiad"
+
+# Example prefix (for Post Date)
+#: build/index.js
+msgid "Published"
+msgstr "Cyhoeddwyd"
+
+# Example prefix (for Modified Date)
+#: build/index.js
+msgid "Updated"
+msgstr "Diweddarwyd"
+
+# Help text (for Post Date)
+#: build/index.js
+msgid "Type the prefix inline before the date (e.g., %s)."
+msgstr "Teipiwch y rhagddodiad yn syth cyn y dyddiad (e.e., %s)."
+
+# Help text (for Modified Date)
+#: build/index.js
+msgid "Adds text (e.g. %s) before the post date."
+msgstr "Yn ychwanegu testun (e.e. %s) cyn dyddiad y post."
+
+# The prefix placeholder
+#: build/index.js
+msgid "Prefix…"
+msgstr "Rhagddodiad…"
 # QueryRangeFormatPicker > NonDefaultControls
 
 # Default format (range)
@@ -37,6 +71,10 @@ msgstr "Yn dangos %1$s i %2$s o %3$s o ganlyniadau"
 msgid "Showing %1$s of %2$s results"
 msgstr "Yn dangos %1$s o %2$s"
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/query-total
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 # Labels for the custom format
 #: build/index.js
