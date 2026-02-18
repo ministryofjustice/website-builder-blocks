@@ -66,13 +66,13 @@ function wb_file_block_renderer($name, $attributes, $block_content)
 
     return $block_content;
 }
-function wb_disable_file_block_inline_embed_default() {
+function wb_disable_file_block_settings() {
     wp_add_inline_script(
         'wp-blocks',
         "
         wp.hooks.addFilter(
             'blocks.registerBlockType',
-            'custom/disable-inline-embed-default',
+            'custom/disable-file-block-settings',
             function(settings, name) {
                 if (name === 'core/file') {
 
@@ -97,4 +97,4 @@ function wb_disable_file_block_inline_embed_default() {
         "
     );
 }
-add_action('enqueue_block_editor_assets', 'wb_disable_file_block_inline_embed_default');
+add_action('enqueue_block_editor_assets', 'wb_disable_file_block_settings');
