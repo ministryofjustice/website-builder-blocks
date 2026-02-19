@@ -10,7 +10,6 @@
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const { Fragment, createElement } = wp.element;
-const { useSelect } = wp.data;
 
 function getFileExtension(file = '') {
     return file.slice((file.lastIndexOf(".") - 1 >>> 0) + 2);

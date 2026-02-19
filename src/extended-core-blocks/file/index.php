@@ -98,3 +98,5 @@ function wb_disable_file_block_settings() {
     );
 }
 add_action('enqueue_block_editor_assets', 'wb_disable_file_block_settings');
+
+
