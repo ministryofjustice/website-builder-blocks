@@ -1,0 +1,51 @@
+.wb-preview-wrap {
+  // Set position relative, so that inner elements can use position absolute.
+  position: relative;
+
+  // Override the inline styles.
+  opacity: 1!important;
+
+  // This is a div around the original block.
+  // &__orig {
+  // Target the original block
+  > .wp-block {
+    position: absolute;
+    inset: 0;
+
+    // Hide the direct children elements
+    // We don't hide .wp-block in order to keep the blue outline and see it when dragging.
+    > * {
+      visibility: hidden;
+    }
+
+    // For cases where there are no child elements, i.e. just text content.
+    color: transparent !important;
+
+    //
+    &.is-dragging {
+      // Does this need to be a variation - it differs between both use case.
+      position: relative;
+
+      /* Dragging indicator, otherwise it's just a white box. */
+      background-color: var(
+        --wp--preset--color--background-secondary
+      ) !important;
+
+      // Let's hide the preview element when dragging
+      // Otherwise the dragging element's height,
+      // plus this element's height results in double height.
+      ~ .wb-preview-wrap__preview {
+        max-height: 0px;
+        height: 0px;
+        overflow: hidden;
+      }
+    }
+  }
+
+  &__preview {
+    // Revert the inline styles.
+    display: revert!important;
+    // Ensure the overlay doesn't block selecting/dragging the block
+    pointer-events: "none";
+  }
+}

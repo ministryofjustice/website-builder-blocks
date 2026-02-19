@@ -7,6 +7,8 @@ import { __, sprintf } from "@wordpress/i18n";
 
 import QueryRangeFormatPicker from "./FormatPicker";
 
+import { WbPreviewWrapper } from "../query-pagination-numbers";
+
 /**
  * Register our custom block style.
  *
@@ -50,11 +52,11 @@ addFilter(
 /**
  * Custom TotalResults component for preview
  *
- * This is a minor change from the original block, 
+ * This is a minor change from the original block,
  * all we do here is wrap the number in b tags
  * if the bold-numbers style is active.
  */
-const TotalResults = ({ isStyleBoldNumbers, children }) => {
+const TotalResults = ({ isStyleBoldNumbers, children, blockName }) => {
   // Translate the phrase with the number, that's what WP does.
   let previewHtml = __("12 results found");
 
@@ -63,6 +65,15 @@ const TotalResults = ({ isStyleBoldNumbers, children }) => {
     previewHtml = previewHtml.replace("12", "<b>12</b>");
   }
 
+  return (
+    <WbPreviewWrapper
+      blockName={blockName}
+      label="Block: TODO"
+      previewHtml={previewHtml}
+    >
+      {children}
+    </WbPreviewWrapper>
+  );
   return (
     <CustomBlockWrapper previewHtml={previewHtml}>
       {children}
@@ -143,7 +154,7 @@ const addFormatControl = (BlockEdit) => (props) => {
 
   if (props.attributes.displayType === "total-results") {
     return (
-      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers}>
+      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers} blockName={props.name}>
         <BlockEdit {...props} />
       </TotalResults>
     );
