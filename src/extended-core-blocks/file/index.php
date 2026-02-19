@@ -1,13 +1,8 @@
 <?php
 
 /**
- * Modify core file block in Hale
+ * Modify core file block
  * This hooks into and modifies the frontend of core
- *
- * @package   Hale
- * @copyright Ministry Of Justice
- * Adapted from version from NHS Leadership Academy, Tony Blacker
- * @version   2.0
  */
 
 add_filter('render_block', 'wb_filter_file_block', 10, 2);
