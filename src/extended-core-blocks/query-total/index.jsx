@@ -7,8 +7,6 @@ import { __, sprintf } from "@wordpress/i18n";
 
 import QueryRangeFormatPicker from "./FormatPicker";
 
-import { WbPreviewWrapper } from "../query-pagination-numbers";
-
 /**
  * Register our custom block style.
  *
@@ -56,7 +54,7 @@ addFilter(
  * all we do here is wrap the number in b tags
  * if the bold-numbers style is active.
  */
-const TotalResults = ({ isStyleBoldNumbers, children, blockName }) => {
+const TotalResults = ({ isStyleBoldNumbers, children }) => {
   // Translate the phrase with the number, that's what WP does.
   let previewHtml = __("12 results found");
 
@@ -65,15 +63,6 @@ const TotalResults = ({ isStyleBoldNumbers, children, blockName }) => {
     previewHtml = previewHtml.replace("12", "<b>12</b>");
   }
 
-  return (
-    <WbPreviewWrapper
-      blockName={blockName}
-      label="Block: TODO"
-      previewHtml={previewHtml}
-    >
-      {children}
-    </WbPreviewWrapper>
-  );
   return (
     <CustomBlockWrapper previewHtml={previewHtml}>
       {children}
@@ -154,7 +143,7 @@ const addFormatControl = (BlockEdit) => (props) => {
 
   if (props.attributes.displayType === "total-results") {
     return (
-      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers} blockName={props.name}>
+      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers}>
         <BlockEdit {...props} />
       </TotalResults>
     );
@@ -191,6 +180,12 @@ addFilter(
  * without losing the original block's toolbar controls.
  *
  * This element is styled in editor.scss
+ *
+ * NOTE: This function is very similar to WbPreviewWrapper in
+ * src/extended-core-blocks/query-pagination-numbers/index.jsx
+ * If another extended core block needs this functionality, then consider:
+ * - moving WbPreviewWrapper into it's own file
+ * - using it as an abstraction that's compatible with all blocks
  */
 const CustomBlockWrapper = ({ children, previewHtml }) => {
   // Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.

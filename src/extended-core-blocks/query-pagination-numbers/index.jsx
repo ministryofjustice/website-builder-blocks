@@ -1,23 +1,14 @@
-import {
-  getBlockDefaultClassName,
-  registerBlockStyle,
-  registerBlockVariation,
-} from "@wordpress/blocks";
-// import { getBlockDefaultClassName } from "@wordpress/block-editor";
+import { registerBlockStyle, registerBlockVariation } from "@wordpress/blocks";
+import { RawHTML } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
-import { RawHTML } from "@wordpress/element";
-import { cleanForSlug } from "@wordpress/url";
 
 /**
  * Register our custom block style.
  *
  * When this style is selected, we'll wrap <b> tags around the number placeholders.
- * e.g. Displaying %1$s - %2$s of %3$s
- *   -> Displaying <b>%1$s</b> - <b>%2$s</b> of <b>%3$s</b>
- *
- * TODO update comment
- * TODO update translation comment
+ * e.g. Page %1$d of %2$d
+ *   -> Page <b>%1$d</b> of <b>%2$d</b>
  */
 registerBlockStyle("core/query-pagination-numbers", {
   name: "bold-numbers",
@@ -25,14 +16,13 @@ registerBlockStyle("core/query-pagination-numbers", {
 });
 
 /**
- * Extend core/query-total with the attribute
+ * Extend core/query-total with the attribute displayType
  *
- * - rangeFormatSingle (string): The format for the page range
- *   when there is a single entry e.g. "Displaying %1$s of %2$s"
- * - rangeFormatMulti  (string): The format for the page range
- *   when there are multiple results e.g. "Displaying %1$s – %2$s of %3$s"
- *
- * TODO update comment
+ * displayType (string)
+ * - 'page-links' is the default & original display type
+ *   where there are numbers for each page, and they are links.
+ * - 'current-of-total' is a custom display type
+ *   where the phrase 'Page X of Y' is shown, without any links.
  */
 const addAttributes = (settings, name) => {
   if (name !== "core/query-pagination-numbers") {
@@ -53,14 +43,16 @@ addFilter(
   addAttributes,
 );
 
+/**
+ * Register block variations
+ *
+ * Since we don't have any variations, create a default one too.
+ */
 registerBlockVariation("core/query-pagination-numbers", {
-  // This is the out-of-the-box WordPress style, no special stuff
-  name: "original-query-pagination-numbers",
+  name: "page-links-query-pagination-numbers",
   title: "WordPress page numbers",
-  // description: 'Navigation used as default by WordPress',
-  attributes: {
-    displayType: "page-links",
-  },
+  description: "Default WordPress page numbers",
+  attributes: { displayType: "page-links" },
   scope: ["transform"],
   isDefault: true,
   isActive: (blockAttributes) =>
@@ -68,13 +60,10 @@ registerBlockVariation("core/query-pagination-numbers", {
 });
 
 registerBlockVariation("core/query-pagination-numbers", {
-  // This is the out-of-the-box WordPress style, no special stuff
-  name: "simple-query-pagination-numbers",
+  name: "current-of-total-query-pagination-numbers",
   title: "Simple page numbers",
-  // description: 'Navigation used as default by WordPress',
-  attributes: {
-    displayType: "current-of-total",
-  },
+  description: "Page numbers in the format of: Page x of y",
+  attributes: { displayType: "current-of-total" },
   scope: ["transform"],
   isActive: (blockAttributes) =>
     blockAttributes?.displayType === "current-of-total",
@@ -87,23 +76,25 @@ const changeMe = (BlockEdit) => (props) => {
 
   const attributes = props.attributes || {};
 
-  const classArray = attributes?.className?.split(" ") ?? [];
-
-  // Infer from the className, should the numbers be bold.
-  const isStyleBoldNumbers = classArray.includes("is-style-bold-numbers");
-
+  // Check the display type
   if (attributes.displayType !== "current-of-total") {
+    // Do nothing if it is set to anything other than current-of-total
     return <BlockEdit {...props} />;
   }
 
+  // Here, the displayType is set to current-of-total
+
+  // Infer from the className, should the numbers be bold?
+  const classArray = attributes?.className?.split(" ") ?? [];
+  const isStyleBoldNumbers = classArray.includes("is-style-bold-numbers");
+
+  // Start to build the string for the preview.
   let previewTranslation = __("Page %1$d of %2$d");
 
   if (isStyleBoldNumbers) {
     // Lets add some b tags round the number placeholders.
     previewTranslation = previewTranslation.replace(/(%\d+\$d)/g, "<b>$1</b>");
   }
-
-  console.log(props);
 
   return (
     <WbPreviewWrapper
@@ -129,6 +120,12 @@ addFilter(
  * without losing the original block's toolbar controls.
  *
  * This element is styled in editor.scss
+ *
+ * NOTE: This function is very similar to CustomBlockWrapper in
+ * src/extended-core-blocks/query-total/index.jsx
+ * If another extended core block needs this functionality, then consider:
+ * - moving WbPreviewWrapper into it's own file
+ * - using it as an abstraction that's compatible with all blocks
  */
 export const WbPreviewWrapper = ({
   blockName,
@@ -140,8 +137,10 @@ export const WbPreviewWrapper = ({
 
   // Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
   return (
-    <div className={`wb-preview-wrap wb-preview-wrap--${variant}`} style={{opacity: 0}}>
-
+    <div
+      className={`wb-preview-wrap wb-preview-wrap--${variant}`}
+      style={{ opacity: 0 }}
+    >
       {/* Keep original edit output mounted for the block toolbar; hide it visually */}
       {children}
 
@@ -152,7 +151,7 @@ export const WbPreviewWrapper = ({
         aria-label={label}
         role="document"
         // Set initial display to none, to avoid layout shift, when css loads.
-        style={{display: 'none'}}
+        style={{ display: "none" }}
       >
         {previewHtml}
       </RawHTML>

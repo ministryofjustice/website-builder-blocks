@@ -104,6 +104,20 @@ msgid "For bold text use tags: <b> & </b>."
 msgstr "Ar gyfer testun trwm defnyddiwch dagiau: <b> a </b>."
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/query-pagination-numbers
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+# Taken from WP core, for some reason the core translation is available to JS, but not php.
+msgid "Page %1$d of %2$d"
+msgstr "Tudalen %1$d o %2$d"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/query-total
+# Translations for src/extended-core-blocks/query-pagination-numbers
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 # Style variation
 #: build/index.js
 msgid "Bold numbers"

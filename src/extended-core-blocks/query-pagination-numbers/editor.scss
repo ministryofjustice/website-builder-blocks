@@ -1,9 +1,12 @@
+// Use the frontend styles
+@import 'style.scss';
+
 .wb-preview-wrap {
   // Set position relative, so that inner elements can use position absolute.
   position: relative;
 
   // Override the inline styles.
-  opacity: 1!important;
+  opacity: 1 !important;
 
   // This is a div around the original block.
   // &__orig {
@@ -44,7 +47,7 @@
 
   &__preview {
     // Revert the inline styles.
-    display: revert!important;
+    display: revert !important;
     // Ensure the overlay doesn't block selecting/dragging the block
     pointer-events: "none";
   }
