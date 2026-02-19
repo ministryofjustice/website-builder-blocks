@@ -3,5 +3,6 @@
  */
 
 import "./navigation";
+import "./file";
 import "./post-date";
 import "./query-total";
