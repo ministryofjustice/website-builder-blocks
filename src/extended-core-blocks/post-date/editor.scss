@@ -1,0 +1,27 @@
+/**
+ * Editor styles for the post date block.
+ */
+
+.wp-block-post-date--has-prefix {
+  // Wrapper block styles for the prefix variation.
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+
+  // Target the inner block - the one that has the date.
+  > [data-block] {
+    // Since we now have an outer block, reset some of it's styles.
+    box-shadow: none !important;
+    outline: none !important;
+
+    // We used JS to remove the draggable attribute from the inner block,
+    // this is because the outer block is draggable.
+    // Add this style to keep the cursor consistent.
+    cursor: grab;
+
+    // When dragging keep this inner block consistent with the prefix part of the block.
+    &.is-dragging[data-block] {
+      opacity: 1;
+    }
+  }
+}
