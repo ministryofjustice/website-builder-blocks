@@ -69,7 +69,11 @@ registerBlockVariation("core/query-pagination-numbers", {
     blockAttributes?.displayType === "current-of-total",
 });
 
-const changeMe = (BlockEdit) => (props) => {
+
+/**
+ * Handle the custom display type of current-of-total
+ */
+const handleDisplayTypes = (BlockEdit) => (props) => {
   if (props.name !== "core/query-pagination-numbers") {
     return <BlockEdit {...props} />;
   }
@@ -110,7 +114,7 @@ const changeMe = (BlockEdit) => (props) => {
 addFilter(
   "editor.BlockEdit",
   "website-builder-blocks/query-pagination-numbers",
-  changeMe,
+  handleDisplayTypes,
 );
 
 /**

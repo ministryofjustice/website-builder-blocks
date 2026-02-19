@@ -8,8 +8,6 @@
   // Override the inline styles.
   opacity: 1 !important;
 
-  // This is a div around the original block.
-  // &__orig {
   // Target the original block
   > .wp-block {
     position: absolute;
@@ -29,7 +27,7 @@
       // Does this need to be a variation - it differs between both use case.
       position: relative;
 
-      /* Dragging indicator, otherwise it's just a white box. */
+      // Dragging indicator, otherwise it's just a white box.
       background-color: var(
         --wp--preset--color--background-secondary
       ) !important;
