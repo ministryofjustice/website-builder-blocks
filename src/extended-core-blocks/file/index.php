@@ -53,6 +53,14 @@ function wb_file_block_renderer($name, $attributes, $block_content)
 
     $metadata = '<span>&#40;</span>'.esc_attr($extention).esc_attr($filesize).'<span>&#41;</span>';
 
+    // Inject metadata inside the <a> before </a>
+    $block_content = preg_replace(
+        '/<\/a>/',
+        ' <span class="screen-reader-text">' . $metadata . '</span></a>',
+        $block_content,
+        1
+    );
+
     $block_content = preg_replace(
     '/<\/div>\s*$/',
     ' <div class="wb-file__extension" aria-hidden="true">' . $metadata . '</div></div>',
