@@ -122,3 +122,12 @@ msgstr "Tudalen %1$d o %2$d"
 #: build/index.js
 msgid "Bold numbers"
 msgstr "Rhifau trwm"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Translations for src/extended-core-blocks/query-pagination
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+msgid "Centred on mobile"
+msgstr "Canoli ar symudol"
+

@@ -52,18 +52,22 @@ function wb_blocks_extend_query_pagination_numbers(string $block_content, array 
             return $block_content;
         }
 
+        $class_name = "wp-block-query-pagination-numbers";
+
         $translation = __('Page %1$d of %2$d', "wb_blocks");
 
         if ($bold_numbers) {
             // Wrap %1$d and %2$d in b tags.
             $translation = preg_replace('/(%\d+\$d)/', '<b>$1</b>', $translation);
+
+            $class_name .= " is-style-bold-numbers";
         }
 
         $content = sprintf($translation, $page_numbers['current'], $page_numbers['last']);
 
         return sprintf(
-            '<div %1$s>%2$s</div>',
-            get_block_wrapper_attributes(),
+            '<div class="%1$s">%2$s</div>',
+            $class_name,
             $content
         );
     }

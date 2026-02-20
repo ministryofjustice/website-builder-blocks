@@ -1,4 +1,4 @@
-import { registerBlockStyle, registerBlockVariation } from "@wordpress/blocks";
+import { getBlockDefaultClassName, registerBlockStyle, registerBlockVariation } from "@wordpress/blocks";
 import { RawHTML } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
@@ -39,7 +39,7 @@ const addAttributes = (settings, name) => {
 
 addFilter(
   "blocks.registerBlockType",
-  "wb_blocks/query-total-extend-attributes",
+  "wb_blocks/query-pagination-numbers-extend-attributes",
   addAttributes,
 );
 
@@ -103,6 +103,7 @@ const handleDisplayTypes = (BlockEdit) => (props) => {
   return (
     <WbPreviewWrapper
       blockName={props.name}
+      className={attributes?.className ?? ''}
       label="Block: Simple page numbers"
       previewHtml={sprintf(previewTranslation, 1, 2)}
     >
@@ -134,6 +135,7 @@ addFilter(
 export const WbPreviewWrapper = ({
   blockName,
   children,
+  className,
   label,
   previewHtml,
 }) => {
@@ -150,7 +152,7 @@ export const WbPreviewWrapper = ({
 
       {/* Custom client-rendered preview, overlayed */}
       <RawHTML
-        className="wb-preview-wrap__preview"
+        className={`wb-preview-wrap__preview ${getBlockDefaultClassName(blockName)} ${className}`}
         // Properties from the original block
         aria-label={label}
         role="document"
