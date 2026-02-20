@@ -1,0 +1,7 @@
+// Make the current page number bold, when we are using
+// the original pagination numbers block.
+.wp-block-query-pagination-numbers.is-style-bold-numbers {
+  .page-numbers.current {
+    font-weight: 700;
+  }
+}
