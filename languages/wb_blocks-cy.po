@@ -104,6 +104,16 @@ msgid "For bold text use tags: <b> & </b>."
 msgstr "Ar gyfer testun trwm defnyddiwch dagiau: <b> a </b>."
 
 
+# Label and help text for the toggle control
+#: build/index.js
+msgid "Show when no results"
+msgstr "Dangos pan nad oes canlyniadau"
+
+#: build/index.js
+msgid "Display this block when a query returns no results"
+msgstr "Dangos y bloc hwn pan nad yw ymholiad yn dychwelyd unrhyw ganlyniadau"
+
+
 # Style variation
 #: build/index.js
 msgid "Bold numbers"
