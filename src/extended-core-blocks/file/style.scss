@@ -1,0 +1,23 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: file (Frontend styles)
+
+**********************************************************************************************/
+
+.wp-block-file.wb-file {
+	margin-bottom: 10px;
+	position: relative;
+	font-size: medium;
+
+	.wb-file__extension {
+		display: inline-block;
+		position: relative;
+		color: black;
+	}
+
+	.wp-block-file__embed,
+	.wp-block-file__button {
+		display: none;
+	}
+}
