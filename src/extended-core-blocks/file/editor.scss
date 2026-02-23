@@ -1,0 +1,37 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: File (Gutenberg editor styles)
+
+**********************************************************************************************/
+
+// We have to target a WP core CSS class (.wp-block-file)
+// to prevent getting a rendering/broken block message.
+
+.wp-block-file {
+	margin-top: 10px;
+
+	.rich-text {
+		color: rgb(0, 89, 255);
+		text-decoration: underline;
+	}
+
+	.wp-block-file, .wp-block-file__button {
+		background-color: white;
+		color: black;
+		font-size: medium;
+		padding: 0.5em;
+		text-decoration: none;
+	}
+
+	.wp-block-file, .wp-block-file__button-richtext-wrapper {
+		padding: 0;
+		margin-left: 0;
+	}
+
+	.wp-block-file__embed,
+	.wp-block-file__button {
+		display: none;
+	}
+}
+

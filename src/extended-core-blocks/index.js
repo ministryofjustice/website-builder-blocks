@@ -3,6 +3,7 @@
  */
 
 import "./navigation";
+import "./file";
 import "./post-date";
 import "./query-pagination";
 import "./query-pagination-numbers";
