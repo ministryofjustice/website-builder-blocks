@@ -49,9 +49,9 @@ function wb_file_block_renderer($name, $attributes, $block_content)
     $filesize = file_exists($file) ? "&#44; " . size_format(filesize($file)) : null;
 
     $filetype = wp_check_filetype($attributes["href"]);
-    $extention = strtoupper($filetype["ext"]);
+    $extension = strtoupper($filetype["ext"]);
 
-    $metadata = '<span>&#40;</span>'.esc_attr($extention).esc_attr($filesize).'<span>&#41;</span>';
+    $metadata = '<span>&#40;</span>'.esc_attr($extension).esc_attr($filesize).'<span>&#41;</span>';
 
     // Inject metadata inside the <a> before </a>
     $block_content = preg_replace(
@@ -69,37 +69,5 @@ function wb_file_block_renderer($name, $attributes, $block_content)
 
     return $block_content;
 }
-function wb_disable_file_block_settings() {
-    wp_add_inline_script(
-        'wp-blocks',
-        "
-        wp.hooks.addFilter(
-            'blocks.registerBlockType',
-            'custom/disable-file-block-settings',
-            function(settings, name) {
-                if (name === 'core/file') {
-
-                    // Ensure attributes exists
-                    settings.attributes = settings.attributes || {};
-
-                    // Disable preview by default
-                    settings.attributes.displayPreview = {
-                        type: 'boolean',
-                        default: false
-                    };
-
-                    // Disable download button by default
-                    settings.attributes.showDownloadButton = {
-                        type: 'boolean',
-                        default: false
-                    };
-                }
-                return settings;
-            }
-        );
-        "
-    );
-}
-add_action('enqueue_block_editor_assets', 'wb_disable_file_block_settings');
 
 

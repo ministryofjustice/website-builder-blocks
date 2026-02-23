@@ -23,7 +23,7 @@ const addFileExtension = createHigherOrderComponent((BlockEdit) => {
         }
 
         const extText = '(' + getFileExtension(props.attributes.href).toUpperCase() + ')';
-
+     
         return createElement(
             Fragment,
             {},
@@ -31,7 +31,7 @@ const addFileExtension = createHigherOrderComponent((BlockEdit) => {
             createElement(
                 'style',
                 {},
-                `.wp-block-file .wp-block-file__content-wrapper::after { 
+                `#block-${props.clientId}.wp-block-file .wp-block-file__content-wrapper::after { 
                     content: "${extText}";
                     color: #000;
                     margin-left: 4px;
@@ -45,4 +45,30 @@ addFilter(
     'editor.BlockEdit',
     'my-plugin/file-link-after-text',
     addFileExtension
+);
+
+
+ wp.hooks.addFilter(
+    'blocks.registerBlockType',
+    'custom/disable-file-block-settings',
+    function(settings, name) {
+        if (name === 'core/file') {
+
+            // Ensure attributes exists
+            settings.attributes = settings.attributes || {};
+
+            // Disable preview by default
+            settings.attributes.displayPreview = {
+                type: 'boolean',
+                default: false
+            };
+
+            // Disable download button by default
+            settings.attributes.showDownloadButton = {
+                type: 'boolean',
+                default: false
+            };
+        }
+        return settings;
+    }
 );
