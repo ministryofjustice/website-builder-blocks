@@ -97,12 +97,17 @@ function closeMenuDetached(detachedNav, button) {
 }
 
 function makeMenuDetached(detachedNav, popupMenu, button) {
+	// Define function removed with removeEventListener
+	function closeMenu() {
+		closeMenuDetached(detachedNav, button);
+	}
+
 	if (getComputedStyle(popupMenu).display != "none") {
 		// The menu has been opened
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
 		button.setAttribute("aria-label", detachedNav.dataset.closeText);
 		button.setAttribute("aria-expanded", "true");
-		button.addEventListener('click', () => closeMenuDetached(detachedNav, button));
+		button.addEventListener('click', closeMenu);
 
 		// Send an opened event - so that other drawers can close. i.e. Search drawer.
 		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
@@ -111,7 +116,7 @@ function makeMenuDetached(detachedNav, popupMenu, button) {
 		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 		button.setAttribute("aria-label", detachedNav.dataset.openText);
 		button.setAttribute("aria-expanded", "false");
-		button.removeEventListener('click', () => closeMenuDetached(detachedNav, button));
+		button.removeEventListener('click', closeMenu);
 	}
 
 	/**
