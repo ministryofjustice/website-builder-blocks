@@ -73,11 +73,8 @@ for (const detachedNav of detachedNavs) {
 	// Create a stable function for the close handler
 	const closeMenu = () => closeMenuDetached(detachedNav, button);
 
-	// Listen for open events - close this drawer if another one opens.
-	window.addEventListener(
-		'wb-drawer-opened',
-		({ detail }) => detail.source !== 'navigation' && closeMenu()
-	);
+	// Initialise the nav, add event listeners once.
+	initMenuDetached(detachedNav, closeMenu);
 
 	const resizeObserver = new ResizeObserver(entries => {
 		makeMenuDetached(detachedNav, popupMenu, button, closeMenu);
@@ -91,31 +88,12 @@ for (const detachedNav of detachedNavs) {
 	resizeObserver.observe(popupMenu);
 }
 
-function closeMenuDetached(detachedNav, button) {
-	const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
-	if (openMenu && button.getAttribute("aria-expanded") == "true") {
-		// the menu is open, so we close it
-		detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
-	}
-}
-
-function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
-	if (getComputedStyle(popupMenu).display != "none") {
-		// The menu has been opened
-		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
-		button.setAttribute("aria-label", detachedNav.dataset.closeText);
-		button.setAttribute("aria-expanded", "true");
-		button.addEventListener('click', closeMenu);
-
-		// Send an opened event - so that other drawers can close. i.e. Search drawer.
-		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
-	} else {
-		// Menu is not open
-		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
-		button.setAttribute("aria-label", detachedNav.dataset.openText);
-		button.setAttribute("aria-expanded", "false");
-		button.removeEventListener('click', closeMenu);
-	}
+function initMenuDetached(detachedNav, closeMenu) {
+	// Listen for open events - close this drawer if another one opens.
+	window.addEventListener(
+		'wb-drawer-opened',
+		({ detail }) => detail.source !== 'navigation' && closeMenu()
+	);
 
 	/**
 	 * WORK AROUND
@@ -137,4 +115,31 @@ function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
 			openMenu.parentNode.classList.remove("temp-open-menu");
 		}
 	});
+}
+
+function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
+	if (getComputedStyle(popupMenu).display != "none") {
+		// The menu has been opened
+		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
+		button.setAttribute("aria-label", detachedNav.dataset.closeText);
+		button.setAttribute("aria-expanded", "true");
+		button.addEventListener('click', closeMenu, { once: true });
+
+		// Send an opened event - so that other drawers can close. i.e. Search drawer.
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
+	} else {
+		// Menu is not open
+		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+		button.setAttribute("aria-label", detachedNav.dataset.openText);
+		button.setAttribute("aria-expanded", "false");
+		button.removeEventListener('click', closeMenu);
+	}
+}
+
+function closeMenuDetached(detachedNav, button) {
+	const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
+	if (openMenu && button.getAttribute("aria-expanded") == "true") {
+		// the menu is open, so we close it
+		detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
+	}
 }
