@@ -4,10 +4,13 @@
   // the numbers stay in the center.
   .wp-block-query-pagination.is-style-centred-on-mobile {
     display: grid;
+    width: 100%;
+    min-width: 100%;
     grid-template-areas: "prev numbers next";
     grid-template-columns: repeat(3, 1fr);
     // Overwrite the potentially large desktop gap.
     gap: 1rem;
+
 
     .wp-block-query-pagination-previous {
       grid-area: prev;
