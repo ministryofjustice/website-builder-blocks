@@ -239,9 +239,7 @@ const CustomBlockWrapper = ({ children, previewHtml }) => {
   return (
     <div className="wb-query-total__editor-wrap" style={{ opacity: 0 }}>
       {/* Keep original edit output mounted for the block toolbar; hide it visually */}
-      <div className="wb-query-total__orig" aria-hidden="true">
-        {children}
-      </div>
+      {children}
 
       {/* Custom client-rendered preview, overlayed */}
       <RawHTML
