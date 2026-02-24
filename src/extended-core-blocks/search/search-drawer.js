@@ -58,7 +58,7 @@ function openSearchDrawer() {
     const height = headerSearchFormWrapper.offsetHeight;
     header.style.marginBottom = `${height}px`;
 
-    // Send an opened event - so that other drawers can close. i.e.navigation.
+    // Send an opened event - so that other drawers can close. i.e. navigation.
     window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
     // Listen for open events - close this drawer if another one opens.
     window.addEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
