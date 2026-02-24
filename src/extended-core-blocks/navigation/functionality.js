@@ -70,14 +70,17 @@ for (const detachedNav of detachedNavs) {
 	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
 	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
+	// Create a stable function for the close handler
+	const closeMenu = () => closeMenuDetached(detachedNav, button);
+
 	// Listen for open events - close this drawer if another one opens.
 	window.addEventListener(
 		'wb-drawer-opened',
-		({ detail }) => detail.source !== 'navigation' && closeMenuDetached(detachedNav, button)
+		({ detail }) => detail.source !== 'navigation' && closeMenu()
 	);
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDetached(detachedNav, popupMenu, button);
+		makeMenuDetached(detachedNav, popupMenu, button, closeMenu);
 	});
 
 	/**
@@ -96,12 +99,7 @@ function closeMenuDetached(detachedNav, button) {
 	}
 }
 
-function makeMenuDetached(detachedNav, popupMenu, button) {
-	// Define function removed with removeEventListener
-	function closeMenu() {
-		closeMenuDetached(detachedNav, button);
-	}
-
+function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
 	if (getComputedStyle(popupMenu).display != "none") {
 		// The menu has been opened
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
