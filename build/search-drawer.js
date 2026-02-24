@@ -25,7 +25,6 @@ if (headerSearchToggle && headerSearchBlockWrapper && headerSearchFormWrapper) {
             ([entry]) => {
                 //close search draw if toggle hidden
                 if (!entry.isIntersecting) {
-                    headerSearchBlockWrapper.classList.remove("search-drawer-open");
                     closeSearchDrawer();
                 } 
             },
@@ -58,6 +57,11 @@ function openSearchDrawer() {
     
     const height = headerSearchFormWrapper.offsetHeight;
     header.style.marginBottom = `${height}px`;
+
+    // Send an opened event - so that other drawers can close. i.e.navigation.
+    window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
+    // Listen for open events - close this drawer if another one opens.
+    window.addEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
 }
 
 function closeSearchDrawer() {
@@ -68,4 +72,8 @@ function closeSearchDrawer() {
     headerSearchForm.classList.remove("wp-block-search__button-outside");
     headerSearchInsideWrapper.style.width = originaSearchWidth;
     headerSearchToggleButton.setAttribute("aria-label", "Open search");
+    headerSearchBlockWrapper.classList.remove("search-drawer-open");
+
+    // Stop listening for drawer events.
+    window.removeEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
 }

@@ -40,19 +40,22 @@ for (const drawerNav of drawerNavs) {
 }
 
 function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
-	let subMenuOpen = false;
 	const navBlockWidth = getComputedStyle(drawerNav).width;
-	subMenus.forEach(subMenu => {
-		if (getComputedStyle(subMenu).visibility != "hidden") {
-			// The submenu has been opened
-			subMenuOpen = true;
-			let subMenuHeight = subMenu.offsetHeight;
-			subMenu.style.width = navBlockWidth;
-			subMenu.style.marginTop = initialPadding + "px";
-			drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
-		}
-	});
-	if (!subMenuOpen) {
+
+	// Find the open submenu
+	const subMenu =  Array.from(subMenus).find(subMenu => getComputedStyle(subMenu).visibility !== "hidden");
+
+	if(subMenu) {
+		let subMenuHeight = subMenu.offsetHeight;
+		subMenu.style.width = navBlockWidth;
+		subMenu.style.marginTop = initialPadding + "px";
+		drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
+
+		// The default behaviour for this menu is that it is closed when the user clicks elsewhere.
+		//   so, we don't need to listen for when the search drawer is opened here.
+		// Send an opened event - so that other drawers can close. i.e. Search drawer.
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
+	} else {
 		// No submenu is opened
 		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 		drawerNav.style.paddingBottom = initialPadding + "px"; //Restore the bottom padding to original
@@ -67,6 +70,12 @@ for (const detachedNav of detachedNavs) {
 	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
 	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
+	// Listen for open events - close this drawer if another one opens.
+	window.addEventListener(
+		'wb-drawer-opened',
+		({ detail }) => detail.source !== 'navigation' && closeMenuDetached(detachedNav, button)
+	);
+
 	const resizeObserver = new ResizeObserver(entries => {
 		makeMenuDetached(detachedNav, popupMenu, button);
 	});
@@ -79,24 +88,30 @@ for (const detachedNav of detachedNavs) {
 	resizeObserver.observe(popupMenu);
 }
 
+function closeMenuDetached(detachedNav, button) {
+	const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
+	if (openMenu && button.getAttribute("aria-expanded") == "true") {
+		// the menu is open, so we close it
+		detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
+	}
+}
+
 function makeMenuDetached(detachedNav, popupMenu, button) {
 	if (getComputedStyle(popupMenu).display != "none") {
 		// The menu has been opened
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
 		button.setAttribute("aria-label", detachedNav.dataset.closeText);
 		button.setAttribute("aria-expanded", "true");
-		button.addEventListener('click', () => {
-			const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
-			if (openMenu && button.getAttribute("aria-expanded") == "true") {
-				// the menu is open, so we close it
-				detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
-			}
-		});
+		button.addEventListener('click', () => closeMenuDetached(detachedNav, button));
+
+		// Send an opened event - so that other drawers can close. i.e. Search drawer.
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
 	} else {
 		// Menu is not open
 		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 		button.setAttribute("aria-label", detachedNav.dataset.openText);
 		button.setAttribute("aria-expanded", "false");
+		button.removeEventListener('click', () => closeMenuDetached(detachedNav, button));
 	}
 
 	/**
