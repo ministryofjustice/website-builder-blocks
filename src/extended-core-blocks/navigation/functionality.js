@@ -71,7 +71,13 @@ for (const detachedNav of detachedNavs) {
 	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
 	// Create a stable function for the close handler
-	const closeMenu = () => closeMenuDetached(detachedNav, button);
+	const closeMenu = () => {
+		const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
+		if (openMenu && button.getAttribute("aria-expanded") == "true") {
+			// the menu is open, so we close it
+			detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
+		}
+	}
 
 	// Initialise the nav, add event listeners once.
 	initMenuDetached(detachedNav, closeMenu);
@@ -133,13 +139,5 @@ function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
 		button.setAttribute("aria-label", detachedNav.dataset.openText);
 		button.setAttribute("aria-expanded", "false");
 		button.removeEventListener('click', closeMenu);
-	}
-}
-
-function closeMenuDetached(detachedNav, button) {
-	const openMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container.is-menu-open");
-	if (openMenu && button.getAttribute("aria-expanded") == "true") {
-		// the menu is open, so we close it
-		detachedNav.querySelector(".wp-block-navigation__responsive-container-close").click();
 	}
 }
