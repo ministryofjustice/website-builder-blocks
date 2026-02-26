@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 /**
  * Update the core query total block to support additional formats.
  *
@@ -14,6 +16,7 @@ add_filter('block_type_metadata_settings', function (array $settings, array $met
     }
 
     $settings['attributes'] = array_merge($settings['attributes'] ?? [], [
+        'showWhenNoResults' => ['type' => 'boolean', 'default' => null],
         'rangeFormatSingle' => ['type' => 'string', 'default' => null],
         'rangeFormatMulti'  => ['type' => 'string',  'default' => null],
     ]);
@@ -48,6 +51,8 @@ add_filter('block_type_metadata_settings', function (array $settings, array $met
  */
 function wp_blocks_render_block_core_query_total(array $attributes, string $content, WP_Block $block): string
 {
+
+
     $bold_numbers = in_array('is-style-bold-numbers', explode(' ', ($attributes['className'] ?? '')), true);
 
     /**
@@ -70,7 +75,9 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
         try {
             // Call the original Core renderer.
             // See core's implementation at wordpress/wp-includes/blocks/query-total.php
-            return render_block_core_query_total($attributes, $content, $block);
+            $html = render_block_core_query_total($attributes, $content, $block);
+            // Apply a filter to the HTML before returning.
+            return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
         } finally {
             // Always remove, even if an error occurs.
             remove_filter('ngettext_default', $ngettext_callback, 10);
@@ -117,7 +124,9 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
         try {
             // Call the original Core renderer.
             // See core's implementation at wordpress/wp-includes/blocks/query-total.php
-            return render_block_core_query_total($attributes, $content, $block);
+            $html = render_block_core_query_total($attributes, $content, $block);
+            // Apply a filter to the HTML before returning.
+            return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
         } finally {
             // Always remove, even if an error occurs.
             remove_filter('gettext_default', $gettext_callback, 10);
@@ -130,5 +139,30 @@ function wp_blocks_render_block_core_query_total(array $attributes, string $cont
      * If WP introduces additional display types in the future,
      * then return the original renderer un-modified.
      */
-    return render_block_core_query_total($attributes, $content, $block);
+    $html = render_block_core_query_total($attributes, $content, $block);
+    // Apply a filter to the HTML before returning.
+    return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
 }
+
+
+/**
+ * Filter the block HTML
+ *
+ * Conditionally hide the block when there are no results.
+ */
+add_filter('wb_blocks_filter_core_query_total_html', function ($html, $attributes) {
+    $show_when_no_results = $attributes['showWhenNoResults'] ?? false;
+
+    if (
+        $show_when_no_results === false &&
+        // Search the text string for the number 0 - match one of the following:
+        // - 0 at the start, followed by a space
+        // - 0 in the middle with spaces on both sides
+        // - 0 at the end, preceded by a space
+        preg_match('/(^0\s|\s0\s|\s0$)/', wp_strip_all_tags($html))
+    ) {
+        return '<!-- core/query-total hidden because of empty results -->';
+    }
+
+    return $html;
+}, 10, 2);

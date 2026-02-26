@@ -118,6 +118,16 @@ msgstr "Tudalen %1$d o %2$d"
 # Translations for src/extended-core-blocks/query-pagination-numbers
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+# Label and help text for the toggle control
+#: build/index.js
+msgid "Show when no results"
+msgstr "Dangos pan nad oes canlyniadau"
+
+#: build/index.js
+msgid "Display this block when a query returns no results"
+msgstr "Dangos y bloc hwn pan nad yw ymholiad yn dychwelyd unrhyw ganlyniadau"
+
+
 # Style variation
 #: build/index.js
 msgid "Bold numbers"

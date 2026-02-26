@@ -1,6 +1,11 @@
 import { InspectorControls } from "@wordpress/block-editor";
 import { registerBlockStyle } from "@wordpress/blocks";
-import { PanelBody, PanelRow } from "@wordpress/components";
+import {
+  PanelBody,
+  PanelRow,
+  ToggleControl,
+  __experimentalVStack as VStack,
+} from "@wordpress/components";
 import { RawHTML } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
@@ -34,6 +39,7 @@ const addAttributes = (settings, name) => {
 
   settings.attributes = {
     ...settings.attributes,
+    showWhenNoResults: { type: "boolean", default: false },
     rangeFormatSingle: { type: "string", default: null },
     rangeFormatMulti: { type: "string", default: null },
   };
@@ -47,6 +53,7 @@ addFilter(
   addAttributes,
 );
 
+
 /**
  * Custom TotalResults component for preview
  *
@@ -54,7 +61,12 @@ addFilter(
  * all we do here is wrap the number in b tags
  * if the bold-numbers style is active.
  */
-const TotalResults = ({ isStyleBoldNumbers, children }) => {
+const TotalResults = ({
+  showWhenNoResults,
+  isStyleBoldNumbers,
+  setAttributes,
+  children,
+}) => {
   // Translate the phrase with the number, that's what WP does.
   let previewHtml = __("12 results found");
 
@@ -64,9 +76,29 @@ const TotalResults = ({ isStyleBoldNumbers, children }) => {
   }
 
   return (
-    <CustomBlockWrapper previewHtml={previewHtml}>
-      {children}
-    </CustomBlockWrapper>
+    <>
+      <CustomBlockWrapper previewHtml={previewHtml}>
+        {children}
+      </CustomBlockWrapper>
+
+      <InspectorControls>
+        <PanelBody title={__("Settings")}>
+          <PanelRow>
+            <ToggleControl
+              label={__("Show when no results", "wb_blocks")}
+              help={__(
+                "Display this block when a query returns no results",
+                "wb_blocks",
+              )}
+              checked={showWhenNoResults}
+              onChange={(showWhenNoResults) =>
+                setAttributes({ showWhenNoResults })
+              }
+            />
+          </PanelRow>
+        </PanelBody>
+      </InspectorControls>
+    </>
   );
 };
 
@@ -79,6 +111,7 @@ const TotalResults = ({ isStyleBoldNumbers, children }) => {
  *    preset formats or a custom format.
  */
 const RangeDisplay = ({
+  showWhenNoResults,
   rangeFormatSingle,
   rangeFormatMulti,
   isStyleBoldNumbers,
@@ -110,15 +143,28 @@ const RangeDisplay = ({
       <InspectorControls>
         <PanelBody title={__("Settings")}>
           <PanelRow>
-            <QueryRangeFormatPicker
-              rangeFormatSingle={rangeFormatSingle}
-              rangeFormatMulti={rangeFormatMulti}
-              defaultFormatSingle="Displaying %1$s of %2$s"
-              defaultFormatRange="Displaying %1$s – %2$s of %3$s"
-              onChange={({ rangeFormatSingle, rangeFormatMulti }) =>
-                setAttributes({ rangeFormatSingle, rangeFormatMulti })
-              }
-            />
+            <VStack spacing="10">
+              <QueryRangeFormatPicker
+                rangeFormatSingle={rangeFormatSingle}
+                rangeFormatMulti={rangeFormatMulti}
+                defaultFormatSingle="Displaying %1$s of %2$s"
+                defaultFormatRange="Displaying %1$s – %2$s of %3$s"
+                onChange={({ rangeFormatSingle, rangeFormatMulti }) =>
+                  setAttributes({ rangeFormatSingle, rangeFormatMulti })
+                }
+              />
+              <ToggleControl
+                label={__("Show when no results", "wb_blocks")}
+                help={__(
+                  "Display this block when a query returns no results",
+                  "wb_blocks",
+                )}
+                checked={showWhenNoResults}
+                onChange={(showWhenNoResults) =>
+                  setAttributes({ showWhenNoResults })
+                }
+              />
+            </VStack>
           </PanelRow>
         </PanelBody>
       </InspectorControls>
@@ -141,9 +187,15 @@ const addFormatControl = (BlockEdit) => (props) => {
     ?.split(" ")
     .includes("is-style-bold-numbers");
 
+  const showWhenNoResults = !!props.attributes?.showWhenNoResults;
+
   if (props.attributes.displayType === "total-results") {
     return (
-      <TotalResults isStyleBoldNumbers={isStyleBoldNumbers}>
+      <TotalResults
+        showWhenNoResults={showWhenNoResults}
+        isStyleBoldNumbers={isStyleBoldNumbers}
+        setAttributes={props.setAttributes}
+      >
         <BlockEdit {...props} />
       </TotalResults>
     );
@@ -153,10 +205,11 @@ const addFormatControl = (BlockEdit) => (props) => {
   if (props.attributes.displayType === "range-display") {
     return (
       <RangeDisplay
+        showWhenNoResults={showWhenNoResults}
+        isStyleBoldNumbers={isStyleBoldNumbers}
         rangeFormatSingle={props.attributes.rangeFormatSingle ?? null}
         rangeFormatMulti={props.attributes.rangeFormatMulti ?? null}
         setAttributes={props.setAttributes}
-        isStyleBoldNumbers={isStyleBoldNumbers}
       >
         <BlockEdit {...props} />
       </RangeDisplay>
@@ -192,9 +245,7 @@ const CustomBlockWrapper = ({ children, previewHtml }) => {
   return (
     <div className="wb-query-total__editor-wrap" style={{ opacity: 0 }}>
       {/* Keep original edit output mounted for the block toolbar; hide it visually */}
-      <div className="wb-query-total__orig" aria-hidden="true">
-        {children}
-      </div>
+      {children}
 
       {/* Custom client-rendered preview, overlayed */}
       <RawHTML
