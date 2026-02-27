@@ -107,7 +107,7 @@ function initMenuDetached(detachedNav, closeMenu, index) {
 	window.addEventListener(
 		'wb-drawer-opened',
 		// closeMenu
-		({ detail }) => detail.source !== `navigation-${index}` && closeMenu()
+		({ detail }) => detail.source !== `navigation-detached-${index}` && closeMenu()
 	);
 
 	/**
@@ -137,9 +137,9 @@ function makeMenuDetached(detachedNav, popupMenu, button, closeMenu, index) {
 		// The menu has been opened
 
 		// Send an opened event - so that other drawers can close. i.e. Search drawer.
-		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: `navigation-${index}` } }));
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: `navigation-detached-${index}` } }));
 
-		header.setAttribute('data-margin-bottom-owner', `navigation-${index}`);
+		header.setAttribute('data-margin-bottom-owner', `navigation-detached-${index}`);
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
 
 		button.setAttribute("aria-label", detachedNav.dataset.closeText);
@@ -150,7 +150,7 @@ function makeMenuDetached(detachedNav, popupMenu, button, closeMenu, index) {
 
 		// Only clear the header margin bottom if the menu that is closing is the one that set the it.
 		// This prevents a race condition where it's just been set elsewhere.
-		if(header.getAttribute('data-margin-bottom-owner') === `navigation-${index}`) {
+		if(header.getAttribute('data-margin-bottom-owner') === `navigation-detached-${index}`) {
 			header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
 			header.removeAttribute('data-margin-bottom-owner');
 		}

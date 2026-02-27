@@ -59,6 +59,7 @@ async function openSearchDrawer() {
     headerSearchToggleButton.setAttribute("aria-label", "Close search");
 
     const height = headerSearchFormWrapper.offsetHeight;
+    // Set this attribute, as a marker to know that we updated the margin bottom most recently.
     header.setAttribute('data-margin-bottom-owner', 'search-drawer');
     header.style.marginBottom = `${height}px`;
 
