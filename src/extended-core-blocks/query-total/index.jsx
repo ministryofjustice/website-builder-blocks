@@ -57,7 +57,7 @@ addFilter(
 /**
  * Custom TotalResults component for preview
  *
- * This is a minor change from the original block, 
+ * This is a minor change from the original block,
  * all we do here is wrap the number in b tags
  * if the bold-numbers style is active.
  */
@@ -233,6 +233,12 @@ addFilter(
  * without losing the original block's toolbar controls.
  *
  * This element is styled in editor.scss
+ *
+ * NOTE: This function is very similar to WbPreviewWrapper in
+ * src/extended-core-blocks/query-pagination-numbers/index.jsx
+ * If another extended core block needs this functionality, then consider:
+ * - moving WbPreviewWrapper into it's own file
+ * - using it as an abstraction that's compatible with all blocks
  */
 const CustomBlockWrapper = ({ children, previewHtml }) => {
   // Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
