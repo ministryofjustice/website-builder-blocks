@@ -18,13 +18,13 @@ const detachedNavs = document.querySelectorAll("nav.is-style-detached");
 const headerInitialStyles = getComputedStyle(header);
 const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
 
-for (const drawerNav of drawerNavs) {
+for (const [index, drawerNav] of drawerNavs.entries()) {
 	const navInitialStyles = getComputedStyle(drawerNav);
 	const navInitialPaddingBottom = parseFloat(navInitialStyles.paddingBottom);
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom);
+		makeMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom, index);
 	});
 
 	/**
@@ -39,7 +39,7 @@ for (const drawerNav of drawerNavs) {
 
 }
 
-function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
+function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 	const navBlockWidth = getComputedStyle(drawerNav).width;
 
 	// Find the open submenu
@@ -49,15 +49,23 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 		let subMenuHeight = subMenu.offsetHeight;
 		subMenu.style.width = navBlockWidth;
 		subMenu.style.marginTop = initialPadding + "px";
-		drawerNav.style.paddingBottom = (subMenuHeight + initialPadding) + "px";
+		header.style.marginBottom = subMenuHeight + "px";
+		header.setAttribute('data-margin-bottom-owner', `navigation-drawer-${index}`);
 
 		// The default behaviour for this menu is that it is closed when the user clicks elsewhere.
 		//   so, we don't need to listen for when the search drawer is opened here.
 		// Send an opened event - so that other drawers can close. i.e. Search drawer.
-		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: `navigation-drawer-${index}` } }));
 	} else {
 		// No submenu is opened
-		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+
+		// Only clear the header margin bottom if the menu that is closing is the one that set the it.
+		// This prevents a race condition where it's just been set elsewhere.
+		if(header.getAttribute('data-margin-bottom-owner') === `navigation-drawer-${index}`) {
+			header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+			header.removeAttribute('data-margin-bottom-owner');
+		}
+
 		drawerNav.style.paddingBottom = initialPadding + "px"; //Restore the bottom padding to original
 		subMenus.forEach(subMenu => {
 			subMenu.style.width = "";
@@ -66,7 +74,7 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding) {
 	}
 }
 
-for (const detachedNav of detachedNavs) {
+for (const [index, detachedNav] of detachedNavs.entries()) {
 	const popupMenu = detachedNav.querySelector(".wp-block-navigation__responsive-container");
 	const button = detachedNav.querySelector(".wp-block-navigation__responsive-container-open");
 
@@ -80,10 +88,10 @@ for (const detachedNav of detachedNavs) {
 	}
 
 	// Initialise the nav, add event listeners once.
-	initMenuDetached(detachedNav, closeMenu);
+	initMenuDetached(detachedNav, closeMenu, index);
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDetached(detachedNav, popupMenu, button, closeMenu);
+		makeMenuDetached(detachedNav, popupMenu, button, closeMenu, index);
 	});
 
 	/**
@@ -94,11 +102,12 @@ for (const detachedNav of detachedNavs) {
 	resizeObserver.observe(popupMenu);
 }
 
-function initMenuDetached(detachedNav, closeMenu) {
+function initMenuDetached(detachedNav, closeMenu, index) {
 	// Listen for open events - close this drawer if another one opens.
 	window.addEventListener(
 		'wb-drawer-opened',
-		({ detail }) => detail.source !== 'navigation' && closeMenu()
+		// closeMenu
+		({ detail }) => detail.source !== `navigation-${index}` && closeMenu()
 	);
 
 	/**
@@ -123,19 +132,29 @@ function initMenuDetached(detachedNav, closeMenu) {
 	});
 }
 
-function makeMenuDetached(detachedNav, popupMenu, button, closeMenu) {
+function makeMenuDetached(detachedNav, popupMenu, button, closeMenu, index) {
 	if (getComputedStyle(popupMenu).display != "none") {
 		// The menu has been opened
+
+		// Send an opened event - so that other drawers can close. i.e. Search drawer.
+		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: `navigation-${index}` } }));
+
+		header.setAttribute('data-margin-bottom-owner', `navigation-${index}`);
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
+
 		button.setAttribute("aria-label", detachedNav.dataset.closeText);
 		button.setAttribute("aria-expanded", "true");
 		button.addEventListener('click', closeMenu, { once: true });
-
-		// Send an opened event - so that other drawers can close. i.e. Search drawer.
-		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'navigation' } }));
 	} else {
 		// Menu is not open
-		header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+
+		// Only clear the header margin bottom if the menu that is closing is the one that set the it.
+		// This prevents a race condition where it's just been set elsewhere.
+		if(header.getAttribute('data-margin-bottom-owner') === `navigation-${index}`) {
+			header.style.marginBottom = headerInitialMarginBottom + "px"; //Restore header margin to initial value
+			header.removeAttribute('data-margin-bottom-owner');
+		}
+
 		button.setAttribute("aria-label", detachedNav.dataset.openText);
 		button.setAttribute("aria-expanded", "false");
 		button.removeEventListener('click', closeMenu);

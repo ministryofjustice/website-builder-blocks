@@ -13,7 +13,7 @@ const headerSearchLabel = header.querySelector(".wb-search-form-wrapper .wp-bloc
 const headerSearchInsideWrapper = header.querySelector(".wb-search-form-wrapper .wp-block-search__inside-wrapper");
 
 // store original inline width (if any) as this is set by block settings
-const originaSearchWidth = headerSearchInsideWrapper ? headerSearchInsideWrapper.style.width : "";
+const originalSearchWidth = headerSearchInsideWrapper ? headerSearchInsideWrapper.style.width : "";
 
 if (headerSearchToggle && headerSearchBlockWrapper && headerSearchFormWrapper) {
 	headerSearchToggle.addEventListener("click", () => {
@@ -47,30 +47,38 @@ function toggleSearchDrawer() {
     }
 }
 
-function openSearchDrawer() {
+async function openSearchDrawer() {
+    // Send an opened event - so that other drawers can close. i.e. navigation.
+    window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
+
     headerSearchFormWrapper.classList.add("is-layout-constrained");
     headerSearchLabel.classList.remove("screen-reader-text");
     headerSearchForm.classList.remove("wp-block-search__button-inside");
     headerSearchForm.classList.add("wp-block-search__button-outside");
     headerSearchInsideWrapper.style.width = "";
     headerSearchToggleButton.setAttribute("aria-label", "Close search");
-    
+
     const height = headerSearchFormWrapper.offsetHeight;
+    header.setAttribute('data-margin-bottom-owner', 'search-drawer');
     header.style.marginBottom = `${height}px`;
 
-    // Send an opened event - so that other drawers can close. i.e. navigation.
-    window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
     // Listen for open events - close this drawer if another one opens.
     window.addEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
 }
 
 function closeSearchDrawer() {
-    header.style.marginBottom = "";
+    // Only clear the header margin bottom if we set it most recently.
+    // This prevents a race condition where it's just been set elsewhere.
+    if(header.getAttribute('data-margin-bottom-owner') === 'search-drawer') {
+        header.style.marginBottom = "";
+        header.removeAttribute('data-margin-bottom-owner')
+    }
+
     headerSearchFormWrapper.classList.remove("is-layout-constrained");
     headerSearchLabel.classList.add("screen-reader-text");
     headerSearchForm.classList.add("wp-block-search__button-inside");
     headerSearchForm.classList.remove("wp-block-search__button-outside");
-    headerSearchInsideWrapper.style.width = originaSearchWidth;
+    headerSearchInsideWrapper.style.width = originalSearchWidth;
     headerSearchToggleButton.setAttribute("aria-label", "Open search");
     headerSearchBlockWrapper.classList.remove("search-drawer-open");
 
