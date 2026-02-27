@@ -49,8 +49,10 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 		let subMenuHeight = subMenu.offsetHeight;
 		subMenu.style.width = navBlockWidth;
 		subMenu.style.marginTop = initialPadding + "px";
-		header.style.marginBottom = subMenuHeight + "px";
+
+		// Set this attribute, as a marker to know that we updated the margin bottom most recently.
 		header.setAttribute('data-margin-bottom-owner', `navigation-drawer-${index}`);
+		header.style.marginBottom = subMenuHeight + "px";
 
 		// The default behaviour for this menu is that it is closed when the user clicks elsewhere.
 		//   so, we don't need to listen for when the search drawer is opened here.
@@ -106,7 +108,6 @@ function initMenuDetached(detachedNav, closeMenu, index) {
 	// Listen for open events - close this drawer if another one opens.
 	window.addEventListener(
 		'wb-drawer-opened',
-		// closeMenu
 		({ detail }) => detail.source !== `navigation-detached-${index}` && closeMenu()
 	);
 
@@ -139,6 +140,7 @@ function makeMenuDetached(detachedNav, popupMenu, button, closeMenu, index) {
 		// Send an opened event - so that other drawers can close. i.e. Search drawer.
 		window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: `navigation-detached-${index}` } }));
 
+		// Set this attribute, as a marker to know that we updated the margin bottom most recently.
 		header.setAttribute('data-margin-bottom-owner', `navigation-detached-${index}`);
 		header.style.marginBottom = (headerInitialMarginBottom + popupMenu.offsetHeight) + "px";
 
