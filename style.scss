@@ -10,15 +10,14 @@ Text Domain: mojblocks
 
 **********************************************************************************************/
 
-
 @import "node_modules/govuk-frontend/dist/govuk/all";
 @import "node_modules/@ministryofjustice/frontend/moj/components/date-picker/date-picker";
 
+@import "assets/scss/variables.scss";
 @import 'src/**/style.scss';
 
 
 /* Temp styles until form style is decided */
-
 
 .moj-datepicker {
 

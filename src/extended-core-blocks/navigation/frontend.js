@@ -14,7 +14,7 @@ const drawerNavs = document.querySelectorAll("nav.is-style-drawer");
 // It is reasonable to have more than one detached nav, so we apply functionality to all of them
 const detachedNavs = document.querySelectorAll("nav.is-style-detached");
 
-
+const header = document.querySelector("header");
 const headerInitialStyles = getComputedStyle(header);
 const headerInitialMarginBottom = parseFloat(headerInitialStyles.marginBottom);
 
