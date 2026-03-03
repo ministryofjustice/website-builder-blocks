@@ -135,6 +135,9 @@ registerBlockType("wb-blocks/accordion-section", {
 		accordionSectionTitle: {
 			type: "string"
 		},
+		accordionHeadingLevel: {
+			type: "number"
+		},
 		accordionSectionClassName: {
 			type: "string"
 		}
@@ -144,7 +147,8 @@ registerBlockType("wb-blocks/accordion-section", {
 
 		const {
 			attributes: {
-				accordionSectionTitle
+				accordionSectionTitle,
+				accordionHeadingLevel
 			},
 			className,
 			setAttributes,
@@ -165,22 +169,19 @@ registerBlockType("wb-blocks/accordion-section", {
 		}
 
 		const headingLevel = context['wb-blocks/accordionHeadingLevel'] || 3;
+		setAttributes({ accordionHeadingLevel: headingLevel });
 
 		return ([
-			<div className={`${className} wb-accordion__section`} key="accordion-block-section">
-				<h3 className="wb-accordion__section-heading">
-					<span className="wb-accordion__section-button" id="accordion-default-heading-1">
-						<RichText
-							tagName={`h${headingLevel}`}
-							className="accordion-section-heading"
-							value={ accordionSectionTitle }
-							placeholder="Add accordion section title…"
-							onChange={ onChangeAccordionTitle }
-							allowedFormats={[]} // disable all format options
-						/>
-					</span>
-				</h3>
-				<div id="accordion-default-content-1" className="wb-accordion__section-content">
+			<div className={`${className} accordion-section`} key="accordion-block-section">
+				<RichText
+					tagName={`h${accordionHeadingLevel}`}
+					className="accordion-section__heading"
+					value={ accordionSectionTitle }
+					placeholder="Add accordion section title…"
+					onChange={ onChangeAccordionTitle }
+					allowedFormats={[]} // disable all format options
+				/>
+				<div className="accordion-section__content">
 					<InnerBlocks
 						template={ templates }
 						allowedBlocks={ allowedBlocks }

@@ -38,7 +38,6 @@ function render_callback_accordion_block($attributes, $content)
 		<?php } ?>
 	>
 
-	<p>!!!!!!!!!111</p>
 	<?php echo $content; ?>
 
 	</div>
@@ -68,8 +67,8 @@ function render_callback_accordion_block_section($attributes, $content)
 
 	// Parse attributes found in index.js
 	$attribute_accordion_section_className = $attributes['accordionSectionClassName'] ?? '';
+	$attribute_accordion_headingLevel = $attributes['accordionHeadingLevel'] ?? '3';
 	$attribute_accordion_section_Title = $attributes['accordionSectionTitle'] ?? '';
-	$attribute_accordion_section_TextArea = $attributes['accordionSectionTextArea'] ?? '';
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -78,21 +77,15 @@ function render_callback_accordion_block_section($attributes, $content)
 
 	?>
 
-	<div class="<?php _e(esc_html($attribute_accordion_section_className)) ; ?> wb-accordion__section">
-		<div class="wb-accordion__section-header">
-			<h3 class="wb-accordion__section-heading">
-				<span class="wb-accordion__section-button" id="accordion-default-heading-1">
+	<details class="<?php _e(esc_html($attribute_accordion_section_className)) ; ?> wb-accordion__section">
+		<summary>
+			<h<?php echo $attribute_accordion_headingLevel; ?> class="wp-block-heading inline-block cursor-pointer">
 				<?php _e(esc_html($attribute_accordion_section_Title)) ; ?>
-				</span>
-			</h3>
-		</div>
+			</h<?php echo $attribute_accordion_headingLevel; ?>>
+		</summary>
 		<div id="accordion-default-content-1" class="wb-accordion__section-content">
 			<?php
-			$firstParagraphContent = _(trim(esc_html($attribute_accordion_section_TextArea)));
-			if (!empty($firstParagraphContent)) {
-				echo "<p>$firstParagraphContent</p>";
-			}
-			_e(esc_html($content));
+				_e(esc_html($content));
 			?>
 		</div>
 	</div>
