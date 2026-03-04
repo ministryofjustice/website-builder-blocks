@@ -13,65 +13,6 @@ SASS modifications to conform GovUK frontend to MoJ block styling
 
 @import 'style.scss';
 
-.govuk-accordion {
-
-	border-top: dashed currentColor 1px;
-	border-bottom: dashed currentColor 1px;
-	padding-top: 20px;
-	padding-bottom: 20px;
-
-	&:before {
-		content:"Accordion start";
-		font-style: italic;
-		display: block;
-		padding-bottom: 20px;
-		color: #888;
-	}
-
-	> * {
-		margin-left: 30px;
-	}
-
-	.block-editor-block-list__block .block-list-appender {
-		margin-left: 0;
-		width: 400px;
-
-		textarea {
-			padding-left: 0;
-			margin-left: 0;
-		}
-	}
-	&__section-header {
-		border-top: 1px dashed #888;
-		color: blue;
-	
-		&:before {
-			color: #888;
-		}
-	}
-	
-	&__section-content {
-		display: block;
-		margin-left: 30px;
-
-		&:after {
-			content:"End of section";
-			font-style: italic;
-			padding-top: 20px;   
-			color: #888;
-			display: block;
-			margin-left: -30px;
-		}
-	}
-	&:after {
-		content:"Accordion end";
-		font-style: italic;
-		padding-top: 20px;
-		display: block;
-		color: #888;
-	}
-}
-
 .showHideThis,
 .showHideAll {
 	color:deepskyblue;
