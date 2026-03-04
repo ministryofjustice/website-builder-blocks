@@ -269,6 +269,15 @@ function wb_blocks_enqueue_style()
     if ( is_singular() ) {
         global $post;
 
+
+        wp_register_script(
+            'wb-blocks-frontend-js',
+            plugins_url('/build/frontend.min.js', __FILE__),
+            [ 'wp-dom-ready'],
+            false,
+            true
+        );  
+
         // Check for the block in the post content
         if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
             wp_enqueue_script(
@@ -278,8 +287,6 @@ function wb_blocks_enqueue_style()
                 '1.0',
                 true
             );
-            
-            wp_register_script('filterable-listing-js', plugins_url('/build/filterable-listing.js', __FILE__), array(), '1.0', true);
 
             $taxonomies = get_taxonomies(array('public' => true));
 
@@ -303,37 +310,18 @@ function wb_blocks_enqueue_style()
             }
     
             wp_localize_script(
-                'filterable-listing-js',
+                'wb-blocks-frontend-js',
                 'filterable_listing_object',
                 array(
                     'taxonomies' => $all_terms
                 )
             );
 
-            wp_enqueue_script('filterable-listing-js');
         }
     }
 
+    wp_enqueue_script('wb-blocks-frontend-js');
 
-    wp_enqueue_script(
-        'search-drawer',
-        plugins_url('/build/search-drawer.js', __FILE__),
-        [ 'wp-dom-ready'],
-        false,
-        true
-    );
-
-    /**
-     * Enqueue functionality for navigation block
-     */
-
-    wp_enqueue_script(
-        'drawer-menu',
-        plugins_url('src/extended-core-blocks/navigation/functionality.js', __FILE__),
-        [ 'wp-dom-ready'],
-        false,
-        true
-    );
 }
 
 function wb_blocks_footer_scripts(){ 

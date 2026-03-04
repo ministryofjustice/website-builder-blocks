@@ -19,9 +19,11 @@
     "@wordpress/element": "*",
     "@wordpress/i18n": "*",
     "@wordpress/scripts": "*",
+    "npm-run-all": "^4.1.5",
     "classnames": "*",
     "copy-webpack-plugin": "*",
     "govuk-frontend": "^5.6.0",
+    "glob": "^10.3.10",
     "import-glob-loader": "*",
     "laravel-mix": "*",
     "react-select": "*",
@@ -35,6 +37,12 @@
     "build:tailwind:backend": "npx tailwindcss -i ./assets/scss/tailwind-gutenberg.css -o ./build/main-gutenberg.min.css --minify",
     "build:block:js": "wp-scripts build",
     "build:block:styles": "NODE_ENV=production webpack --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "build": "npm run build:block:js && npm run build:block:styles && npm run build:tailwind && npm run build:tailwind:backend"
+    "build": "npm run build:block:js && npm run build:block:styles && npm run build:tailwind && npm run build:tailwind:backend",
+    "watch:tailwind": "npx tailwindcss -i ./assets/scss/tailwind.css -o ./build/main.min.css --watch",
+    "watch:tailwind:backend": "npx tailwindcss -i ./assets/scss/tailwind-gutenberg.css -o ./build/main-gutenberg.min.css --watch",
+    "watch:block:js": "wp-scripts start",
+    "watch:block:styles": "webpack --watch --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm-run-all --parallel watch:block:js watch:block:styles watch:tailwind watch:tailwind:backend"
+    
   }
 }

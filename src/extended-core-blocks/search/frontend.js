@@ -47,7 +47,7 @@ function toggleSearchDrawer() {
     }
 }
 
-async function openSearchDrawer() {
+function openSearchDrawer() {
     // Send an opened event - so that other drawers can close. i.e. navigation.
     window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
 
