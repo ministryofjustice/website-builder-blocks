@@ -38,6 +38,7 @@ function render_callback_accordion_block($attributes, $content)
 		<?php } ?>
 	>
 
+	<a href="#" class="accordion-open-close-all" role="button" onclick="accordionOpenClose(this)">Show</a>
 	<?php echo $content; ?>
 
 	</div>
@@ -88,7 +89,7 @@ function render_callback_accordion_block_section($attributes, $content)
 				_e(esc_html($content));
 			?>
 		</div>
-	</div>
+	</details>
 
 	<?php
 
