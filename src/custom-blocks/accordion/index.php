@@ -36,8 +36,9 @@ function render_callback_accordion_block($attributes, $content)
 	$tailwind_open_all = "$tailwind_open_all_basic $tailwind_open_all_chevron";
 
 
-	$welshControls = $attributes['controlLanguageWelsh'] ?? false;
-	$accordionClassName = $attributes['accordionClassName'] ?? "";
+	$openAllText = esc_html($attributes['openAll'] ?? "Expand all sections");
+	$closeAllText = esc_html($attributes['closeAll'] ?? "Collapse all sections");
+	$accordionClassName = esc_html($attributes['accordionClassName']) ?? "";
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -47,22 +48,10 @@ function render_callback_accordion_block($attributes, $content)
 	?>
 
 	<div
-		class="wb-accordion <?php _e(esc_html($accordionClassName)); ?> "
-		id="accordion-default"
-		<?php
-			// Translations taken from https://covid19.public-inquiry.uk/cy/materion-pob-stori/
-			if ($welshControls) {
-		?>
-			data-i18n.hide-all-sections="Cuddio pob adran"
-			data-i18n.show-all-sections="Dangos pob adran"
-			data-i18n.hide-section="Dangos"
-			data-i18n.show-section="Cuddio"
-			data-i18n.hide-section-aria-label="dangos yr adran hon"
-			data-i18n.show-section-aria-label="cuddio'r adran hon"
-		<?php } ?>
+		class="wb-accordion <?php _e($accordionClassName); ?> "
 	>
 
-	<a href="#" class="accordion-toggle-all <?php echo $tailwind_open_all;?>" role="button" data-state="closed" data-opentext="Expand all sections" data-closetext="Collapse all sections">Expand all sections</a>
+	<a href="#" class="accordion-toggle-all <?php echo $tailwind_open_all;?>" role="button" data-state="closed" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"><?php echo $openAllText;?></a>
 	<?php echo $content; ?>
 
 	</div>
