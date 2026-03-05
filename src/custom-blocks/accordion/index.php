@@ -12,12 +12,14 @@
 
 function render_callback_accordion_block($attributes, $content)
 {
-	$tailwind_basic = "
+	$tailwind_open_all_basic = "
 	cursor-pointer
-	inline-block
+	inline-flex
+	items-center
+	mb-2
 	";
-	$tailwind_chevron = "
-	flex items-center
+	$tailwind_open_all_chevron = "
+	pr-1
 	after:content-['']
 	after:inline-block
 	after:w-1.5
@@ -31,7 +33,7 @@ function render_callback_accordion_block($attributes, $content)
 	after:duration-200
 	data-[state=open]:after:rotate-[-135deg]";
 	
-	$accordion_tailwind = "$tailwind_basic $tailwind_chevron";
+	$tailwind_open_all = "$tailwind_open_all_basic $tailwind_open_all_chevron";
 
 
 	$welshControls = $attributes['controlLanguageWelsh'] ?? false;
@@ -60,7 +62,7 @@ function render_callback_accordion_block($attributes, $content)
 		<?php } ?>
 	>
 
-	<a href="#" class="accordion-toggle-all <?php echo $accordion_tailwind;?>" role="button" data-state="closed" data-opentext="Expand all sections" data-closetext="Collapse all sections">Expand all sections</a>
+	<a href="#" class="accordion-toggle-all <?php echo $tailwind_open_all;?>" role="button" data-state="closed" data-opentext="Expand all sections" data-closetext="Collapse all sections">Expand all sections</a>
 	<?php echo $content; ?>
 
 	</div>
@@ -87,8 +89,9 @@ function render_callback_accordion_block($attributes, $content)
 
 function render_callback_accordion_block_section($attributes, $content)
 {
+	$tailwind_borders = "first-of-type:border-t border-b";
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
-	$tailwind_chevron = "w-2 h-2 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
+	$tailwind_chevron = "w-2 h-2 ml-4 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 	
 
 	// Parse attributes found in index.js
@@ -103,7 +106,7 @@ function render_callback_accordion_block_section($attributes, $content)
 
 	?>
 
-	<details class="<?php _e(esc_html($attribute_accordion_section_className)) ; ?> wb-accordion__section group">
+	<details class="<?php _e(esc_html($attribute_accordion_section_className)); echo " $tailwind_borders"; ?> wb-accordion__section group ">
 		<summary class="<?php echo $tailwind_remove_marker; ?>">
 			<h<?php echo $attribute_accordion_headingLevel; ?> class="wp-block-heading inline-block cursor-pointer">
 				<?php _e(esc_html($attribute_accordion_section_Title)) ; ?>
