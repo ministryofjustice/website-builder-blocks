@@ -86,7 +86,8 @@ function render_callback_accordion_block_section($attributes, $content)
 	// Parse attributes found in index.js
 	$attribute_accordion_section_className = $attributes['accordionSectionClassName'] ?? '';
 	$attribute_accordion_headingLevel = $attributes['accordionHeadingLevel'] ?? '3';
-	$attribute_accordion_section_Title = $attributes['accordionSectionTitle'] ?? '';
+	$attribute_accordion_section_title = $attributes['sectionTitle'] ?? '';
+	$attribute_accordion_section_open_by_default = $attributes['defaultOpen'] ?? false;
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -95,10 +96,13 @@ function render_callback_accordion_block_section($attributes, $content)
 
 	?>
 
-	<details class="<?php _e(esc_html($attribute_accordion_section_className)); echo " $tailwind_borders"; ?> wb-accordion__section group ">
+	<details
+		class="<?php _e(esc_html($attribute_accordion_section_className)); echo " $tailwind_borders"; ?> wb-accordion__section group "
+		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
+	>
 		<summary class="<?php echo $tailwind_remove_marker; ?>">
 			<h<?php echo $attribute_accordion_headingLevel; ?> class="wp-block-heading inline-block cursor-pointer">
-				<?php _e(esc_html($attribute_accordion_section_Title)) ; ?>
+				<?php _e(esc_html($attribute_accordion_section_title)) ; ?>
 			</h<?php echo $attribute_accordion_headingLevel; ?>>
 			<span
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
