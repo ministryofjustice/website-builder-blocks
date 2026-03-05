@@ -3,8 +3,12 @@ const { registerBlockType } = wp.blocks;
 const { RichText } = wp.blockEditor;
 const { InnerBlocks } = wp.blockEditor;
 const { InspectorControls } = wp.blockEditor;
-const { PanelBody, PanelRow, ToggleControl, SelectControl } = wp.components;
-import { FontSizePicker } from '@wordpress/components';
+const { PanelBody, PanelRow, TextControl, SelectControl } = wp.components;
+
+const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2";
+const tailwind_open_all_chevron = "pr-1 after:content-[''] after:inline-block after:w-1.5 after:h-1.5 after:ml-2 after:border-r-2 after:border-b-2 after:border-current after:rotate-[45deg] after:transition-transform after:duration-200 data-[state=open]:after:rotate-[-135deg]";
+const tailwind_borders = "first-of-type:border-t border-b";
+
 /**
  * Block: Accordion
  *
@@ -16,14 +20,14 @@ registerBlockType('wb-blocks/accordion', {
 	icon: "list-view",
 	category: 'wb-blocks',
 	keywords: [ __( 'accordion' ), __( 'sections' ), __( 'lists' ) ],
-	example: {
-		attributes: {
-			controlLanguageWelsh: false
-		},
-	},
 	attributes: {
-		controlLanguageWelsh: {
-			type: 'boolean'
+		openAll: {
+			type: "text",
+			default: "Expand all sections"
+		},
+		closeAll: {
+			type: "text",
+			default: "Collapse all sections"
 		},
 		headingLevel: {
 			type: 'number',
@@ -42,7 +46,8 @@ registerBlockType('wb-blocks/accordion', {
 		const {
 			setAttributes,
 			attributes: {
-				controlLanguageWelsh,
+				openAll,
+				closeAll,
 				headingLevel
 			},
 			className
@@ -90,24 +95,27 @@ registerBlockType('wb-blocks/accordion', {
 					</PanelRow>
 				</PanelBody>
 				<PanelBody
-						title="Welsh language controls"
+						title="Open and close text"
 						initialOpen={false}
 				>
 					<PanelRow>
-						<ToggleControl
-							label="Set controls to Welsh"
-							help={
-								controlLanguageWelsh
-									? 'Controls are in Welsh'
-									: 'Controls are in English'
-							}
-							checked={controlLanguageWelsh}
-							onChange={newControlLanguageWelsh => setAttributes({ controlLanguageWelsh: newControlLanguageWelsh }) }
+						<TextControl
+							label="Open all text"
+							value={ openAll }
+							onChange={(newValue) => setAttributes({ openAll: newValue })}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label="Close all text"
+							value={ closeAll }
+							onChange={(newValue) => setAttributes({ closeAll: newValue })}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>,
-			<div className={'wb-accordion preview-welsh-' + controlLanguageWelsh + className} id="accordion-default" key="accordion-block">
+			<p className = {tailwind_open_all_basic + tailwind_open_all_chevron}>{openAll}/{closeAll}</p>,
+			<div className={'wb-accordion ' + className} key="accordion-block">
 				<InnerBlocks
 					template={ templates }
 					allowedBlocks={ allowedBlocks }
@@ -172,10 +180,10 @@ registerBlockType("wb-blocks/accordion-section", {
 		setAttributes({ accordionHeadingLevel: headingLevel });
 
 		return ([
-			<div className={`${className} accordion-section`} key="accordion-block-section">
+			<div className={`${className} accordion-section ` + tailwind_borders} key="accordion-block-section">
 				<RichText
 					tagName={`h${accordionHeadingLevel}`}
-					className="accordion-section__heading"
+					className="wp-block-heading inline-block"
 					value={ accordionSectionTitle }
 					placeholder="Add accordion section title…"
 					onChange={ onChangeAccordionTitle }
@@ -196,8 +204,3 @@ registerBlockType("wb-blocks/accordion-section", {
 		return <InnerBlocks.Content />;
 	}
 });
-
-/**
- * Internal dependencies
- */
-import edit from './edit';
