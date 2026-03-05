@@ -31,6 +31,11 @@ const handleKeydown = (e) => {
     e.preventDefault();
     drawerNavLevel2.handler(target, direction);
   }
+
+  if (target.matches(detachedNav.selector)) {
+    e.preventDefault();
+    detachedNav.handler(target, direction);
+  }
 };
 
 document.addEventListener("keydown", handleKeydown);
@@ -38,8 +43,19 @@ document.addEventListener("keydown", handleKeydown);
 /**
  * Config for handling navigation on the drawer nav top level (level 1)
  *
- * This is for the top level, horizontal menu.
+ * Handles navigation through the top-level horizontal menu bar using arrow keys.
+ * Left/right arrows move between menu items, up/down arrows toggle submenus
+ * and move focus into them.
+ *
  * e.g. About Website Builder 🔽 | How to make a good website 🔽 | User guides 🔽 | A link w/o dropdown
+ *
+ * @property {string} selector - CSS selector for level 1 menu items.
+ * @property {function(HTMLElement, string): void} handlerHorizontal - Handles left/right
+ *   arrow navigation between top-level menu items.
+ * @property {function(HTMLElement, string): void} handlerVertical - Handles up/down
+ *   arrow navigation to toggle and enter submenus.
+ * @property {function(HTMLElement, string): void} handler - Main handler that delegates
+ *   to horizontal or vertical handlers based on direction.
  */
 const drawerNavLevel1 = {
   selector:
@@ -97,10 +113,19 @@ const drawerNavLevel1 = {
 /**
  * Config for handling navigation on the drawer nav submenu (level 2)
  *
+ * Handles navigation through a responsive grid menu using arrow keys.
+ * Calculates grid positions based on visual layout to enable intuitive
+ * directional movement (left/right/up/down) through menu items.
+ *
  * This is for the 2nd level, responsive grid menu.
  * e.g.
  * Work with us     | Features         | Sites using Website Builder
  * Link 4           | Link 5           | Link 6
+ *
+ * @property {string} selector - CSS selector for level 2 submenu items.
+ * @property {function(HTMLElement, string): void} handler - Handles arrow key navigation
+ *   based on visual grid positions, moving focus to adjacent items or back to
+ *   the parent toggle button when reaching the top edge.
  */
 const drawerNavLevel2 = {
   selector:
@@ -147,7 +172,7 @@ const drawerNavLevel2 = {
       return;
     }
 
-    // Here, we did not find a place to move to, 
+    // Here, we did not find a place to move to,
     // e.g. the up key was pressed at the top, or left key at the left edge.
     if (direction === "up") {
       // We have reached the top, so move focus to the level1 button.
@@ -178,33 +203,70 @@ const mapElementsToPositions = (elements) => {
   let currentRow = 0;
   let currentColumn = 0;
 
-  return elements.map((item) => {
-    const itemY = Math.round(item.getBoundingClientRect().y);
+  return elements
+    .map((item) => {
+      const rect = item.getBoundingClientRect();
 
-    if (currentY !== null && itemY !== currentY) {
-      // Reset the column and move down a row.
-      currentColumn = 0;
-      currentRow++;
-    }
+      if (!rect.height || !rect.width) {
+        return false;
+      }
 
-    const position = [currentColumn, currentRow];
-    currentColumn++;
-    currentY = itemY;
+      const itemY = Math.round(item.getBoundingClientRect().y);
 
-    return position;
-  });
+      if (currentY !== null && itemY !== currentY) {
+        // Reset the column and move down a row.
+        currentColumn = 0;
+        currentRow++;
+      }
+
+      const position = [currentColumn, currentRow];
+      currentColumn++;
+      currentY = itemY;
+
+      return position;
+    })
+    .filter((p) => p !== false);
 };
 
-// Dev
-// window.onload = (event) => {
-//   console.log("page is fully loaded");
+/**
+ * Config for handling keyboard navigation on detached navigation menus.
+ *
+ * Handles vertical navigation (up/down arrows) through a flat list of visible
+ * navigation items. Horizontal navigation is ignored for this menu style.
+ *
+ * @property {string} selector - CSS selector for detached nav menu items.
+ * @property {function(HTMLElement, string): void} handler - Handles arrow key navigation.
+ */
+const detachedNav = {
+  selector:
+    "header nav.wp-block-navigation.is-style-detached .wp-block-navigation-item__content",
+  handler: (target, direction) => {
+    // Return early if horizontal keys have been used.
+    if (["left", "right"].includes(direction)) {
+      return;
+    }
 
-//   // Debug testing.
-//   // drawerNavLevel1Targets[0].focus();
-//   drawerNavLevel1Targets[0].click();
+    // Get the parent nav, all of the elements inside this will be reachable with keyboard arrows.
+    const parentNav = target.closest("nav");
 
-//   const testingTarget = drawerNavLevel2Targets[3];
-//   drawerNavLevel2.handler(testingTarget, "down");
+    // Get all of the visible `li` elements.
+    const menuItems = Array.from(
+      parentNav.querySelectorAll(".wp-block-navigation-item"),
+    ).filter((el) => {
+      // Filter out ones that have zero width or zero height on screen.
+      const rect = el.getBoundingClientRect();
+      return rect.height && rect.width;
+    });
 
-//   drawerNavLevel2Targets[0].focus();
-// };
+    // Which index is the current nav item in the DOM?
+    const index = menuItems.indexOf(target.parentElement);
+
+    // Calculate the new index based on direction.
+    const newIndex = direction === "down" ? index + 1 : index - 1;
+
+    // Focus the new element.
+    menuItems[newIndex]
+      ?.querySelector(":scope > .wp-block-navigation-item__content")
+      ?.focus();
+  },
+};
