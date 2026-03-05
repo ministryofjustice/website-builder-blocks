@@ -3,7 +3,7 @@ const { registerBlockType } = wp.blocks;
 const { RichText } = wp.blockEditor;
 const { InnerBlocks } = wp.blockEditor;
 const { InspectorControls } = wp.blockEditor;
-const { PanelBody, PanelRow, TextControl, SelectControl } = wp.components;
+const { PanelBody, PanelRow, TextControl, SelectControl, RadioControl } = wp.components;
 
 const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2";
 const tailwind_open_all_chevron = "pr-1 after:content-[''] after:inline-block after:w-1.5 after:h-1.5 after:ml-2 after:border-r-2 after:border-b-2 after:border-current after:rotate-[45deg] after:transition-transform after:duration-200 data-[state=open]:after:rotate-[-135deg]";
@@ -140,11 +140,14 @@ registerBlockType("wb-blocks/accordion-section", {
 	category: 'wb-blocks',
 	parent: [ 'wb-blocks/accordion' ],
 	attributes: {
-		accordionSectionTitle: {
+		sectionTitle: {
 			type: "string"
 		},
 		accordionHeadingLevel: {
 			type: "number"
+		},
+		defaultOpen: {
+			type: "boolean"
 		},
 		accordionSectionClassName: {
 			type: "string"
@@ -155,7 +158,8 @@ registerBlockType("wb-blocks/accordion-section", {
 
 		const {
 			attributes: {
-				accordionSectionTitle,
+				sectionTitle,
+				defaultOpen,
 				accordionHeadingLevel
 			},
 			className,
@@ -172,19 +176,37 @@ registerBlockType("wb-blocks/accordion-section", {
 			[ 'core/paragraph', { placeholder: '[Paragraph 1]' } ],
 			[ 'core/paragraph', { placeholder: '[Paragraph 2]' } ]
 		];
-		const onChangeAccordionTitle = newAccordionTitle => {
-			setAttributes({ accordionSectionTitle: newAccordionTitle })
+		const onChangeAccordionTitle = newValue => {
+			setAttributes({ sectionTitle: newValue })
 		}
 
 		const headingLevel = context['wb-blocks/accordionHeadingLevel'] || 3;
 		setAttributes({ accordionHeadingLevel: headingLevel });
 
 		return ([
+			<InspectorControls>
+				<PanelBody
+						title="Options"
+						initialOpen={false}
+				>
+					<PanelRow>
+						<RadioControl
+							label="Open section by default"
+							selected={defaultOpen ? 'yes' : 'no'}
+							options={[
+								{ label: 'Yes', value: 'yes' },
+								{ label: 'No', value: 'no' },
+							]}
+							onChange={(value) => setAttributes({ defaultOpen: value === 'yes' })}
+						/>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>,
 			<div className={`${className} accordion-section ` + tailwind_borders} key="accordion-block-section">
 				<RichText
 					tagName={`h${accordionHeadingLevel}`}
 					className="wp-block-heading inline-block"
-					value={ accordionSectionTitle }
+					value={ sectionTitle }
 					placeholder="Add accordion section title…"
 					onChange={ onChangeAccordionTitle }
 					allowedFormats={[]} // disable all format options
