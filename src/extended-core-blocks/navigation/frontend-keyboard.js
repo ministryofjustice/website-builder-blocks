@@ -205,12 +205,6 @@ const mapElementsToPositions = (elements) => {
 
   return elements
     .map((item) => {
-      const rect = item.getBoundingClientRect();
-
-      if (!rect.height || !rect.width) {
-        return false;
-      }
-
       const itemY = Math.round(item.getBoundingClientRect().y);
 
       if (currentY !== null && itemY !== currentY) {
@@ -263,6 +257,14 @@ const detachedNav = {
 
     // Calculate the new index based on direction.
     const newIndex = direction === "down" ? index + 1 : index - 1;
+
+    if(newIndex === -1) {
+      // Send focus back to the burger button.
+      const control = parentNav.querySelector(':scope > [aria-controls]');
+      control?.focus();
+      control?.click();
+      return;
+    }
 
     // Focus the new element.
     menuItems[newIndex]
