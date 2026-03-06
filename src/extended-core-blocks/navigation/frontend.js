@@ -1,3 +1,4 @@
+import './frontend-keyboard.js';
 ///////// TO DO: We need to split this file up
 
 /**
