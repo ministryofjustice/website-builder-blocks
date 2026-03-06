@@ -3,20 +3,14 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 	const sections = accordion.querySelectorAll("details");
 	let openSections = accordion.querySelectorAll("details[open]");
 	let allSectionsOpen = sections.length == openSections.length;
-	if (allSectionsOpen) setAccordionState(button, "open"); //initial state is all open, button changed to close all
+	setAccordionState(button, allSectionsOpen ? "open" : "closed");
 
 	const observer = new MutationObserver((mutations) => {
 		mutations.forEach((mutation) => {
 			openSections = accordion.querySelectorAll("details[open]");
-			allSectionsOpen = sections.length == openSections.length;
+			allSectionsOpen = sections.length == openSections.length; // recalculate - it may have changed since page
 			if (mutation.target.closest(".accordion-toggle-all")) return;
-			if (allSectionsOpen) {
-				setAccordionState(button, "open"); //state is open, button will now close all
-				return;
-			} else {
-				setAccordionState(button, "closed"); //state is closed, button will now open all
-				return;
-			}
+			setAccordionState(button, allSectionsOpen ? "open" : "closed");
 		});
 	});
 
@@ -27,7 +21,6 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 
 	button.addEventListener("click", function(e) {
 		e.preventDefault();
-		console.log("Clicked",this.dataset.state);
 		if (this.dataset.state === "open") {
 			//close all sections
 			sections.forEach(section => {
@@ -45,6 +38,7 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 });
 
 function setAccordionState(button, state) {
+	button.classList.remove("hidden");
 	const openText = button.dataset.opentext || "Expand all sections";
 	const closeText = button.dataset.closetext || "Collapse all sections";
 	if (state == "open") {
