@@ -50,8 +50,11 @@ function render_callback_accordion_block($attributes, $content)
 	<div
 		class="wb-accordion <?php _e($accordionClassName); ?> "
 	>
-
-	<a href="#" class="accordion-toggle-all <?php echo $tailwind_open_all;?>" role="button" data-state="closed" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"><?php echo $openAllText;?></a>
+	<?php
+		// The Tailwind class "hidden" is removed by JS - which is needed for this to work
+		// This is a check to ensure that without JS, the JS dependent button isn't shewn
+	?>
+	<a href="#" class="accordion-toggle-all hidden <?php echo $tailwind_open_all;?>" role="button" data-state="" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"></a>
 	<?php echo $content; ?>
 
 	</div>
