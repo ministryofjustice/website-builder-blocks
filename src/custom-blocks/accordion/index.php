@@ -17,6 +17,7 @@ function render_callback_accordion_block($attributes, $content)
 	inline-flex
 	items-center
 	mb-2
+	font-bold
 	";
 	$tailwind_open_all_chevron = "
 	pr-1
@@ -54,7 +55,7 @@ function render_callback_accordion_block($attributes, $content)
 		// The Tailwind class "hidden" is removed by JS - which is needed for this to work
 		// This is a check to ensure that without JS, the JS dependent button isn't shewn
 	?>
-	<a href="#" class="accordion-toggle-all hidden <?php echo $tailwind_open_all;?>" role="button" data-state="" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"></a>
+	<button href="#" class="accordion-toggle-all hidden <?php echo $tailwind_open_all;?>" data-state="" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"></button>
 	<?php echo $content; ?>
 
 	</div>
@@ -83,13 +84,14 @@ function render_callback_accordion_block_section($attributes, $content)
 {
 	$tailwind_borders = "first-of-type:border-t border-b";
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
-	$tailwind_chevron = "w-2 h-2 ml-4 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
+	$tailwind_chevron = "w-2 h-2 m-4 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 	
 
 	// Parse attributes found in index.js
 	$attribute_accordion_section_className = $attributes['accordionSectionClassName'] ?? '';
-	$attribute_accordion_headingLevel = $attributes['accordionHeadingLevel'] ?? '3';
-	$attribute_accordion_section_title = $attributes['sectionTitle'] ?? '';
+	$attribute_accordion_heading_level = $attributes['accordionHeadingLevel'] ?? '3';
+	$attribute_accordion_heading_size = esc_html($attributes['accordionHeadingFontSize'] ?? 'base');
+	$attribute_accordion_section_title = esc_html($attributes['sectionTitle'] ?? '');
 	$attribute_accordion_section_open_by_default = $attributes['defaultOpen'] ?? false;
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
@@ -103,10 +105,10 @@ function render_callback_accordion_block_section($attributes, $content)
 		class="<?php _e(esc_html($attribute_accordion_section_className)); echo " $tailwind_borders"; ?> wb-accordion__section group "
 		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
 	>
-		<summary class="<?php echo $tailwind_remove_marker; ?>">
-			<h<?php echo $attribute_accordion_headingLevel; ?> class="wp-block-heading inline-block cursor-pointer">
-				<?php _e(esc_html($attribute_accordion_section_title)) ; ?>
-			</h<?php echo $attribute_accordion_headingLevel; ?>>
+		<summary class="<?php echo $tailwind_remove_marker; ?> cursor-pointer ">
+			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size";?> wp-block-heading inline-block !my-4">
+				<?php _e($attribute_accordion_section_title) ; ?>
+			</h<?php echo $attribute_accordion_heading_level; ?>>
 			<span
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
 			</span>

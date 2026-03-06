@@ -1,11 +1,9 @@
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const { RichText } = wp.blockEditor;
-const { InnerBlocks } = wp.blockEditor;
-const { InspectorControls } = wp.blockEditor;
+const { RichText, InnerBlocks, InspectorControls, useSettings } = wp.blockEditor;
 const { PanelBody, PanelRow, TextControl, SelectControl, RadioControl } = wp.components;
 
-const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2";
+const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2 !font-bold";
 const tailwind_open_all_chevron = "pr-1 after:content-[''] after:inline-block after:w-1.5 after:h-1.5 after:ml-2 after:border-r-2 after:border-b-2 after:border-current after:rotate-[45deg] after:transition-transform after:duration-200 data-[state=open]:after:rotate-[-135deg]";
 const tailwind_borders = "first-of-type:border-t border-b";
 
@@ -33,13 +31,18 @@ registerBlockType('wb-blocks/accordion', {
 			type: 'number',
 			default: 3
 		},
+		headingFontSize: {
+			type: 'string',
+			default: 'base',
+		},
 		accordionClassName: {
 			type: 'string'
 		}
 	},
 	// Provide context for child blocks
 	providesContext: {
-		'wb-blocks/accordionHeadingLevel': 'headingLevel'
+		'wb-blocks/accordionHeadingLevel': 'headingLevel',
+		'wb-blocks/accordionHeadingFontSize': 'headingFontSize'
 	},
 
 	edit: props => {
@@ -48,10 +51,19 @@ registerBlockType('wb-blocks/accordion', {
 			attributes: {
 				openAll,
 				closeAll,
-				headingLevel
+				headingLevel,
+				headingFontSize
 			},
 			className
 		} = props;
+
+		const [ fontSizes ] = useSettings('typography.fontSizes');
+		const options = [
+			...fontSizes.map((size) => ({
+				label: size.name,
+				value: size.slug
+			}))
+		];
 
 		// Set className attribute for PHP frontend to use
 		setAttributes({ accordionClassName: className });
@@ -88,9 +100,17 @@ registerBlockType('wb-blocks/accordion', {
 								{ label: 'H5', value: 5 },
 								{ label: 'H6', value: 6 }
 							]}
-							onChange={ (newLevel) =>
-								setAttributes({ headingLevel: parseInt(newLevel, 10) })
+							onChange={ (newValue) =>
+								setAttributes({ headingLevel: parseInt(newValue, 10) })
 							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<SelectControl
+							label="Font size"
+							value={headingFontSize}
+							options={options}
+							onChange={(newValue) => setAttributes({ headingFontSize: newValue })}
 						/>
 					</PanelRow>
 				</PanelBody>
@@ -114,7 +134,7 @@ registerBlockType('wb-blocks/accordion', {
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>,
-			<p className = {tailwind_open_all_basic + tailwind_open_all_chevron}>{openAll}/{closeAll}</p>,
+			<button className = {tailwind_open_all_basic + " " + tailwind_open_all_chevron}>{openAll}/{closeAll}</button>,
 			<div className={'wb-accordion ' + className} key="accordion-block">
 				<InnerBlocks
 					template={ templates }
@@ -146,6 +166,9 @@ registerBlockType("wb-blocks/accordion-section", {
 		accordionHeadingLevel: {
 			type: "number"
 		},
+		accordionHeadingFontSize: {
+			type: "string"
+		},
 		defaultOpen: {
 			type: "boolean"
 		},
@@ -153,14 +176,15 @@ registerBlockType("wb-blocks/accordion-section", {
 			type: "string"
 		}
 	},
-	usesContext: ['wb-blocks/accordionHeadingLevel'],
+	usesContext: ['wb-blocks/accordionHeadingLevel','wb-blocks/accordionHeadingFontSize'],
 	edit: props => {
 
 		const {
 			attributes: {
 				sectionTitle,
 				defaultOpen,
-				accordionHeadingLevel
+				accordionHeadingLevel,
+				accordionHeadingFontSize
 			},
 			className,
 			setAttributes,
@@ -181,7 +205,9 @@ registerBlockType("wb-blocks/accordion-section", {
 		}
 
 		const headingLevel = context['wb-blocks/accordionHeadingLevel'] || 3;
+		const headingFontSize = context['wb-blocks/accordionHeadingFontSize'] || "base";
 		setAttributes({ accordionHeadingLevel: headingLevel });
+		setAttributes({ accordionHeadingFontSize: headingFontSize });
 
 		return ([
 			<InspectorControls>
@@ -205,7 +231,7 @@ registerBlockType("wb-blocks/accordion-section", {
 			<div className={`${className} accordion-section ` + tailwind_borders} key="accordion-block-section">
 				<RichText
 					tagName={`h${accordionHeadingLevel}`}
-					className="wp-block-heading inline-block"
+					className={`wp-block-heading inline-block has-${accordionHeadingFontSize}-font-size !my-4`}
 					value={ sectionTitle }
 					placeholder="Add accordion section title…"
 					onChange={ onChangeAccordionTitle }
