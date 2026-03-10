@@ -115,7 +115,7 @@ function render_callback_accordion_block_section($attributes, $content)
 		</summary>
 		<div id="accordion-default-content-1" class="wb-accordion__section-content">
 			<?php
-				_e(esc_html($content));
+				_e($content);
 			?>
 		</div>
 	</details>
@@ -124,9 +124,6 @@ function render_callback_accordion_block_section($attributes, $content)
 
 	// Get all the html/content that has been captured in the buffer and output via return
 	$output = ob_get_contents();
-
-	// decode escaped html so users can add markup to content
-	$output = html_entity_decode($output);
 
 	ob_end_clean();
 
