@@ -4,6 +4,7 @@
 
 import "./navigation";
 import "./file";
+import "./list";
 import "./post-date";
 import "./query-pagination";
 import "./query-pagination-numbers";
