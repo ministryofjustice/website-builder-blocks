@@ -1,3 +1,16 @@
 .wp-block-list.is-style-horizontal {
   display: flex;
+  flex-direction: row;
+  list-style-type: none;
+
+  // Reset paddings and margins
+  &, li {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+
+  li {
+    list-style: none;
+  }
 }
