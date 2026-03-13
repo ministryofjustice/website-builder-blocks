@@ -25,21 +25,23 @@ Block: Filterable Listing (Frontend styles)
 
 		&__heading {
 			padding-left: 15px;
+			font-weight: bold;
 		}
 
 		&__list {
 			margin-bottom: 2rem;
 			list-style-type: none;
+			padding-left: 0;
 
 			&--number {
 				list-style-type: decimal;
-				padding-left: 0;
 			}
 		}
 		&__item {
 			padding-left: 15px;
 			padding-top: 0.2rem;
 			padding-bottom: 0.2rem;
+			margin-bottom: 10px;
 		
 			@media (min-width:782px) {
 				&--current {
