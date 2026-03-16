@@ -84,7 +84,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 {
 	$tailwind_borders = "first-of-type:border-t border-b";
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
-	$tailwind_chevron = "w-2 h-2 m-4 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
+	$tailwind_chevron = "w-2 h-2 m-4 shrink-0 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 	
 
 	// Parse attributes found in index.js
