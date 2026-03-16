@@ -10,7 +10,7 @@
  *
  */
 
-function render_callback_accordion_block($attributes, $content)
+function wb_render_callback_accordion_block($attributes, $content)
 {
 	$tailwind_open_all_basic = "
 	cursor-pointer
@@ -80,7 +80,7 @@ function render_callback_accordion_block($attributes, $content)
  *
  */
 
-function render_callback_accordion_block_section($attributes, $content)
+function wb_render_callback_accordion_block_section($attributes, $content)
 {
 	$tailwind_borders = "first-of-type:border-t border-b";
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
@@ -113,7 +113,7 @@ function render_callback_accordion_block_section($attributes, $content)
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
 			</span>
 		</summary>
-		<div id="accordion-default-content-1" class="wb-accordion__section-content">
+		<div class="wb-accordion__section-content">
 			<?php
 				_e($content);
 			?>
