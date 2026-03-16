@@ -3,7 +3,7 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 	const sections = accordion.querySelectorAll("details");
 	let openSections = accordion.querySelectorAll("details[open]");
 	let allSectionsOpen = sections.length == openSections.length;
-	setAccordionState(button, allSectionsOpen ? "open" : "closed");
+	if (button) setAccordionState(button, allSectionsOpen ? "open" : "closed");
 
 	const observer = new MutationObserver((mutations) => {
 		mutations.forEach((mutation) => {

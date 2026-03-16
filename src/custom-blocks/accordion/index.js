@@ -1,7 +1,7 @@
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const { RichText, InnerBlocks, InspectorControls, useSettings } = wp.blockEditor;
-const { PanelBody, PanelRow, TextControl, SelectControl, RadioControl } = wp.components;
+const { PanelBody, PanelRow, TextControl, SelectControl, RadioControl, ToggleControl } = wp.components;
 
 const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2 !font-bold";
 const tailwind_open_all_chevron = "pr-1 after:content-[''] after:inline-block after:w-1.5 after:h-1.5 after:ml-2 after:border-r-2 after:border-b-2 after:border-current after:rotate-[45deg] after:transition-transform after:duration-200 data-[state=open]:after:rotate-[-135deg]";
@@ -37,12 +37,20 @@ registerBlockType('wb-blocks/accordion', {
 		},
 		accordionClassName: {
 			type: 'string'
+		},
+		enableShowHideAll: {
+			type: 'boolean',
+			default: true
+		},
+		accordionUniqueName: {
+			type: 'string'
 		}
 	},
 	// Provide context for child blocks
 	providesContext: {
 		'wb-blocks/accordionHeadingLevel': 'headingLevel',
-		'wb-blocks/accordionHeadingFontSize': 'headingFontSize'
+		'wb-blocks/accordionHeadingFontSize': 'headingFontSize',
+		'wb-blocks/accordionUniqueName': 'accordionUniqueName'
 	},
 
 	edit: props => {
@@ -52,8 +60,11 @@ registerBlockType('wb-blocks/accordion', {
 				openAll,
 				closeAll,
 				headingLevel,
-				headingFontSize
+				headingFontSize,
+				enableShowHideAll,
+				accordionUniqueName
 			},
+			clientId,
 			className
 		} = props;
 
@@ -64,6 +75,8 @@ registerBlockType('wb-blocks/accordion', {
 				value: size.slug
 			}))
 		];
+
+		setAttributes({ accordionUniqueName: clientId });
 
 		// Set className attribute for PHP frontend to use
 		setAttributes({ accordionClassName: className });
@@ -119,22 +132,35 @@ registerBlockType('wb-blocks/accordion', {
 						initialOpen={false}
 				>
 					<PanelRow>
-						<TextControl
-							label="Open all text"
-							value={ openAll }
-							onChange={(newValue) => setAttributes({ openAll: newValue })}
+						<ToggleControl
+							label="Enable open/close all"
+							checked={ enableShowHideAll }
+							onChange={(newValue) => setAttributes({ enableShowHideAll: newValue })}
 						/>
 					</PanelRow>
 					<PanelRow>
-						<TextControl
-							label="Close all text"
-							value={ closeAll }
-							onChange={(newValue) => setAttributes({ closeAll: newValue })}
-						/>
+						{ enableShowHideAll && (
+							<TextControl
+								label="Open all text"
+								value={ openAll }
+								onChange={(newValue) => setAttributes({ openAll: newValue })}
+							/>
+						)}
+					</PanelRow>
+					<PanelRow>
+						{ enableShowHideAll && (
+							<TextControl
+								label="Close all text"
+								value={ closeAll }
+								onChange={(newValue) => setAttributes({ closeAll: newValue })}
+							/>
+						)}
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>,
-			<button className = {tailwind_open_all_basic + " " + tailwind_open_all_chevron}>{openAll}/{closeAll}</button>,
+			<button className = {tailwind_open_all_basic + " " + tailwind_open_all_chevron} style={{ display: enableShowHideAll ? 'block' : 'none' }}>
+				{ enableShowHideAll && (`${openAll}/${closeAll}`)}
+			</button>,
 			<div className={'wb-accordion ' + className} key="accordion-block">
 				<InnerBlocks
 					template={ templates }
@@ -174,6 +200,9 @@ registerBlockType("wb-blocks/accordion-section", {
 		},
 		accordionSectionClassName: {
 			type: "string"
+		},
+		accordionUniqueName: {
+			type: "string"
 		}
 	},
 	usesContext: ['wb-blocks/accordionHeadingLevel','wb-blocks/accordionHeadingFontSize'],
@@ -184,7 +213,8 @@ registerBlockType("wb-blocks/accordion-section", {
 				sectionTitle,
 				defaultOpen,
 				accordionHeadingLevel,
-				accordionHeadingFontSize
+				accordionHeadingFontSize,
+				accordionUniqueName
 			},
 			className,
 			setAttributes,
@@ -207,8 +237,10 @@ registerBlockType("wb-blocks/accordion-section", {
 		// Set variables from parent
 		const headingLevel = context['wb-blocks/accordionHeadingLevel'] || 3;
 		const headingFontSize = context['wb-blocks/accordionHeadingFontSize'] || "base";
+		const uniqueName = context['wb-blocks/accordionUniqueName'] || "";
 		setAttributes({ accordionHeadingLevel: headingLevel });
 		setAttributes({ accordionHeadingFontSize: headingFontSize });
+		setAttributes({ accordionUniqueName: uniqueName });
 
 		return ([
 			<InspectorControls>
