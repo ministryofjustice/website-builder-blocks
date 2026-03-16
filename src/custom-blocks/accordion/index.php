@@ -88,7 +88,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	
 
 	// Parse attributes found in index.js
-	$attribute_accordion_section_className = $attributes['accordionSectionClassName'] ?? '';
+	$attribute_accordion_section_className = esc_attr($attributes['accordionSectionClassName']) ?? '';
 	$attribute_accordion_heading_level = $attributes['accordionHeadingLevel'] ?? '3';
 	$attribute_accordion_heading_size = esc_html($attributes['accordionHeadingFontSize'] ?? 'base');
 	$attribute_accordion_section_title = esc_html($attributes['sectionTitle'] ?? '');
@@ -102,7 +102,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	?>
 
 	<details
-		class="<?php _e(esc_html($attribute_accordion_section_className)); echo " $tailwind_borders"; ?> wb-accordion__section group "
+		class="<?php _e($attribute_accordion_section_className); echo " $tailwind_borders"; ?> wb-accordion__section group "
 		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
 	>
 		<summary class="<?php echo $tailwind_remove_marker; ?> cursor-pointer ">
