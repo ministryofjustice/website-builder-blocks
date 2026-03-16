@@ -129,7 +129,7 @@ function wb_blocks_register_blocks()
         'wb-blocks/accordion',
         [
             'editor_script' => 'wb-blocks-editor-script',
-            'render_callback' => 'render_callback_accordion_block',
+            'render_callback' => 'wb_render_callback_accordion_block',
             'attributes' => []
         ]
     );
@@ -138,7 +138,7 @@ function wb_blocks_register_blocks()
         'wb-blocks/accordion-section',
         [
             'editor_script' => 'wb-blocks-editor-script',
-            'render_callback' => 'render_callback_accordion_block_section',
+            'render_callback' => 'wb_render_callback_accordion_block_section',
             'attributes' => [
                 'accordionSectionClassName' => [
                     'type' => 'string'

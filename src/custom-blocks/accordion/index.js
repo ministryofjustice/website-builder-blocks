@@ -33,7 +33,7 @@ registerBlockType('wb-blocks/accordion', {
 		},
 		headingFontSize: {
 			type: 'string',
-			default: 'base',
+			default: 'base'
 		},
 		accordionClassName: {
 			type: 'string'
@@ -74,12 +74,12 @@ registerBlockType('wb-blocks/accordion', {
 		// Load template/block when block is selected
 		const templates = [
 			[ 'wb-blocks/accordion-section', {},[
-				[ 'core/paragraph', { placeholder: '[Accordion item 1, paragraph 1]' } ],
-				[ 'core/paragraph', { placeholder: '[Accordion item 1, paragraph 2]' } ]
+				[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ],
+				[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ]
 			]],
 			[ 'wb-blocks/accordion-section', {},[
-				[ 'core/paragraph', { placeholder: '[Accordion item 2, paragraph 1]' } ],
-				[ 'core/paragraph', { placeholder: '[Accordion item 2, paragraph 2]' } ]
+				[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ],
+				[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ]
 			] ]
 		];
 
@@ -197,13 +197,14 @@ registerBlockType("wb-blocks/accordion-section", {
 		// Load allowed blocks to be added to accordion section body
 		const allowedBlocks = [ 'core/heading','core/list', 'core/paragraph', 'core/file', 'core/image' ];
 		const templates = [
-			[ 'core/paragraph', { placeholder: '[Paragraph 1]' } ],
-			[ 'core/paragraph', { placeholder: '[Paragraph 2]' } ]
+			[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ],
+			[ 'core/paragraph', { placeholder: '[Accordion paragraph]' } ]
 		];
 		const onChangeAccordionTitle = newValue => {
 			setAttributes({ sectionTitle: newValue })
 		}
 
+		// Set variables from parent
 		const headingLevel = context['wb-blocks/accordionHeadingLevel'] || 3;
 		const headingFontSize = context['wb-blocks/accordionHeadingFontSize'] || "base";
 		setAttributes({ accordionHeadingLevel: headingLevel });
