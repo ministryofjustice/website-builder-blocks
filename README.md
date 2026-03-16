@@ -3,6 +3,7 @@
 ## Features
 
 This plugin adds the following custom blocks,
+* Accordion
 * Filterable listing
 * HM Government logo SVG
 * Reveal
