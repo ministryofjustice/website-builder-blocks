@@ -27,11 +27,13 @@ nav.is-style-drawer {
 				inline-size: 25%;
 				align-items: baseline;
 
+				&__content {
+					padding-right:calc(1.1 * var(--drawer-menu-padding));
+					padding-left:calc(1.1 * var(--drawer-menu-padding));
+				}
+
 				@media (width > 800px) {
 					// This is within a media query as it won't be overwritten by the next media query.
-					&:nth-child(4n+1) .wp-block-navigation-item__content {
-						padding-left: 0;
-					}
 					&:nth-child(4n) .wp-block-navigation-item__content {
 						padding-right: 0;
 					}
@@ -40,9 +42,6 @@ nav.is-style-drawer {
 					inline-size: 33%;
 					align-items: baseline;
 
-					&:nth-child(3n+1) .wp-block-navigation-item__content {
-						padding-left: 0;
-					}
 					&:nth-child(3n) .wp-block-navigation-item__content {
 						padding-right: 0;
 					}
