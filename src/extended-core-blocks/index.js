@@ -2,8 +2,9 @@
  * Import blocks as components.
  */
 
-import "./navigation";
 import "./file";
+import "./list";
+import "./navigation";
 import "./post-date";
 import "./query-pagination";
 import "./query-pagination-numbers";
