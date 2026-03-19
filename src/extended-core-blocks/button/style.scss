@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: button (Frontend styles)
+
+**********************************************************************************************/
+
+.wp-element-button:hover {
+	filter: brightness(1.1);
+	opacity: 0.95;
+}
+
+// The outline style might not have a background colour, so we create one
+.is-style-outline .wp-element-button:not(.has-background):hover {
+	background-color: color(
+		from currentColor srgb r g b / 0.1
+	);
+}
