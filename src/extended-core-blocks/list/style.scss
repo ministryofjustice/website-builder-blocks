@@ -1,0 +1,67 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: list (Frontend styles)
+
+**********************************************************************************************/
+
+:root {
+	--bullet-colour-red: #B22222;
+	--bullet-colour-green: #008000;
+	--bullet-colour-blue: #0077BB;
+
+	@media (prefers-color-scheme: dark) { 
+		--bullet-colour-red: currentColor;
+		--bullet-colour-green: currentColor;
+		--bullet-colour-blue: currentColor;
+	}
+}
+
+:root :where(.wp-block-list.is-variant-horizontal) {
+	padding-right: 1.1rem;
+}
+
+li::marker {
+  color: var(--bullet-colour, currentColor);
+}
+
+ol.is-variant-horizontal,
+ul.is-variant-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+	margin-left: -4rem;
+
+	li {
+		position: relative;
+		margin-left: 4rem;
+	}
+}
+
+ul.is-style-tick-list {
+	--bullet-width: 24px;
+	
+	list-style: none;
+	margin-left: calc(-1.9rem - var(--bullet-width));
+
+	li {
+		position: relative;
+		margin-left: calc(2.5rem + var(--bullet-width));
+		max-width: 250px;
+
+		&:before {
+			background-color: var(--bullet-colour, currentColor);
+			content:"";
+			width: var(--bullet-width);
+			height: 24px; // might not be square, but probably is
+			position: absolute;
+			left: -2rem;
+			top: 3px;
+			display: inline-block;
+			margin-right: 10px;
+			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 height=%2224px%22 viewBox=%220%20-960%20960%20960%22 width=%2224px%22 %3E%3Cpath d=%22m424-296%20282-282-56-56-226%20226-114-114-56%2056%20170%20170Zm56%20216q-83%200-156-31.5T197-197q-54-54-85.5-127T80-480q0-83%2031.5-156T197-763q54-54%20127-85.5T480-880q83%200%20156%2031.5T763-763q54%2054%2085.5%20127T880-480q0%2083-31.5%20156T763-197q-54%2054-127%2085.5T480-80Zm0-80q134%200%20227-93t93-227q0-134-93-227t-227-93q-134%200-227%2093t-93%20227q0%20134%2093%20227t227%2093Zm0-320Z%22/%3E%3C/svg%3E") no-repeat center;
+			-webkit-mask-size: contain;
+			mask: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 height=%2224px%22 viewBox=%220%20-960%20960%20960%22 width=%2224px%22 %3E%3Cpath d=%22m424-296%20282-282-56-56-226%20226-114-114-56%2056%20170%20170Zm56%20216q-83%200-156-31.5T197-197q-54-54-85.5-127T80-480q0-83%2031.5-156T197-763q54-54%20127-85.5T480-880q83%200%20156%2031.5T763-763q54%2054%2085.5%20127T880-480q0%2083-31.5%20156T763-197q-54%2054-127%2085.5T480-80Zm0-80q134%200%20227-93t93-227q0-134-93-227t-227-93q-134%200-227%2093t-93%20227q0%20134%2093%20227t227%2093Zm0-320Z%22/%3E%3C/svg%3E") no-repeat center;
+			mask-size: contain;
+		}
+	}
+}

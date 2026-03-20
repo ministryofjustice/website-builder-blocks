@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: list (Gutenberg editor styles)
+
+**********************************************************************************************/
+
+// Use the frontend styles
+@import 'style.scss';
+
+:root :where(.editor-styles-wrapper) :where(.wp-block-list.is-variant-horizontal) {
+	padding-right: 1.1rem;
+}
+
+:root:has(.editor-styles-wrapper) {
+	--bullet-colour-red: #B22222;
+	--bullet-colour-green: #008000;
+	--bullet-colour-blue: #0077BB;
+}
