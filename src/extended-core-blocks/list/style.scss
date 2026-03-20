@@ -5,16 +5,8 @@ Core block: list (Frontend styles)
 
 **********************************************************************************************/
 
-:root {
-	--bullet-colour-red: #B22222;
-	--bullet-colour-green: #008000;
-	--bullet-colour-blue: #0077BB;
-
-	@media (prefers-color-scheme: dark) { 
-		--bullet-colour-red: currentColor;
-		--bullet-colour-green: currentColor;
-		--bullet-colour-blue: currentColor;
-	}
+:root :where(.editor-styles-wrapper) :where(.wp-block-list.is-variant-horizontal) {
+	padding-right: 1.1rem;
 }
 
 :root :where(.wp-block-list.is-variant-horizontal) {
@@ -22,7 +14,11 @@ Core block: list (Frontend styles)
 }
 
 li::marker {
-  color: var(--bullet-colour, currentColor);
+	--bullet-colour-modified: var(--bullet-colour); 
+	@media (prefers-color-scheme: dark) { 
+		--bullet-colour-modified: currentColor;
+	}
+	color: var(--bullet-colour-modified, currentColor);
 }
 
 ol.is-variant-horizontal,
@@ -49,7 +45,11 @@ ul.is-style-tick-list {
 		max-width: 250px;
 
 		&:before {
-			background-color: var(--bullet-colour, currentColor);
+			--bullet-colour-modified: var(--bullet-colour); 
+			@media (prefers-color-scheme: dark) { 
+				--bullet-colour-modified: currentColor;
+			}
+			background-color: var(--bullet-colour-modified, currentColor);
 			content:"";
 			width: var(--bullet-width);
 			height: 24px; // might not be square, but probably is
