@@ -154,33 +154,3 @@ wp.hooks.addFilter(
 	'wb-blocks/save-custom-bullet-colour',
 	saveCustomBulletColour
 );
-
-
-
-
-/**
- * Save the colour choice
- *
-const saveChosenBulletColour = ( extraProps, blockType, attributes ) => {
-// Do nothing if it's another block than our defined ones.
-	if (blockType.name !== 'core/list') return extraProps;
-
-	const bulletColour = attributes.customBulletColour || 'currentColor';
-	extraProps.className = [
-		extraProps.className,
-		'has-custom-bullet-colour'
-	].filter(Boolean).join(' ');
-	extraProps.style = {
-		...extraProps.style,
-		'--bullet-colour': bulletColour,
-	};
-	
-	return extraProps;
-}
-
-wp.hooks.addFilter(
-	'blocks.getSaveContent.extraProps',
-	'wb-blocks/save-bullet-colour',
-	saveChosenBulletColour
-);
-/**/

@@ -28,6 +28,7 @@ ul.is-variant-horizontal {
 	margin-left: -4rem;
 
 	li {
+		max-width: 250px;
 		position: relative;
 		margin-left: 4rem;
 	}
@@ -42,7 +43,6 @@ ul.is-style-tick-list {
 	li {
 		position: relative;
 		margin-left: calc(2.5rem + var(--bullet-width));
-		max-width: 250px;
 
 		&:before {
 			--bullet-colour-modified: var(--bullet-colour); 
