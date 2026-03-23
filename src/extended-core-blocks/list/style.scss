@@ -5,11 +5,11 @@ Core block: list (Frontend styles)
 
 **********************************************************************************************/
 
-:root :where(.editor-styles-wrapper) :where(.wp-block-list.is-variant-horizontal) {
+:root :where(.editor-styles-wrapper) :where(.wp-block-list.is-style-horizontal) {
 	padding-right: 1.1rem;
 }
 
-:root :where(.wp-block-list.is-variant-horizontal) {
+:root :where(.wp-block-list.is-style-horizontal) {
 	padding-right: 1.1rem;
 }
 
@@ -21,28 +21,27 @@ li::marker {
 	color: var(--bullet-colour-modified, currentColor);
 }
 
-ol.is-variant-horizontal,
-ul.is-variant-horizontal {
+ol.is-style-horizontal,
+ul.is-style-horizontal {
     display: flex;
     flex-wrap: wrap;
-	margin-left: -4rem;
 
-	li {
+	> li {
 		max-width: 250px;
 		position: relative;
-		margin-left: 4rem;
+		margin-right: 4rem;
 	}
 }
 
-ul.is-style-tick-list {
+ul.is-style-icon-list {
 	--bullet-width: 24px;
 	
 	list-style: none;
-	margin-left: calc(-1.9rem - var(--bullet-width));
+	padding-left: 0;
 
-	li {
+	> li {
 		position: relative;
-		margin-left: calc(2.5rem + var(--bullet-width));
+		margin-left: calc(6px + var(--bullet-width));
 
 		&:before {
 			--bullet-colour-modified: var(--bullet-colour); 

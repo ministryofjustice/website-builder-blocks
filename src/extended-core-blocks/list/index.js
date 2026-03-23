@@ -4,40 +4,41 @@
  *
  */
 import { registerBlockVariation, registerBlockStyle } from '@wordpress/blocks';
-const { createHigherOrderComponent } = wp.compose;
-const { InspectorControls, useSettings } = wp.blockEditor;
-const { PanelBody, SelectControl } = wp.components;
-const {	PanelColorSettings } = wp.editor;
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
+import { PanelBody, SelectControl } from '@wordpress/components';
+
 
 registerBlockStyle( 'core/list', {
-	name: 'tick-list',
-	label: 'Tick list',
+	name: 'horizontal',
+	label: 'Horizontal',
 } );
 
 registerBlockVariation('core/list', {
 	// This is the out-of-the-box WordPress style, no special stuff
-	name: 'vertical-list',
-	title: 'Vertical list',
+	name: 'list',
+	title: 'List',
 	description: 'The default list style',
 	attributes: {
 		className: ''
 	},
 	scope: ['transform'],
 	isActive: (blockAttributes) =>
-		!blockAttributes?.className?.includes('is-variant-horizontal'),
+		!blockAttributes?.className?.includes('is-style-icon-list'),
 });
 
 registerBlockVariation('core/list', {
 	// This is the out-of-the-box WordPress style, no special stuff
-	name: 'horizontal-list',
-	title: 'Horizontal list',
-	description: 'A list which goes sideways instead of down',
+	name: 'icon-list',
+	title: 'Icon bulleted list',
+	description: 'A list which has an icon for each bullet',
 	attributes: {
-		className: 'is-variant-horizontal'
+		className: 'is-style-icon-list',
+		ordered: false
 	},
 	scope: ['transform'],
 	isActive: (blockAttributes) =>
-		blockAttributes?.className?.includes('is-variant-horizontal'),
+		blockAttributes?.className?.includes('is-style-icon-list'),
 });
 
 wp.hooks.addFilter(
