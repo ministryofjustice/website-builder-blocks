@@ -67,9 +67,9 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 		const { attributes, setAttributes } = props;
 		const [colorPalette] = useSettings('color.palette');
 		const extraBulletColours = [
-			{name: 'Red',color: '#B22222'},
-			{name: 'Green',color: '#008000'},
-			{name: 'Blue',color: '#0077BB'}
+			{name: 'Red',color: 'var(--colour-red)'},
+			{name: 'Green',color: 'var(--colour-green)'},
+			{name: 'Blue',color: 'var(--colour-blue)'}
 		]
 		const allColours = [...colorPalette,...extraBulletColours];
 		return (
