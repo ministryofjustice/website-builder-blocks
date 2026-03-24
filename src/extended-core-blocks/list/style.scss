@@ -29,9 +29,11 @@ Core block: list (Frontend styles)
 }
 
 ul, ol {
-	// This just sets the bullet colour to the current colour by default.
-	// Important for lists within lists, as they would otherwise pick up the parent list's colour
-	--bullet-colour: currentColor;
+	&:not(.edit-screen-container *) {
+		// This just sets the bullet colour to the current colour by default.
+		// Important for lists within lists, as they would otherwise pick up the parent list's colour
+		--bullet-colour: (currentColor);
+	}
 }
 
 li::marker {
@@ -50,6 +52,10 @@ ul.is-style-horizontal {
 	}
 }
 
+// UL is needed to protect against an icon being selected
+// but the list then being changed to an ordered list.
+// If that happens, then icons are ignored.
+.is-style-icon-list > ul,
 ul.is-style-icon-list {
 	--bullet-width: 24px;
 	
@@ -70,10 +76,16 @@ ul.is-style-icon-list {
 			top: 3px;
 			display: inline-block;
 			margin-right: 10px;
-			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 height=%2224px%22 viewBox=%220%20-960%20960%20960%22 width=%2224px%22 %3E%3Cpath d=%22m424-296%20282-282-56-56-226%20226-114-114-56%2056%20170%20170Zm56%20216q-83%200-156-31.5T197-197q-54-54-85.5-127T80-480q0-83%2031.5-156T197-763q54-54%20127-85.5T480-880q83%200%20156%2031.5T763-763q54%2054%2085.5%20127T880-480q0%2083-31.5%20156T763-197q-54%2054-127%2085.5T480-80Zm0-80q134%200%20227-93t93-227q0-134-93-227t-227-93q-134%200-227%2093t-93%20227q0%20134%2093%20227t227%2093Zm0-320Z%22/%3E%3C/svg%3E") no-repeat center;
 			-webkit-mask-size: contain;
-			mask: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 height=%2224px%22 viewBox=%220%20-960%20960%20960%22 width=%2224px%22 %3E%3Cpath d=%22m424-296%20282-282-56-56-226%20226-114-114-56%2056%20170%20170Zm56%20216q-83%200-156-31.5T197-197q-54-54-85.5-127T80-480q0-83%2031.5-156T197-763q54-54%20127-85.5T480-880q83%200%20156%2031.5T763-763q54%2054%2085.5%20127T880-480q0%2083-31.5%20156T763-197q-54%2054-127%2085.5T480-80Zm0-80q134%200%20227-93t93-227q0-134-93-227t-227-93q-134%200-227%2093t-93%20227q0%20134%2093%20227t227%2093Zm0-320Z%22/%3E%3C/svg%3E") no-repeat center;
 			mask-size: contain;
+			-webkit-mask: var(--bullet-icon-mask);
+			mask: var(--bullet-icon-mask);
 		}
 	}
+}
+.icon-style-tick {
+	--bullet-icon-mask: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 height=%2224px%22 viewBox=%220%20-960%20960%20960%22 width=%2224px%22 %3E%3Cpath d=%22m424-296%20282-282-56-56-226%20226-114-114-56%2056%20170%20170Zm56%20216q-83%200-156-31.5T197-197q-54-54-85.5-127T80-480q0-83%2031.5-156T197-763q54-54%20127-85.5T480-880q83%200%20156%2031.5T763-763q54%2054%2085.5%20127T880-480q0%2083-31.5%20156T763-197q-54%2054-127%2085.5T480-80Zm0-80q134%200%20227-93t93-227q0-134-93-227t-227-93q-134%200-227%2093t-93%20227q0%20134%2093%20227t227%2093Zm0-320Z%22/%3E%3C/svg%3E");
+}
+.icon-style-info {
+	--bullet-icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M440-280h80v-240h-80v240Zm68.5-331.5Q520-623 520-640t-11.5-28.5Q497-680 480-680t-28.5 11.5Q440-657 440-640t11.5 28.5Q463-600 480-600t28.5-11.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/%3E%3C/svg%3E");
 }

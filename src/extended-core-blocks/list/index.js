@@ -7,39 +7,12 @@ import { registerBlockVariation, registerBlockStyle } from '@wordpress/blocks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
-
+import classnames from 'classnames'
 
 registerBlockStyle( 'core/list', {
 	name: 'horizontal',
 	label: 'Horizontal',
 } );
-
-registerBlockVariation('core/list', {
-	// This is the out-of-the-box WordPress style, no special stuff
-	name: 'list',
-	title: 'List',
-	description: 'The default list style',
-	attributes: {
-		className: ''
-	},
-	scope: ['transform'],
-	isActive: (blockAttributes) =>
-		!blockAttributes?.className?.includes('is-style-icon-list'),
-});
-
-registerBlockVariation('core/list', {
-	// This is the out-of-the-box WordPress style, no special stuff
-	name: 'icon-list',
-	title: 'Icon bulleted list',
-	description: 'A list which has an icon for each bullet',
-	attributes: {
-		className: 'is-style-icon-list',
-		ordered: false
-	},
-	scope: ['transform'],
-	isActive: (blockAttributes) =>
-		blockAttributes?.className?.includes('is-style-icon-list'),
-});
 
 wp.hooks.addFilter(
 	'blocks.registerBlockType',
@@ -50,6 +23,9 @@ wp.hooks.addFilter(
 		settings.attributes = {
 			...settings.attributes,
 			customBulletColour: {
+				type: 'string',
+			},
+			customBulletStyle: {
 				type: 'string',
 			},
 		};
@@ -76,18 +52,30 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 			<>
 				<BlockEdit {...props} />
 				<InspectorControls group="styles">
-					<PanelBody title="Custom Bullets">
+					<PanelBody title={attributes.ordered ? `Marker colouring` : `Custom bullets`}>
 						<PanelColorSettings
-							title='Colour Settings'
+							title='Colour'
 							colorSettings={[
 								{
 									value: props.attributes.customBulletColour,
-									onChange: (color) => props.setAttributes({ customBulletColour: color }),
+									onChange: (colour) => props.setAttributes({ customBulletColour: colour }),
 									label: 'Bullet colour',
 									colors: allColours
 								}
 							]}
 						/>
+						{!attributes.ordered && (
+							<SelectControl
+								label="Special bullet"
+								value={ props.attributes.customBulletStyle }
+								options={ [
+									{ label: '-', value: '' },
+									{ label: 'Tick', value: 'tick' },
+									{ label: 'Info', value: 'info' },
+								] }
+								onChange={ ( value ) => setAttributes({ customBulletStyle: value }) }
+							/>
+						)}
 					</PanelBody>
 				</InspectorControls>
 			</>
@@ -103,51 +91,60 @@ wp.hooks.addFilter(
 
 
 
-const selectCustomBulletColour = wp.compose.createHigherOrderComponent(
+const selectCustomBullet = wp.compose.createHigherOrderComponent(
 	(BlockEdit) => (props) => {
 		if (props.name !== 'core/list') {
 			return <BlockEdit {...props} />;
 		}
 
-		const { customBulletColour } = props.attributes;
+		const { customBulletStyle, customBulletColour } = props.attributes;
 
 		const style = customBulletColour
 			? { '--bullet-colour': customBulletColour }
 			: {};
 
+		let className = "edit-screen-container";
+		if (customBulletStyle) {
+			className += " is-style-icon-list icon-style-"+customBulletStyle;
+		}
+
 		return (
-			<div style={style}>
+			<div className={className} style={style}>
 				<BlockEdit {...props} />
 			</div>
 		);
 	},
-	'selectCustomBulletColour'
+	'selectCustomBullet'
 );
 
 wp.hooks.addFilter(
 	'editor.BlockEdit',
 	'wb-blocks/custom-bullet-colour',
-	selectCustomBulletColour
+	selectCustomBullet
 );
 
 
 // Save our custom attribute
 
-const saveCustomBulletColour = ( extraProps, blockType, attributes ) => {
+const saveCustomBulletColour = ( props, blockType, attributes ) => {
 	// Do nothing if it's another block than our defined ones.
 	if ( blockType.name == "core/list" ) {
-	//	console.log("Attr A", attributes);
-		const { customBulletColour } = attributes;
-	//	console.log("Attr B", customBulletColour);
+		const { customBulletStyle, customBulletColour } = attributes;
 		if ( customBulletColour ) {
-			extraProps.style = {
-				...extraProps.style,
+			props.style = {
+				...props.style,
 				'--bullet-colour': customBulletColour,
+			};
+		}
+		if (customBulletStyle) {
+			props = {
+				...props,
+				className: classnames(props.className, "is-style-icon-list icon-style-"+customBulletStyle)
 			};
 		}
 	}
 
-	return extraProps;
+	return props;
 
 };
 wp.hooks.addFilter(
