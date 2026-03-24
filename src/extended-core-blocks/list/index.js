@@ -101,7 +101,7 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(
 
 		const style = customBulletColour
 			? { '--bullet-colour': customBulletColour }
-			: {};
+			: { '--bullet-colour': 'currentColor'};
 
 		let className = "edit-screen-container";
 		if (customBulletStyle) {
