@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Government SVGs
+
+**********************************************************************************************/
+
+.wb-icon {
+	min-width: 1.2em;
+	min-height: 1.2em;
+	display: inline-block;
+	background-color: red;
+	mask-size: contain;
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-image: var(--icon-path);
+}
+
