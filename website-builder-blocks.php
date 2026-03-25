@@ -110,6 +110,19 @@ function wb_blocks_register_blocks()
 	wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
 
 	register_block_type(
+		'wb-blocks/icon',
+		[
+			'editor_script' => 'wb-blocks-editor-script',
+			'render_callback' => 'wb_blocks_render_callback_icon_block',
+			'attributes' => [
+				'icon' => [
+					'type' => 'string'
+				]
+			]
+		]
+	);
+
+	register_block_type(
 		'wb-blocks/hmg-svg',
 		[
 			'editor_script' => 'wb-blocks-editor-script',
