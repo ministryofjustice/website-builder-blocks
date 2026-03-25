@@ -4,35 +4,32 @@
 Core block: list (Frontend styles)
 
 **********************************************************************************************/
-:root {
+:root,
+.editor-styles-wrapper {
 	// Setting defaults for the colour variables
 	// They should be set in the theme but if not, they take the values here.
-	--colour-red: var(--colour-red, #b10e1e);
-	--colour-green: var(--colour-green, #00703c);
-	--colour-blue: var(--colour-blue, #1a65a6);
+	--colour-red: #b10e1e;
+	--colour-green: #00703c;
+	--colour-blue: #1a65a6;
 
 	@media (prefers-color-scheme: dark) {
 		// We cannot be sure that dark mode is respected by each website.
 		// So the fallback must be currentColor for dark mode
-		--colour-red: var(--colour-red, currentColor);
-		--colour-green: var(--colour-green, currentColor);
-		--colour-blue: var(--colour-blue, currentColor);
+		--colour-red: currentColor;
+		--colour-green: currentColor;
+		--colour-blue: currentColor;
 	}
-}
 
-:root :where(.editor-styles-wrapper) :where(.wp-block-list.is-style-horizontal) {
-	padding-right: 1.1rem;
-}
-
-:root :where(.wp-block-list.is-style-horizontal) {
-	padding-right: 1.1rem;
+	:where(.wp-block-list.is-style-horizontal) {
+		padding-right: 1.1rem;
+	}
 }
 
 ul, ol {
 	&:not(.edit-screen-container *) {
 		// This just sets the bullet colour to the current colour by default.
 		// Important for lists within lists, as they would otherwise pick up the parent list's colour
-		--bullet-colour: (currentColor);
+		--bullet-colour: currentColor;
 	}
 }
 
