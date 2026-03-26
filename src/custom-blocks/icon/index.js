@@ -4,21 +4,32 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
-import { SelectControl, RangeControl, PanelBody, PanelRow } from '@wordpress/components';
+import { SelectControl, RangeControl, TextControl, PanelBody, PanelRow } from '@wordpress/components';
+import { useState } from '@wordpress/element';
+
+
 const iconCatPaths = PHPData.iconDirectories;
 const iconCategories = PHPData.iconCategories;
+
 const icons = [];
 const catOptions = []; //category options
+const iconOptions = [];
+const iconButtons = {};
 iconCatPaths.forEach(path => {
 	const catName = path.split('/').reverse()[0];
-	
+
 	// Create category options
 	catOptions.push({ label: catName.charAt(0).toUpperCase() + catName.slice(1), value: catName })
 
 	icons[catName] = [];
 	icons[catName]["path"] = path;
 	icons[catName]["options"] = iconCategories[catName];
+	icons[catName]["options"].forEach(option => {
+		iconOptions.push({ label: (option.charAt(0).toUpperCase() + option.slice(1)).replaceAll("_", " "), value: option });
+		iconButtons[option] = `${path}/${option}/materialicons/24px.svg`;
+	});
 });
+
 registerBlockType('wb-blocks/icon', {
 	title: __('Icon', 'wb_block'),
 	description: __("Choose from a whole plethorah of icons"),
@@ -75,6 +86,11 @@ registerBlockType('wb-blocks/icon', {
 			className
 		} = props;
 
+		const [searchTerm, setSearchTerm] = useState('');
+		// Filter icons based on search input
+		const filteredIcons = Object.entries(iconButtons).filter(([name]) =>
+			name.toLowerCase().includes(searchTerm.toLowerCase())
+		);
 		// Grab newLogo, set the value of logo to newLogo.
 		const onChangeIcon = value => {
 			setAttributes({ icon: value });
@@ -88,10 +104,7 @@ registerBlockType('wb-blocks/icon', {
 		const onChangeColour = value => {
 			setAttributes({ colour: value });
 		};
-		const iconOptions = [];
-		icons[category]["options"].forEach(option => {
-			iconOptions.push({ label: (option.charAt(0).toUpperCase() + option.slice(1)).replaceAll("_", " "), value: option })
-		});
+
 
 		const [colorPalette] = useSettings('color.palette');
 		const extraIconColours = [
@@ -102,8 +115,45 @@ registerBlockType('wb-blocks/icon', {
 		const allColours = [...colorPalette,...extraIconColours];
 		const iconPathURL = `url('${icons[category]["path"]}/${icon}/materialicons/24px.svg')`;
 		return ([
-			<InspectorControls group="styles">
-				<PanelBody title={ __( 'Icon' ) } initialOpen={true} >
+			<InspectorControls group="settings">
+				<PanelBody title="Icon picker (buttons)" initialOpen={ true } >
+					<TextControl
+						label="Search icons"
+						placeholder="Type to filter"
+						value={searchTerm}
+						onChange={(value) => setSearchTerm(value)}
+						style={{ marginBottom: '8px' }}
+					/>
+					<div style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(4, 1fr)',
+						gap: '10px'
+					}}>
+						{filteredIcons.map(([name, url]) => (
+							<button
+								key={name}
+								onClick={
+									() => setAttributes({ icon: name })
+								}
+								style={{
+									border: icon === name ? '8px solid #0ff' : '1px solid #ccc',
+									filter: icon === name ? 'invert(1)' : 'none',
+									padding: '10px',
+									background: 'white',
+									cursor: 'pointer',
+								}}
+							>
+								<img src={url} width={24} height={24} alt="" />
+							</button>
+						))}
+						{filteredIcons.length === 0 && (
+							<p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#666' }}>
+								No icons found.
+							</p>
+						)}
+					</div>
+				</PanelBody>
+				<PanelBody title="Icon selector (drop-downs)" initialOpen={true}>
 					<PanelRow>
 						<SelectControl
 							label="Icon category"
@@ -120,6 +170,10 @@ registerBlockType('wb-blocks/icon', {
 							onChange={ onChangeIcon }
 						/>
 					</PanelRow>
+				</PanelBody>
+			</InspectorControls>,
+			<InspectorControls group="styles">
+				<PanelBody >
 					<RangeControl
 						label="Size"
 						value={ size }
@@ -144,10 +198,10 @@ registerBlockType('wb-blocks/icon', {
 			<div
 				className={`wb-icon ${className || ''}`}
 				style={{
-                    backgroundColor: colour,
-                    '--icon-path': iconPathURL,
-                    '--icon-size': size,
-                }}> 
+					backgroundColor: colour,
+					'--icon-path': iconPathURL,
+					'--icon-size': size,
+				}}>
 			</div>
 
 		]);

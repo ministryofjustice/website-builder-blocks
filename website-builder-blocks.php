@@ -115,11 +115,17 @@ function wb_blocks_register_blocks()
 
 	foreach($category_directories as $catDir) {
 		$catName = basename($catDir);
-		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$catName/*" );
-		$categories[$catName] = array_map(function($file) {
-			return basename(plugins_url($file, __FILE__ ));
-		}, $files);
+		$files = glob( plugin_dir_path(__FILE__) . "assets/icons/$catName/*" );
+		$categories[$catName] = [];
+
+		foreach ($files as $file) {
+			if (!file_exists($file."/materialicons/24px.svg")) {
+				continue; // Only accept icons where the normal files are used
+			}
+			$categories[$catName][] = basename(plugins_url($file, __FILE__));
+		}
 	}
+
 
 	wp_localize_script(
         'wb-blocks-editor-script',
