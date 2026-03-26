@@ -106,6 +106,30 @@ function wb_blocks_register_blocks()
 		true
 	);
 
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . 'assets/icons/*' );
+
+	$category_directories = array_map(function($directory) {
+		return plugins_url( 'assets/icons/' . basename($directory), __FILE__ );
+	}, $icon_directories);
+	$categories = array();
+
+	foreach($category_directories as $catDir) {
+		$catName = basename($catDir);
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$catName/*" );
+		$categories[$catName] = array_map(function($file) {
+			return basename(plugins_url($file, __FILE__ ));
+		}, $files);
+	}
+
+	wp_localize_script(
+        'wb-blocks-editor-script',
+        'PHPData',
+        [
+            'iconDirectories' => $category_directories,
+            'iconCategories' => $categories,
+        ]
+    );
+
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
 

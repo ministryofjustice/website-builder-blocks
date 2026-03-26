@@ -5,11 +5,15 @@ Block: Government SVGs
 
 **********************************************************************************************/
 
+@use '../../../assets/scss/fallback-colours';
+
 .wb-icon {
 	min-width: 1.2em;
 	min-height: 1.2em;
+	width: calc(1.2em * var(--icon-size));
+	height: calc(1.2em * var(--icon-size));
 	display: inline-block;
-	background-color: red;
+	background-color: currentColor; // overridden by style
 	mask-size: contain;
 	mask-repeat: no-repeat;
 	mask-position: center;
