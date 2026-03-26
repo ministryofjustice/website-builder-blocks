@@ -4,22 +4,11 @@
 Core block: list (Frontend styles)
 
 **********************************************************************************************/
+
+@use '../../../assets/scss/fallback-colours';
+
 :root,
 .editor-styles-wrapper {
-	// Setting defaults for the colour variables
-	// They should be set in the theme but if not, they take the values here.
-	--colour-red: #b10e1e;
-	--colour-green: #00703c;
-	--colour-blue: #1a65a6;
-
-	@media (prefers-color-scheme: dark) {
-		// We cannot be sure that dark mode is respected by each website.
-		// So the fallback must be currentColor for dark mode
-		--colour-red: currentColor;
-		--colour-green: currentColor;
-		--colour-blue: currentColor;
-	}
-
 	:where(.wp-block-list.is-style-horizontal) {
 		padding-right: 1.1rem;
 	}

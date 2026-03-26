@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/blockEditor';
+import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
 import { SelectControl, RangeControl, PanelBody, PanelRow } from '@wordpress/components';
 const iconCatPaths = PHPData.iconDirectories;
 const iconCategories = PHPData.iconCategories;

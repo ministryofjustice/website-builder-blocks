@@ -30,7 +30,7 @@ function wb_blocks_render_callback_icon_block($attributes) {
 	ob_start();
 
 	?>
-	<div aria-label="<?php echo str_replace("_"," ",$aria_label);?> icon" class="wb-icon" style="--icon-path:url(<?php echo $name;?>);--icon-size:<?php echo $attribute_icon_size;?>;--background-colour:<?php echo $attribute_icon_colour;?>;">
+	<div aria-label="<?php echo str_replace("_"," ",$aria_label);?> icon" class="wb-icon" style="--icon-path:url(<?php echo $name;?>);--icon-size:<?php echo $attribute_icon_size;?>;background-color:<?php echo $attribute_icon_colour;?>;">
 	</div>
 
 	<?php

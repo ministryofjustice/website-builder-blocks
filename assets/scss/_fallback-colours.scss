@@ -1,4 +1,11 @@
-:root {
+/**
+These colours are fallback colours, they are hopefully set in the theme.
+If they are changed, the different blocks (list, icon at the moment) will need
+to be updated too so the new colours are selctable.
+*/
+
+:root,
+.editor-styles-wrapper {
 	// Setting defaults for the colour variables
 	// They should be set in the theme but if not, they take the values here.
 	--colour-red: #b10e1e;
