@@ -7,7 +7,17 @@ import { registerBlockVariation, registerBlockStyle } from '@wordpress/blocks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
-import classnames from 'classnames'
+import { useState } from '@wordpress/element';
+import classnames from 'classnames';
+
+const iconRootDirectory = IconData.rootDirectory;
+const iconPathSuffix = "/materialicons/24px.svg";
+const allowedIcons = [
+	"action/check_circle_outline",
+	"action/info_outline"
+];
+
+var customBulletIcon = "alert/warning/materialicons/24px.svg";
 
 registerBlockStyle( 'core/list', {
 	name: 'horizontal',
@@ -26,6 +36,9 @@ wp.hooks.addFilter(
 				type: 'string',
 			},
 			customBulletStyle: {
+				type: 'string',
+			},
+			customBulletIcon: {
 				type: 'string',
 			},
 		};
@@ -74,7 +87,30 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 									{ label: 'Info', value: 'info' },
 								] }
 								onChange={ ( value ) => setAttributes({ customBulletStyle: value }) }
-							/>
+							/>,
+							<div style={{
+								display: 'grid',
+								gridTemplateColumns: 'repeat(4, 1fr)',
+								gap: '10px'
+							}}>
+								{allowedIcons.map(([data]) => (
+									<button
+										key={data}
+										onClick={
+											() => setAttributes({ customBulletIcon: data })
+										}
+										style={{
+											border: customBulletIcon === data ? '8px solid #0ff' : '1px solid #ccc',
+											filter: customBulletIcon === data ? 'invert(1)' : 'none',
+											padding: '10px',
+											background: 'white',
+											cursor: 'pointer',
+										}}
+									>
+										<img src={iconRootDirectory + "/" + data} width={24} height={24} alt={data.name} loading="lazy" />
+									</button>
+								))}
+							</div>
 						)}
 					</PanelBody>
 				</InspectorControls>
@@ -97,7 +133,7 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(
 			return <BlockEdit {...props} />;
 		}
 
-		const { customBulletStyle, customBulletColour } = props.attributes;
+		const { customBulletStyle, customBulletColour, customBulletIcon } = props.attributes;
 
 		const style = customBulletColour
 			? { '--bullet-colour': customBulletColour }
@@ -129,7 +165,7 @@ wp.hooks.addFilter(
 const saveCustomBulletColour = ( props, blockType, attributes ) => {
 	// Do nothing if it's another block than our defined ones.
 	if ( blockType.name == "core/list" ) {
-		const { customBulletStyle, customBulletColour } = attributes;
+		const { customBulletStyle, customBulletColour, customBulletIcon } = attributes;
 		if ( customBulletColour ) {
 			props.style = {
 				...props.style,

@@ -3587,32 +3587,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const iconCatPaths = PHPData.iconDirectories;
-const iconCategories = PHPData.iconCategories;
-const icons = [];
-const catOptions = []; //category options
-const iconOptions = [];
-const iconButtons = {};
-iconCatPaths.forEach(path => {
-  const catName = path.split('/').reverse()[0];
-
-  // Create category options
-  catOptions.push({
-    label: catName.charAt(0).toUpperCase() + catName.slice(1),
-    value: catName
-  });
-  icons[catName] = [];
-  icons[catName]["path"] = path;
-  icons[catName]["options"] = iconCategories[catName];
-  icons[catName]["options"].forEach(option => {
-    iconOptions.push({
-      label: (option.charAt(0).toUpperCase() + option.slice(1)).replaceAll("_", " "),
-      value: option
-    });
-    iconButtons[option] = `${path}/${option}/materialicons/24px.svg`;
-  });
-});
-console.log(iconButtons);
+const iconRootDirectory = IconData.rootDirectory;
+const iconCategories = IconData.categories;
+const iconOptions = IconData.options;
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('wb-blocks/icon', {
   title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon', 'wb_block'),
   description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Choose from a whole plethorah of icons"),
@@ -3689,11 +3666,7 @@ console.log(iconButtons);
   attributes: {
     icon: {
       type: 'string',
-      default: 'star'
-    },
-    category: {
-      type: 'string',
-      default: 'toggle'
+      default: 'action/group_work/materialicons/24px.svg'
     },
     size: {
       type: 'number',
@@ -3719,18 +3692,7 @@ console.log(iconButtons);
     } = props;
     const [searchTerm, setSearchTerm] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
     // Filter icons based on search input
-    const filteredIcons = Object.entries(iconButtons).filter(([name]) => name.toLowerCase().includes(searchTerm.toLowerCase()));
-    // Grab newLogo, set the value of logo to newLogo.
-    const onChangeIcon = value => {
-      setAttributes({
-        icon: value
-      });
-    };
-    const onChangeCategory = value => {
-      setAttributes({
-        category: value
-      });
-    };
+    const filteredIcons = Object.entries(iconOptions).filter(([index, data]) => data.value.toLowerCase().includes(searchTerm.toLowerCase().replaceAll(/\s+/g, "_")));
     const onChangeSize = value => {
       setAttributes({
         size: value
@@ -3753,10 +3715,10 @@ console.log(iconButtons);
       color: 'var(--colour-blue)'
     }];
     const allColours = [...colorPalette, ...extraIconColours];
-    const iconPathURL = `url('${icons[category]["path"]}/${icon}/materialicons/24px.svg')`;
-    return [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+    const iconPathURL = `url('${iconRootDirectory}/${icon}')`;
+    return [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       group: "settings",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: "Icon picker (buttons)",
         initialOpen: true,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
@@ -3773,24 +3735,25 @@ console.log(iconButtons);
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '10px'
           },
-          children: [filteredIcons.map(([name, url]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+          children: [filteredIcons.map(([index, data]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
             onClick: () => setAttributes({
-              icon: name
+              icon: data.value
             }),
             style: {
-              border: icon === name ? '8px solid #0ff' : '1px solid #ccc',
-              filter: icon === name ? 'invert(1)' : 'none',
+              border: icon === data.value ? '8px solid #0ff' : '1px solid #ccc',
+              filter: icon === data.value ? 'invert(1)' : 'none',
               padding: '10px',
               background: 'white',
               cursor: 'pointer'
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-              src: url,
+              src: iconRootDirectory + "/" + data.value,
               width: 24,
               height: 24,
-              alt: ""
+              alt: data.name,
+              loading: "lazy"
             })
-          }, name)), filteredIcons.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          }, data.value)), filteredIcons.length === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
             style: {
               gridColumn: '1 / -1',
               textAlign: 'center',
@@ -3799,25 +3762,7 @@ console.log(iconButtons);
             children: "No icons found."
           })]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: "Icon selector (drop-downs)",
-        initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: "Icon category",
-            value: category,
-            options: catOptions,
-            onChange: onChangeCategory
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: "Icon",
-            value: icon,
-            options: iconOptions,
-            onChange: onChangeIcon
-          })
-        })]
-      })]
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       group: "styles",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
@@ -4319,10 +4264,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /**
  *  Extend core WP navigation block
  *  https://wordpress.org/documentation/article/navigation-block/
@@ -4334,6 +4281,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+const iconRootDirectory = IconData.rootDirectory;
+const iconPathSuffix = "/materialicons/24px.svg";
+const allowedIcons = ["action/check_circle_outline", "action/info_outline"];
+var customBulletIcon = "alert/warning/materialicons/24px.svg";
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockStyle)('core/list', {
   name: 'horizontal',
   label: 'Horizontal'
@@ -4347,6 +4299,9 @@ wp.hooks.addFilter('blocks.registerBlockType', 'wb-blocks/list-custom-bullet-att
     },
     customBulletStyle: {
       type: 'string'
+    },
+    customBulletIcon: {
+      type: 'string'
     }
   };
   return settings;
@@ -4354,7 +4309,7 @@ wp.hooks.addFilter('blocks.registerBlockType', 'wb-blocks/list-custom-bullet-att
 const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.createHigherOrderComponent)(BlockEdit => {
   return props => {
     if (props.name !== 'core/list') {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockEdit, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
         ...props
       });
     }
@@ -4374,14 +4329,14 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
       color: 'var(--colour-blue)'
     }];
     const allColours = [...colorPalette, ...extraBulletColours];
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockEdit, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
         ...props
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
         group: "styles",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
           title: attributes.ordered ? `Marker colouring` : `Custom bullets`,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
             title: "Colour",
             colorSettings: [{
               value: props.attributes.customBulletColour,
@@ -4391,7 +4346,7 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
               label: 'Bullet colour',
               colors: allColours
             }]
-          }), !attributes.ordered && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          }), !attributes.ordered && (/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
             label: "Special bullet",
             value: props.attributes.customBulletStyle,
             options: [{
@@ -4407,7 +4362,32 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
             onChange: value => setAttributes({
               customBulletStyle: value
             })
-          })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            style: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '10px'
+            },
+            children: allowedIcons.map(([data]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+              onClick: () => setAttributes({
+                customBulletIcon: data
+              }),
+              style: {
+                border: customBulletIcon === data ? '8px solid #0ff' : '1px solid #ccc',
+                filter: customBulletIcon === data ? 'invert(1)' : 'none',
+                padding: '10px',
+                background: 'white',
+                cursor: 'pointer'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
+                src: iconRootDirectory + "/" + data,
+                width: 24,
+                height: 24,
+                alt: data.name,
+                loading: "lazy"
+              })
+            }, data))
+          }))]
         })
       })]
     });
@@ -4416,13 +4396,14 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
 wp.hooks.addFilter('editor.BlockEdit', 'wb-blocks/list-custom-bullet-control', bulletColourPicker);
 const selectCustomBullet = wp.compose.createHigherOrderComponent(BlockEdit => props => {
   if (props.name !== 'core/list') {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockEdit, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
       ...props
     });
   }
   const {
     customBulletStyle,
-    customBulletColour
+    customBulletColour,
+    customBulletIcon
   } = props.attributes;
   const style = customBulletColour ? {
     '--bullet-colour': customBulletColour
@@ -4433,10 +4414,10 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(BlockEdit => pr
   if (customBulletStyle) {
     className += " is-style-icon-list icon-style-" + customBulletStyle;
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
     className: className,
     style: style,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockEdit, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
       ...props
     })
   });
@@ -4450,7 +4431,8 @@ const saveCustomBulletColour = (props, blockType, attributes) => {
   if (blockType.name == "core/list") {
     const {
       customBulletStyle,
-      customBulletColour
+      customBulletColour,
+      customBulletIcon
     } = attributes;
     if (customBulletColour) {
       props.style = {
@@ -4461,7 +4443,7 @@ const saveCustomBulletColour = (props, blockType, attributes) => {
     if (customBulletStyle) {
       props = {
         ...props,
-        className: classnames__WEBPACK_IMPORTED_MODULE_4___default()(props.className, "is-style-icon-list icon-style-" + customBulletStyle)
+        className: classnames__WEBPACK_IMPORTED_MODULE_5___default()(props.className, "is-style-icon-list icon-style-" + customBulletStyle)
       };
     }
   }

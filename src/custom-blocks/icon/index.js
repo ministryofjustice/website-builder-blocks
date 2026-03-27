@@ -7,28 +7,9 @@ import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/b
 import { SelectControl, RangeControl, TextControl, PanelBody, PanelRow } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
-
-const iconCatPaths = PHPData.iconDirectories;
-const iconCategories = PHPData.iconCategories;
-
-const icons = [];
-const catOptions = []; //category options
-const iconOptions = [];
-const iconButtons = {};
-iconCatPaths.forEach(path => {
-	const catName = path.split('/').reverse()[0];
-
-	// Create category options
-	catOptions.push({ label: catName.charAt(0).toUpperCase() + catName.slice(1), value: catName })
-
-	icons[catName] = [];
-	icons[catName]["path"] = path;
-	icons[catName]["options"] = iconCategories[catName];
-	icons[catName]["options"].forEach(option => {
-		iconOptions.push({ label: (option.charAt(0).toUpperCase() + option.slice(1)).replaceAll("_", " "), value: option });
-		iconButtons[option] = `${path}/${option}/materialicons/24px.svg`;
-	});
-});
+const iconRootDirectory = IconData.rootDirectory;
+const iconCategories = IconData.categories;
+const iconOptions = IconData.options;
 
 registerBlockType('wb-blocks/icon', {
 	title: __('Icon', 'wb_block'),
@@ -56,11 +37,7 @@ registerBlockType('wb-blocks/icon', {
 	attributes: {
 		icon: {
 			type: 'string',
-			default: 'star'
-		},
-		category: {
-			type: 'string',
-			default: 'toggle'
+			default: 'action/group_work/materialicons/24px.svg'
 		},
 		size: {
 			type: 'number',
@@ -88,16 +65,10 @@ registerBlockType('wb-blocks/icon', {
 
 		const [searchTerm, setSearchTerm] = useState('');
 		// Filter icons based on search input
-		const filteredIcons = Object.entries(iconButtons).filter(([name]) =>
-			name.toLowerCase().includes(searchTerm.toLowerCase())
+		const filteredIcons = Object.entries(iconOptions).filter(([index, data]) =>
+			data.value.toLowerCase().includes(searchTerm.toLowerCase().replaceAll(/\s+/g, "_"))
 		);
-		// Grab newLogo, set the value of logo to newLogo.
-		const onChangeIcon = value => {
-			setAttributes({ icon: value });
-		};
-		const onChangeCategory = value => {
-			setAttributes({ category: value });
-		};
+		
 		const onChangeSize = value => {
 			setAttributes({ size: value });
 		};
@@ -113,7 +84,7 @@ registerBlockType('wb-blocks/icon', {
 			{name: 'Blue',color: 'var(--colour-blue)'}
 		]
 		const allColours = [...colorPalette,...extraIconColours];
-		const iconPathURL = `url('${icons[category]["path"]}/${icon}/materialicons/24px.svg')`;
+		const iconPathURL = `url('${iconRootDirectory}/${icon}')`;
 		return ([
 			<InspectorControls group="settings">
 				<PanelBody title="Icon picker (buttons)" initialOpen={ true } >
@@ -129,21 +100,21 @@ registerBlockType('wb-blocks/icon', {
 						gridTemplateColumns: 'repeat(4, 1fr)',
 						gap: '10px'
 					}}>
-						{filteredIcons.map(([name, url]) => (
+						{filteredIcons.map(([index, data]) => (
 							<button
-								key={name}
+								key={data.value}
 								onClick={
-									() => setAttributes({ icon: name })
+									() => setAttributes({ icon: data.value })
 								}
 								style={{
-									border: icon === name ? '8px solid #0ff' : '1px solid #ccc',
-									filter: icon === name ? 'invert(1)' : 'none',
+									border: icon === data.value ? '8px solid #0ff' : '1px solid #ccc',
+									filter: icon === data.value ? 'invert(1)' : 'none',
 									padding: '10px',
 									background: 'white',
 									cursor: 'pointer',
 								}}
 							>
-								<img src={url} width={24} height={24} alt="" />
+								<img src={iconRootDirectory + "/" + data.value} width={24} height={24} alt={data.name} loading="lazy" />
 							</button>
 						))}
 						{filteredIcons.length === 0 && (
@@ -152,24 +123,6 @@ registerBlockType('wb-blocks/icon', {
 							</p>
 						)}
 					</div>
-				</PanelBody>
-				<PanelBody title="Icon selector (drop-downs)" initialOpen={true}>
-					<PanelRow>
-						<SelectControl
-							label="Icon category"
-							value={category}
-							options={ catOptions }
-							onChange={ onChangeCategory }
-						/>
-					</PanelRow>
-					<PanelRow>
-						<SelectControl
-							label="Icon"
-							value={icon}
-							options={ iconOptions }
-							onChange={ onChangeIcon }
-						/>
-					</PanelRow>
 				</PanelBody>
 			</InspectorControls>,
 			<InspectorControls group="styles">

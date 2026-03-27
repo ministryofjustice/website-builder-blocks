@@ -106,33 +106,39 @@ function wb_blocks_register_blocks()
 		true
 	);
 
-	$icon_directories = glob( plugin_dir_path( __FILE__ ) . 'assets/icons/*' );
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
 
-	$category_directories = array_map(function($directory) {
-		return plugins_url( 'assets/icons/' . basename($directory), __FILE__ );
+	$categories = array_map(function($directory) {
+		return basename($directory);
 	}, $icon_directories);
-	$categories = array();
+	$icons = [];
+	$icon_dir = plugins_url("assets/icons", __FILE__ );
 
-	foreach($category_directories as $catDir) {
-		$catName = basename($catDir);
-		$files = glob( plugin_dir_path(__FILE__) . "assets/icons/$catName/*" );
-		$categories[$catName] = [];
-
+	foreach($categories as $category) {
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
 		foreach ($files as $file) {
 			if (!file_exists($file."/materialicons/24px.svg")) {
 				continue; // Only accept icons where the normal files are used
 			}
-			$categories[$catName][] = basename(plugins_url($file, __FILE__));
-		}
+			$name = basename(plugins_url($file, __FILE__));
+			$object = new stdClass();
+			$object->label = ucfirst(str_replace("_"," ",$name));
+			$object->value = $category ."/". $name . "/materialicons/24px.svg";
+			$icons[] = [
+				'label' => ucfirst(str_replace("_"," ",$name)),
+				'value' => $category ."/". $name . "/materialicons/24px.svg"
+			];
+		}	
 	}
-
 
 	wp_localize_script(
         'wb-blocks-editor-script',
-        'PHPData',
+        'IconData',
         [
-            'iconDirectories' => $category_directories,
-            'iconCategories' => $categories,
+            'rootDirectory' => $icon_dir,
+            'categories' => $categories,
+            'names' => $names,
+            'options' => $icons,
         ]
     );
 
