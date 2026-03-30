@@ -4282,10 +4282,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const iconRootDirectory = IconData.rootDirectory;
+const iconRootDirectory = IconData.rootDirectory + "/";
 const iconPathSuffix = "/materialicons/24px.svg";
-const allowedIcons = ["action/check_circle_outline", "action/info_outline"];
-var customBulletIcon = "alert/warning/materialicons/24px.svg";
+const allowedIcons = ["content/remove", "navigation/check", "action/check_circle", "action/check_circle_outline", "action/info", "action/info_outline", "navigation/chevron_right", "av/play_arrow", "action/help", "action/help_outline", "alert/error", "alert/error_outline", "toggle/star", "action/label_important", "action/label_important_outline", "action/arrow_right_alt"];
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockStyle)('core/list', {
   name: 'horizontal',
   label: 'Horizontal'
@@ -4329,6 +4328,11 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
       color: 'var(--colour-blue)'
     }];
     const allColours = [...colorPalette, ...extraBulletColours];
+    const chooseIcon = data => {
+      setAttributes({
+        customBulletIcon: attributes.customBulletIcon === data ? "" : data //toggle
+      });
+    };
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
         ...props
@@ -4346,48 +4350,44 @@ const bulletColourPicker = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cr
               label: 'Bullet colour',
               colors: allColours
             }]
-          }), !attributes.ordered && (/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
-            label: "Special bullet",
-            value: props.attributes.customBulletStyle,
-            options: [{
-              label: '-',
-              value: ''
-            }, {
-              label: 'Tick',
-              value: 'tick'
-            }, {
-              label: 'Info',
-              value: 'info'
-            }],
-            onChange: value => setAttributes({
-              customBulletStyle: value
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          }), !attributes.ordered && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
             style: {
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '10px'
             },
-            children: allowedIcons.map(([data]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
-              onClick: () => setAttributes({
-                customBulletIcon: data
-              }),
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+              onClick: () => chooseIcon(""),
               style: {
-                border: customBulletIcon === data ? '8px solid #0ff' : '1px solid #ccc',
-                filter: customBulletIcon === data ? 'invert(1)' : 'none',
+                outline: attributes.customBulletIcon === "" ? '8px solid #0ff' : '1px solid #ccc',
+                filter: attributes.customBulletIcon === "" ? 'invert(1)' : 'none',
                 padding: '10px',
                 background: 'white',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textAlign: 'center',
+                fontWeight: '700',
+                gridColumn: 'span 4'
+              },
+              children: "Default (no special icon)"
+            }), allowedIcons.map(data => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+              onClick: () => chooseIcon(data),
+              style: {
+                outline: attributes.customBulletIcon === data ? '8px solid #0ff' : '1px solid #ccc',
+                filter: attributes.customBulletIcon === data ? 'invert(1)' : 'none',
+                padding: '10px',
+                background: 'white',
+                cursor: 'pointer',
+                textAlign: 'center'
               },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("img", {
-                src: iconRootDirectory + "/" + data,
+                src: iconRootDirectory + data + iconPathSuffix,
                 width: 24,
                 height: 24,
-                alt: data.name,
+                alt: data,
                 loading: "lazy"
               })
-            }, data))
-          }))]
+            }, data))]
+          })]
         })
       })]
     });
@@ -4401,22 +4401,21 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(BlockEdit => pr
     });
   }
   const {
-    customBulletStyle,
     customBulletColour,
     customBulletIcon
   } = props.attributes;
-  const style = customBulletColour ? {
-    '--bullet-colour': customBulletColour
-  } : {
-    '--bullet-colour': 'currentColor'
-  };
+  const maskURL = "url('" + iconRootDirectory + customBulletIcon + iconPathSuffix + "')";
+  const colour = customBulletColour ? customBulletColour : 'currentColor';
   let className = "edit-screen-container";
-  if (customBulletStyle) {
-    className += " is-style-icon-list icon-style-" + customBulletStyle;
+  if (customBulletIcon) {
+    className += " is-style-icon-list";
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
     className: className,
-    style: style,
+    style: {
+      '--bullet-icon': maskURL,
+      '--bullet-colour': colour
+    },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(BlockEdit, {
       ...props
     })
@@ -4426,30 +4425,34 @@ wp.hooks.addFilter('editor.BlockEdit', 'wb-blocks/custom-bullet-colour', selectC
 
 // Save our custom attribute
 
-const saveCustomBulletColour = (props, blockType, attributes) => {
+const saveCustomBullet = (props, blockType, attributes) => {
   // Do nothing if it's another block than our defined ones.
   if (blockType.name == "core/list") {
     const {
-      customBulletStyle,
       customBulletColour,
       customBulletIcon
     } = attributes;
+    const maskURL = "url('" + iconRootDirectory + customBulletIcon + iconPathSuffix + "')";
     if (customBulletColour) {
       props.style = {
         ...props.style,
         '--bullet-colour': customBulletColour
       };
     }
-    if (customBulletStyle) {
+    if (customBulletIcon) {
       props = {
         ...props,
-        className: classnames__WEBPACK_IMPORTED_MODULE_5___default()(props.className, "is-style-icon-list icon-style-" + customBulletStyle)
+        className: classnames__WEBPACK_IMPORTED_MODULE_5___default()(props.className, "is-style-icon-list")
+      };
+      props.style = {
+        ...props.style,
+        '--bullet-icon': maskURL
       };
     }
   }
   return props;
 };
-wp.hooks.addFilter('blocks.getSaveContent.extraProps', 'wb-blocks/save-custom-bullet-colour', saveCustomBulletColour);
+wp.hooks.addFilter('blocks.getSaveContent.extraProps', 'wb-blocks/save-custom-bullet-colour', saveCustomBullet);
 
 /***/ },
 
