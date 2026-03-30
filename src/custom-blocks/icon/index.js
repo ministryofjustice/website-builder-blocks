@@ -7,9 +7,10 @@ import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/b
 import { SelectControl, RangeControl, TextControl, PanelBody, PanelRow } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
-const iconRootDirectory = IconData.rootDirectory;
+const iconRootDirectory = IconData.rootDirectory + "/";
 const iconCategories = IconData.categories;
 const iconOptions = IconData.options;
+const iconSuffix = "/materialicons/24px.svg";
 
 registerBlockType('wb-blocks/icon', {
 	title: __('Icon', 'wb_block'),
@@ -37,13 +38,16 @@ registerBlockType('wb-blocks/icon', {
 	attributes: {
 		icon: {
 			type: 'string',
-			default: 'action/group_work/materialicons/24px.svg'
+			default: 'action/group_work'
 		},
 		size: {
 			type: 'number',
-			default: 1
+			default: 6
 		},
 		colour: {
+			type: 'string'
+		},
+		alt: {
 			type: 'string'
 		},
 		className: {
@@ -58,7 +62,7 @@ registerBlockType('wb-blocks/icon', {
 				colour,
 				icon,
 				size,
-				category
+				alt
 			},
 			className
 		} = props;
@@ -69,11 +73,17 @@ registerBlockType('wb-blocks/icon', {
 			data.value.toLowerCase().includes(searchTerm.toLowerCase().replaceAll(/\s+/g, "_"))
 		);
 		
+		const onChangeAlt = value => {
+			setAttributes({ alt: value });
+		};
 		const onChangeSize = value => {
 			setAttributes({ size: value });
 		};
 		const onChangeColour = value => {
 			setAttributes({ colour: value });
+		};
+		const onChangeIcon = value => {
+			setAttributes({ icon: value });
 		};
 
 
@@ -84,10 +94,10 @@ registerBlockType('wb-blocks/icon', {
 			{name: 'Blue',color: 'var(--colour-blue)'}
 		]
 		const allColours = [...colorPalette,...extraIconColours];
-		const iconPathURL = `url('${iconRootDirectory}/${icon}')`;
+		const iconPathURL = `url('${iconRootDirectory}${icon}${iconSuffix}')`;
 		return ([
 			<InspectorControls group="settings">
-				<PanelBody title="Icon picker (buttons)" initialOpen={ true } >
+				<PanelBody title="Icon picker" initialOpen={ true } >
 					<TextControl
 						label="Search icons"
 						placeholder="Type to filter"
@@ -103,9 +113,7 @@ registerBlockType('wb-blocks/icon', {
 						{filteredIcons.map(([index, data]) => (
 							<button
 								key={data.value}
-								onClick={
-									() => setAttributes({ icon: data.value })
-								}
+								onClick={() => onChangeIcon(data.value)}
 								style={{
 									border: icon === data.value ? '8px solid #0ff' : '1px solid #ccc',
 									filter: icon === data.value ? 'invert(1)' : 'none',
@@ -114,7 +122,7 @@ registerBlockType('wb-blocks/icon', {
 									cursor: 'pointer',
 								}}
 							>
-								<img src={iconRootDirectory + "/" + data.value} width={24} height={24} alt={data.name} loading="lazy" />
+								<img src={iconRootDirectory + data.value + iconSuffix} width={24} height={24} alt={data.name} loading="lazy" />
 							</button>
 						))}
 						{filteredIcons.length === 0 && (
@@ -145,6 +153,13 @@ registerBlockType('wb-blocks/icon', {
 								colors: allColours
 							}
 						]}
+					/>
+					<TextControl
+						label="Alt text"
+						help="Describe the icon to aid users of assistive technology"
+						value={alt}
+						onChange={ onChangeAlt }
+						style={{ marginBottom: '8px' }}
 					/>
 				</PanelBody>
 			</InspectorControls>,

@@ -123,10 +123,10 @@ function wb_blocks_register_blocks()
 			$name = basename(plugins_url($file, __FILE__));
 			$object = new stdClass();
 			$object->label = ucfirst(str_replace("_"," ",$name));
-			$object->value = $category ."/". $name . "/materialicons/24px.svg";
+			$object->value = $category ."/". $name;
 			$icons[] = [
 				'label' => ucfirst(str_replace("_"," ",$name)),
-				'value' => $category ."/". $name . "/materialicons/24px.svg"
+				'value' => $category ."/". $name
 			];
 		}	
 	}

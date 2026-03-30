@@ -3587,9 +3587,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const iconRootDirectory = IconData.rootDirectory;
+const iconRootDirectory = IconData.rootDirectory + "/";
 const iconCategories = IconData.categories;
 const iconOptions = IconData.options;
+const iconSuffix = "/materialicons/24px.svg";
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)('wb-blocks/icon', {
   title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Icon', 'wb_block'),
   description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Choose from a whole plethorah of icons"),
@@ -3666,13 +3667,16 @@ const iconOptions = IconData.options;
   attributes: {
     icon: {
       type: 'string',
-      default: 'action/group_work/materialicons/24px.svg'
+      default: 'action/group_work'
     },
     size: {
       type: 'number',
-      default: 1
+      default: 6
     },
     colour: {
+      type: 'string'
+    },
+    alt: {
       type: 'string'
     },
     className: {
@@ -3686,13 +3690,18 @@ const iconOptions = IconData.options;
         colour,
         icon,
         size,
-        category
+        alt
       },
       className
     } = props;
     const [searchTerm, setSearchTerm] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
     // Filter icons based on search input
     const filteredIcons = Object.entries(iconOptions).filter(([index, data]) => data.value.toLowerCase().includes(searchTerm.toLowerCase().replaceAll(/\s+/g, "_")));
+    const onChangeAlt = value => {
+      setAttributes({
+        alt: value
+      });
+    };
     const onChangeSize = value => {
       setAttributes({
         size: value
@@ -3701,6 +3710,11 @@ const iconOptions = IconData.options;
     const onChangeColour = value => {
       setAttributes({
         colour: value
+      });
+    };
+    const onChangeIcon = value => {
+      setAttributes({
+        icon: value
       });
     };
     const [colorPalette] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useSettings)('color.palette');
@@ -3715,11 +3729,11 @@ const iconOptions = IconData.options;
       color: 'var(--colour-blue)'
     }];
     const allColours = [...colorPalette, ...extraIconColours];
-    const iconPathURL = `url('${iconRootDirectory}/${icon}')`;
+    const iconPathURL = `url('${iconRootDirectory}${icon}${iconSuffix}')`;
     return [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
       group: "settings",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-        title: "Icon picker (buttons)",
+        title: "Icon picker",
         initialOpen: true,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
           label: "Search icons",
@@ -3736,9 +3750,7 @@ const iconOptions = IconData.options;
             gap: '10px'
           },
           children: [filteredIcons.map(([index, data]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-            onClick: () => setAttributes({
-              icon: data.value
-            }),
+            onClick: () => onChangeIcon(data.value),
             style: {
               border: icon === data.value ? '8px solid #0ff' : '1px solid #ccc',
               filter: icon === data.value ? 'invert(1)' : 'none',
@@ -3747,7 +3759,7 @@ const iconOptions = IconData.options;
               cursor: 'pointer'
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-              src: iconRootDirectory + "/" + data.value,
+              src: iconRootDirectory + data.value + iconSuffix,
               width: 24,
               height: 24,
               alt: data.name,
@@ -3781,6 +3793,14 @@ const iconOptions = IconData.options;
             label: 'Colour',
             colors: allColours
           }]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+          label: "Alt text",
+          help: "Describe the icon to aid users of assistive technology",
+          value: alt,
+          onChange: onChangeAlt,
+          style: {
+            marginBottom: '8px'
+          }
         })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
