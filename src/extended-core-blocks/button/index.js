@@ -38,6 +38,7 @@ const allowedIcons = [
 	"toggle/star",
 	"action/label_important",
 	"action/label_important_outline",
+	"action/print",
 ];
 
 wp.hooks.addFilter(
