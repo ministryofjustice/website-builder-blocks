@@ -122,7 +122,7 @@ registerBlockType('wb-blocks/icon', {
 									cursor: 'pointer',
 								}}
 							>
-								<img src={iconRootDirectory + data.value + iconSuffix} width={24} height={24} alt={data.name} loading="lazy" />
+								<img src={iconRootDirectory + data.value + iconSuffix} width={24} height={24} alt={data.name} loading="lazy" style={{display: "inline"}} />
 							</button>
 						))}
 						{filteredIcons.length === 0 && (

@@ -59,7 +59,7 @@ wp.hooks.addFilter(
 	}
 );
 
-const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
+const customBulletPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		if (props.name !== 'core/list') {
 			return <BlockEdit {...props} />;
@@ -129,7 +129,7 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 											textAlign: 'center'
 										}}
 									>
-										<img src={iconRootDirectory + data + iconPathSuffix} width={24} height={24} alt={data} loading="lazy" />
+										<img src={iconRootDirectory + data + iconPathSuffix} width={24} height={24} alt={data} loading="lazy" style={{display: "inline"}} />
 									</button>
 								))}
 							</div>
@@ -139,12 +139,12 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 			</>
 		);
 	};
-}, 'bulletColourPicker');
+}, 'customBulletPicker');
 
 wp.hooks.addFilter(
 	'editor.BlockEdit',
 	'wb-blocks/list-custom-bullet-control',
-	bulletColourPicker
+	customBulletPicker
 );
 
 
