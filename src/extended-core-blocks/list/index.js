@@ -7,7 +7,29 @@ import { registerBlockVariation, registerBlockStyle } from '@wordpress/blocks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
-import classnames from 'classnames'
+import { useState } from '@wordpress/element';
+import classnames from 'classnames';
+
+const iconRootDirectory = IconData.rootDirectory + "/";
+const iconPathSuffix = "/materialicons/24px.svg";
+const allowedIcons = [
+	"content/remove",
+	"navigation/check",
+	"action/check_circle",
+	"action/check_circle_outline",
+	"action/info",
+	"action/info_outline",
+	"navigation/chevron_right",
+	"av/play_arrow",
+	"action/help",
+	"action/help_outline",
+	"alert/error",
+	"alert/error_outline",
+	"toggle/star",
+	"action/label_important",
+	"action/label_important_outline",
+	"action/arrow_right_alt",
+];
 
 registerBlockStyle( 'core/list', {
 	name: 'horizontal',
@@ -28,13 +50,16 @@ wp.hooks.addFilter(
 			customBulletStyle: {
 				type: 'string',
 			},
+			customBulletIcon: {
+				type: 'string',
+			},
 		};
 
 		return settings;
 	}
 );
 
-const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
+const customBulletPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		if (props.name !== 'core/list') {
 			return <BlockEdit {...props} />;
@@ -48,6 +73,12 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 			{name: 'Blue',color: 'var(--colour-blue)'}
 		]
 		const allColours = [...colorPalette,...extraBulletColours];
+		const chooseIcon = (data) => {
+			setAttributes({
+				customBulletIcon: attributes.customBulletIcon === data ? "" : data //toggle
+			});
+		};
+
 		return (
 			<>
 				<BlockEdit {...props} />
@@ -65,28 +96,55 @@ const bulletColourPicker = createHigherOrderComponent((BlockEdit) => {
 							]}
 						/>
 						{!attributes.ordered && (
-							<SelectControl
-								label="Special bullet"
-								value={ props.attributes.customBulletStyle }
-								options={ [
-									{ label: '-', value: '' },
-									{ label: 'Tick', value: 'tick' },
-									{ label: 'Info', value: 'info' },
-								] }
-								onChange={ ( value ) => setAttributes({ customBulletStyle: value }) }
-							/>
+							<div style={{
+								display: 'grid',
+								gridTemplateColumns: 'repeat(4, 1fr)',
+								gap: '10px'
+							}}>
+								<button
+									onClick={() => chooseIcon("")}
+									style={{
+										outline: attributes.customBulletIcon === "" ? '8px solid #0ff' : '1px solid #ccc',
+										filter: attributes.customBulletIcon === "" ? 'invert(1)' : 'none',
+										padding: '10px',
+										background: 'white',
+										cursor: 'pointer',
+										textAlign: 'center',
+										fontWeight: '700',
+										gridColumn: 'span 4'
+									}}
+								>
+									Default (no special icon)
+								</button>
+								{allowedIcons.map((data) => (
+									<button
+										key={data}
+										onClick={() => chooseIcon(data)}
+										style={{
+											outline: attributes.customBulletIcon === data ? '8px solid #0ff' : '1px solid #ccc',
+											filter: attributes.customBulletIcon === data ? 'invert(1)' : 'none',
+											padding: '10px',
+											background: 'white',
+											cursor: 'pointer',
+											textAlign: 'center'
+										}}
+									>
+										<img src={iconRootDirectory + data + iconPathSuffix} width={24} height={24} alt={data} loading="lazy" style={{display: "inline"}} />
+									</button>
+								))}
+							</div>
 						)}
 					</PanelBody>
 				</InspectorControls>
 			</>
 		);
 	};
-}, 'bulletColourPicker');
+}, 'customBulletPicker');
 
 wp.hooks.addFilter(
 	'editor.BlockEdit',
 	'wb-blocks/list-custom-bullet-control',
-	bulletColourPicker
+	customBulletPicker
 );
 
 
@@ -97,19 +155,19 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(
 			return <BlockEdit {...props} />;
 		}
 
-		const { customBulletStyle, customBulletColour } = props.attributes;
-
-		const style = customBulletColour
-			? { '--bullet-colour': customBulletColour }
-			: { '--bullet-colour': 'currentColor'};
+		const { customBulletColour, customBulletIcon } = props.attributes;
+		const maskURL = "url('" + iconRootDirectory + customBulletIcon + iconPathSuffix + "')";
+		const colour = customBulletColour
+			? customBulletColour
+			: 'currentColor';
 
 		let className = "edit-screen-container";
-		if (customBulletStyle) {
-			className += " is-style-icon-list icon-style-"+customBulletStyle;
+		if (customBulletIcon) {
+			className += " is-style-icon-list";
 		}
 
 		return (
-			<div className={className} style={style}>
+			<div className={className} style={{'--bullet-icon': maskURL, '--bullet-colour': colour}}>
 				<BlockEdit {...props} />
 			</div>
 		);
@@ -126,20 +184,25 @@ wp.hooks.addFilter(
 
 // Save our custom attribute
 
-const saveCustomBulletColour = ( props, blockType, attributes ) => {
+const saveCustomBullet = ( props, blockType, attributes ) => {
 	// Do nothing if it's another block than our defined ones.
 	if ( blockType.name == "core/list" ) {
-		const { customBulletStyle, customBulletColour } = attributes;
+		const { customBulletColour, customBulletIcon } = attributes;
+		const maskURL = "url('" + iconRootDirectory + customBulletIcon + iconPathSuffix + "')";
 		if ( customBulletColour ) {
 			props.style = {
 				...props.style,
 				'--bullet-colour': customBulletColour,
 			};
 		}
-		if (customBulletStyle) {
+		if (customBulletIcon) {
 			props = {
 				...props,
-				className: classnames(props.className, "is-style-icon-list icon-style-"+customBulletStyle)
+				className: classnames(props.className, "is-style-icon-list")
+			};
+			props.style = {
+				...props.style,
+				'--bullet-icon': maskURL,
 			};
 		}
 	}
@@ -150,5 +213,5 @@ const saveCustomBulletColour = ( props, blockType, attributes ) => {
 wp.hooks.addFilter(
 	'blocks.getSaveContent.extraProps',
 	'wb-blocks/save-custom-bullet-colour',
-	saveCustomBulletColour
+	saveCustomBullet
 );

@@ -16,3 +16,30 @@ Core block: button (Frontend styles)
 		from currentColor srgb r g b / 0.1
 	);
 }
+
+.is-style-custom-arrow-left,
+.is-style-custom-arrow-right {
+	.wp-block-button__link:before,
+	.wp-block-button__link:after {
+		background-color: currentColor;
+		width: 1.25em;
+		height: 1.25em;
+		position: relative;
+		top: 5px;
+		display: inline-block;
+		mask-size: contain;
+		mask-position:center;
+		mask-repeat:no-repeat;
+	}
+
+}
+.is-style-custom-arrow-left .wp-block-button__link:before {
+	content:"";
+	margin-right: 6px;
+	mask-image: var(--left-icon);
+}
+.is-style-custom-arrow-right .wp-block-button__link:after {
+	content:"";
+	margin-left: 6px;
+	mask-image: var(--right-icon);
+}

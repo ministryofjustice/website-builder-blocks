@@ -4,6 +4,7 @@
 
 import "./file";
 import "./list";
+import "./button";
 import "./navigation";
 import "./post-date";
 import "./query-pagination";

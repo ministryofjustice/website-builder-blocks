@@ -106,8 +106,57 @@ function wb_blocks_register_blocks()
 		true
 	);
 
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
+
+	$categories = array_map(function($directory) {
+		return basename($directory);
+	}, $icon_directories);
+	$icons = [];
+	$icon_dir = plugins_url("assets/icons", __FILE__ );
+
+	foreach($categories as $category) {
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
+		foreach ($files as $file) {
+			if (!file_exists($file."/materialicons/24px.svg")) {
+				continue; // Only accept icons where the normal files are used
+			}
+			$name = basename(plugins_url($file, __FILE__));
+			$object = new stdClass();
+			$object->label = ucfirst(str_replace("_"," ",$name));
+			$object->value = $category ."/". $name;
+			$icons[] = [
+				'label' => ucfirst(str_replace("_"," ",$name)),
+				'value' => $category ."/". $name
+			];
+		}	
+	}
+
+	wp_localize_script(
+        'wb-blocks-editor-script',
+        'IconData',
+        [
+            'rootDirectory' => $icon_dir,
+            'categories' => $categories,
+            'names' => $names,
+            'options' => $icons,
+        ]
+    );
+
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
+
+	register_block_type(
+		'wb-blocks/icon',
+		[
+			'editor_script' => 'wb-blocks-editor-script',
+			'render_callback' => 'wb_blocks_render_callback_icon_block',
+			'attributes' => [
+				'icon' => [
+					'type' => 'string'
+				]
+			]
+		]
+	);
 
 	register_block_type(
 		'wb-blocks/hmg-svg',
