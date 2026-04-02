@@ -14,11 +14,11 @@
 function wb_blocks_render_callback_icon_block($attributes) {
 
 	// Parse attributes found in index.js
-	$attribute_icon_className = esc_attr($attributes['className']) ?? '';
-	$attribute_icon_svg = esc_attr($attributes['icon']) ?? 'action/group_work';
-	$attribute_icon_colour = esc_attr($attributes['colour']) ?? 'currentColor';
-	$attribute_icon_size = esc_attr($attributes['size']) ?? "1";
-	$attribute_icon_alt_text = esc_attr($attributes['alt']) ?? "";
+	$attribute_icon_className = esc_attr($attributes['className'] ?? '');
+	$attribute_icon_svg = esc_attr($attributes['icon'] ?? 'action/group_work');
+	$attribute_icon_colour = esc_attr($attributes['colour'] ?? 'currentColor');
+	$attribute_icon_size = esc_attr($attributes['size'] ?? "1");
+	$attribute_icon_alt_text = esc_attr($attributes['alt'] ?? "");
 
 	// Ensure that a alt text is set
 	if (empty($attribute_icon_alt_text)) $attribute_icon_alt_text = str_replace("_"," ",ucfirst($attribute_icon_svg)). " icon";

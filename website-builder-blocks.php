@@ -137,7 +137,6 @@ function wb_blocks_register_blocks()
         [
             'rootDirectory' => $icon_dir,
             'categories' => $categories,
-            'names' => $names,
             'options' => $icons,
         ]
     );
