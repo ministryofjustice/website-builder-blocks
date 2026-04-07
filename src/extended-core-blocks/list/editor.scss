@@ -3,7 +3,34 @@
 
 Core block: list (Gutenberg editor styles)
 
+Additional classes are added to the wrapper in the editor interface, so
+we use a different class "with-" to extend the relevant classes from the 
+frontend styles.
+
 **********************************************************************************************/
 
 // Use the frontend styles
 @import 'style.scss';
+
+.with-horizontal-layout-grid {
+	ol.is-style-horizontal,
+	ul.is-style-horizontal {
+		@extend .has-horizontal-layout-grid;
+	}
+	&--loose {
+		ol.is-style-horizontal,
+		ul.is-style-horizontal {
+			@extend .has-horizontal-layout-grid--loose;
+		}
+	}
+	&--tight {
+		ol.is-style-horizontal,
+		ul.is-style-horizontal {
+			@extend .has-horizontal-layout-grid--tight;
+		}
+	}
+}
+
+.with-style-icon-list > ul {
+	@extend .is-style-icon-list;
+}

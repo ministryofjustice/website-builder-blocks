@@ -3,11 +3,10 @@
  *  https://wordpress.org/documentation/article/navigation-block/
  *
  */
-import { registerBlockVariation, registerBlockStyle } from '@wordpress/blocks';
+import { registerBlockStyle } from '@wordpress/blocks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls, useSettings, PanelColorSettings } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import classnames from 'classnames';
 
 const iconRootDirectory = IconData.rootDirectory + "/";
@@ -50,6 +49,9 @@ wp.hooks.addFilter(
 			customBulletStyle: {
 				type: 'string',
 			},
+			customListLayout: {
+				type: 'string',
+			},
 			customBulletIcon: {
 				type: 'string',
 			},
@@ -79,6 +81,8 @@ const customBulletPicker = createHigherOrderComponent((BlockEdit) => {
 			});
 		};
 
+		const isHorizontal = attributes.className?.includes('is-style-horizontal');
+
 		return (
 			<>
 				<BlockEdit {...props} />
@@ -95,6 +99,18 @@ const customBulletPicker = createHigherOrderComponent((BlockEdit) => {
 								}
 							]}
 						/>
+						{isHorizontal && (
+							<SelectControl
+								label="Horizontal layout"
+								value={ props.attributes.customListLayout }
+								options={ [
+									{ label: 'Flow', value: '' },
+									{ label: 'Loose grid', value: 'grid--loose' },
+									{ label: 'Tight grid', value: 'grid--tight' },
+								] }
+								onChange={ ( value ) => setAttributes({ customListLayout: value }) }
+							/>
+						)}
 						{!attributes.ordered && (
 							<div style={{
 								display: 'grid',
@@ -155,17 +171,20 @@ const selectCustomBullet = wp.compose.createHigherOrderComponent(
 			return <BlockEdit {...props} />;
 		}
 
-		const { customBulletColour, customBulletIcon } = props.attributes;
+		const { customBulletColour, customBulletIcon, customListLayout } = props.attributes;
 		const maskURL = "url('" + iconRootDirectory + customBulletIcon + iconPathSuffix + "')";
 		const colour = customBulletColour
 			? customBulletColour
 			: 'currentColor';
 
 		let className = "edit-screen-container";
+		// we use "with-" here to avoid circular references
 		if (customBulletIcon) {
-			className += " is-style-icon-list";
+			className += " with-style-icon-list";
 		}
-
+		if (customListLayout) {
+			className += ` with-horizontal-layout-grid with-horizontal-layout-${customListLayout}`;
+		}
 		return (
 			<div className={className} style={{'--bullet-icon': maskURL, '--bullet-colour': colour}}>
 				<BlockEdit {...props} />
@@ -203,6 +222,12 @@ const saveCustomBullet = ( props, blockType, attributes ) => {
 			props.style = {
 				...props.style,
 				'--bullet-icon': maskURL,
+			};
+		}
+		if (attributes.customListLayout) {
+			props = {
+				...props,
+				className: classnames(props.className, 'has-horizontal-layout-grid',`has-horizontal-layout-${attributes.customListLayout}`)
 			};
 		}
 	}

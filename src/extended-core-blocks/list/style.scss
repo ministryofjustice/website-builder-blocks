@@ -32,9 +32,36 @@ ul.is-style-horizontal {
     flex-wrap: wrap;
 
 	> li {
-		max-width: 250px;
+		max-width: var(--max-prose-width,768px);
 		position: relative;
 		margin-right: 4rem;
+
+		@media (max-width: 800px) {
+			width: 100%;
+		}
+	}
+
+	&.has-horizontal-layout-grid {
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: 1fr;
+
+		&--loose {
+			@media (min-width: 800px) {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+		&--tight {
+			grid-template-columns: repeat(2, 1fr);
+			li {
+				width: auto;
+				margin-right: 2.5rem;
+			}
+			@media (min-width: 800px) {
+				grid-template-columns: repeat(4, 1fr);
+			}
+		}
+
 	}
 }
 
