@@ -78,8 +78,6 @@ const arrowPicker = createHigherOrderComponent((BlockEdit) => {
 				customArrowRight: attributes.customArrowRight === data ? "" : data //toggle
 			});
 		};
-		console.log("Left",attributes.customArrowLeft);
-		console.log("Right",attributes.customArrowRight);
 		return (
 			<>
 				<BlockEdit {...props} />
