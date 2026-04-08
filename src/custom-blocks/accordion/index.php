@@ -84,7 +84,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 {
 	$tailwind_borders = "first-of-type:border-t border-b";
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
-	$tailwind_chevron = "w-2 h-2 m-4 shrink-0 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
+	$tailwind_chevron = "w-2 h-2 mx-4 shrink-0 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 	
 
 	// Parse attributes found in index.js
@@ -105,15 +105,15 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 		class="<?php _e($attribute_accordion_section_className); echo " $tailwind_borders"; ?> wb-accordion__section group "
 		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
 	>
-		<summary class="<?php echo $tailwind_remove_marker; ?> cursor-pointer ">
-			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size";?> wp-block-heading inline-block !my-4">
+		<summary class="<?php echo $tailwind_remove_marker; ?> cursor-pointer my-4">
+			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size";?> wp-block-heading inline-block !m-0">
 				<?php _e($attribute_accordion_section_title) ; ?>
 			</h<?php echo $attribute_accordion_heading_level; ?>>
 			<span
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
 			</span>
 		</summary>
-		<div class="wb-accordion__section-content">
+		<div class="wb-accordion__section-content my-4">
 			<?php
 				_e($content);
 			?>
