@@ -56,7 +56,7 @@ function wb_file_block_renderer($name, $attributes, $block_content)
     // Inject metadata inside the <a> before </a>
     $block_content = preg_replace(
         '/<\/a>/',
-        ' <span class="screen-reader-text">' . $metadata . '</span></a>',
+        '<span class="screen-reader-text">' . $metadata . '</span></a> ',
         $block_content,
         1
     );
