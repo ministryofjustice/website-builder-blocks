@@ -398,26 +398,6 @@ function wb_blocks_enqueue_style()
 	}
 
     wp_enqueue_script('wb-blocks-frontend-js');
-
-	wp_enqueue_script(
-		'search-drawer',
-		plugins_url('/build/search-drawer.js', __FILE__),
-		[ 'wp-dom-ready'],
-		false,
-		true
-	);
-
-	/**
-	 * Enqueue functionality for navigation block
-	 */
-
-	wp_enqueue_script(
-		'drawer-menu',
-		plugins_url('src/extended-core-blocks/navigation/functionality.js', __FILE__),
-		[ 'wp-dom-ready'],
-		false,
-		true
-	);
 }
 
 function wb_blocks_footer_scripts(){ 
