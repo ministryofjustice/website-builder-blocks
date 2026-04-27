@@ -327,9 +327,13 @@ add_action('enqueue_block_editor_assets', 'wb_blocks_gutenberg_editor_styles');
  */
 function wb_blocks_register_style()
 {
-	
 	wp_register_style('wb-blocks', plugins_url('build/main.min.css', __FILE__));
-	
+
+	// Vertical style for the separator block
+	register_block_style('core/separator', [
+		'name'  => 'vertical',
+		'label' => 'Vertical',
+	]);
 }
 
 add_action('init', 'wb_blocks_register_style');
