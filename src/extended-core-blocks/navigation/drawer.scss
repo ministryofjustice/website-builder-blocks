@@ -11,7 +11,8 @@ nav.is-style-drawer {
 	font-weight: 700;
 	.wp-block-navigation__container {
 		margin-left: calc(-0.9 * var(--drawer-menu-padding));
-		gap: var(--drawer-menu-h-gap);
+		column-gap: var(--drawer-menu-h-gap);
+		row-gap: 1rem;
 		.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -63,6 +64,18 @@ nav.is-style-drawer {
 
 					+ .wp-block-navigation__submenu-icon {
 						margin-left: calc(-1 * var(--drawer-menu-padding) - 0.65em);
+						width: 1em;
+						height: 1em;
+
+						svg {
+							margin-top: 0;
+							width: 1em;
+							height: 1em;
+
+							path {
+								stroke-width: 2;
+							}
+						}
 					}
 				}
 			}
