@@ -8,8 +8,8 @@ Block: Government SVGs
 @use '../../../assets/scss/fallback-colours';
 
 .wb-icon {
-	min-width: 1.2em;
-	min-height: 1.2em;
+	min-width: calc(1.2em * var(--icon-size));
+	min-height: calc(1.2em * var(--icon-size));
 	width: calc(1.2em * var(--icon-size));
 	height: calc(1.2em * var(--icon-size));
 	display: inline-block;
