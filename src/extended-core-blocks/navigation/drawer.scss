@@ -2,7 +2,7 @@ nav.is-style-drawer {
 
 	--drawer-menu-padding: 0.5rem;
 	--drawer-menu-v-gap: 0.5rem;
-	--drawer-menu-h-gap: 3rem;
+	--drawer-menu-h-gap: 1.25rem;
 	/**
 	* This file contains all the required styles for the drawer nav except colour, which is in the theme.
 	*/
@@ -12,7 +12,7 @@ nav.is-style-drawer {
 	.wp-block-navigation__container {
 		margin-left: calc(-0.9 * var(--drawer-menu-padding));
 		column-gap: var(--drawer-menu-h-gap);
-		row-gap: 1rem;
+		row-gap: 0.25rem;
 		.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -25,7 +25,7 @@ nav.is-style-drawer {
 
 			.wp-block-navigation-item  {
 				text-wrap: balance;
-				inline-size: 25%;
+				inline-size: 100%; // 1 per row
 				align-items: baseline;
 
 				&__content {
@@ -33,17 +33,22 @@ nav.is-style-drawer {
 					padding-left:calc(1.1 * var(--drawer-menu-padding));
 				}
 
-				@media (width > 800px) {
-					// This is within a media query as it won't be overwritten by the next media query.
-					&:nth-child(4n) .wp-block-navigation-item__content {
+				@media (width >= 640px) and (width < 782px) {
+					// We need to be specific as the 2n won't be overwritten by the 3n of the next breakpoint
+					inline-size: 50%; // 2 per row
+					&:nth-child(2n) .wp-block-navigation-item__content {
 						padding-right: 0;
 					}
 				}
-				@media (width <= 800px) {
-					inline-size: 33%;
-					align-items: baseline;
-
+				@media (width >= 782px) and (width < 1080px) {
+					inline-size: 33%; // 3 per row
 					&:nth-child(3n) .wp-block-navigation-item__content {
+						padding-right: 0;
+					}
+				}
+				@media (width >= 1080px) {
+					inline-size: 25%; // 4 per row
+					&:nth-child(4n) .wp-block-navigation-item__content {
 						padding-right: 0;
 					}
 				}
