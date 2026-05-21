@@ -1,5 +1,5 @@
 document.querySelectorAll(".wb-accordion").forEach(accordion => {
-	const button = accordion.querySelector(".accordion-toggle-all");
+	const button = accordion.querySelector(".wb-accordion-toggle-all");
 	const sections = accordion.querySelectorAll("details");
 	let openSections = accordion.querySelectorAll("details[open]");
 	let allSectionsOpen = sections.length == openSections.length;
@@ -9,7 +9,7 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 		mutations.forEach((mutation) => {
 			openSections = accordion.querySelectorAll("details[open]");
 			allSectionsOpen = sections.length == openSections.length; // recalculate - it may have changed since page
-			if (mutation.target.closest(".accordion-toggle-all")) return;
+			if (mutation.target.closest(".wb-accordion-toggle-all")) return;
 			setAccordionState(button, allSectionsOpen ? "open" : "closed");
 		});
 	});
