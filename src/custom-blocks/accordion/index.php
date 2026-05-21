@@ -10,17 +10,25 @@
  *
  */
 
+$tailwind_state_colours = "
+hover:bg-[var(--wb-accordion-hover-bg)]
+focus:bg-[var(--wb-accordion-focus-bg)]
+focus-visible:bg-[var(--wb-accordion-focus-visible-bg)]
+focus-visible:shadow-[0_0_0_2px_var(--wb-accordion-focus-visible-outline)]
+outline-none
+";
+
 function wb_render_callback_accordion_block($attributes, $content)
 {
+	global $tailwind_state_colours;
+
 	$tailwind_open_all_basic = "
 	cursor-pointer
 	inline-flex
 	items-center
-	mb-2
 	font-bold
 	";
 	$tailwind_open_all_chevron = "
-	pr-1
 	after:content-['']
 	after:inline-block
 	after:w-1.5
@@ -55,7 +63,7 @@ function wb_render_callback_accordion_block($attributes, $content)
 		// The Tailwind class "hidden" is removed by JS - which is needed for this to work
 		// This is a check to ensure that without JS, the JS dependent button isn't shewn
 	?>
-	<button href="#" class="accordion-toggle-all hidden <?php echo $tailwind_open_all;?>" data-state="" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"></button>
+	<button href="#" class="wb-accordion-toggle-all hidden p-2 -ml-2 <?php echo $tailwind_open_all.$tailwind_state_colours; ?>" data-state="" data-opentext="<?php echo $openAllText;?>" data-closetext="<?php echo $closeAllText;?>"></button>
 	<?php echo $content; ?>
 
 	</div>
@@ -82,7 +90,8 @@ function wb_render_callback_accordion_block($attributes, $content)
 
 function wb_render_callback_accordion_block_section($attributes, $content)
 {
-	$tailwind_borders = "first-of-type:border-t border-b";
+	global $tailwind_state_colours;
+
 	$tailwind_remove_marker = "flex justify-between items-center cursor-pointer list-none [&::-webkit-details-marker]:hidden";
 	$tailwind_chevron = "w-2 h-2 mx-4 shrink-0 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 	
@@ -102,10 +111,10 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	?>
 
 	<details
-		class="<?php _e($attribute_accordion_section_className); echo " $tailwind_borders"; ?> wb-accordion__section group "
+		class="<?php _e($attribute_accordion_section_className); ?> wb-accordion__section group mt-4"
 		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
 	>
-		<summary class="<?php echo $tailwind_remove_marker; ?> cursor-pointer my-4">
+		<summary class="<?php echo $tailwind_remove_marker.$tailwind_state_colours; ?> cursor-pointer py-4 px-2 my-1 -ml-2">
 			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size";?> wp-block-heading inline-block !m-0">
 				<?php _e($attribute_accordion_section_title) ; ?>
 			</h<?php echo $attribute_accordion_heading_level; ?>>
@@ -113,7 +122,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
 			</span>
 		</summary>
-		<div class="wb-accordion__section-content my-4">
+		<div class="wb-accordion__section-content mt-1 [&_p:first-child]:mt-0! ">
 			<?php
 				_e($content);
 			?>

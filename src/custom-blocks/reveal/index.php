@@ -38,7 +38,7 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
                     <?php _e(esc_html($attribute_reveal_revealTitle)); ?>
                 </a>
             </summary>
-            <div class="wb-details__text">
+            <div class="wb-details__text py-2 [&_p:first-child]:mt-0!">
                 <?php _e(esc_html($content)); ?>
             </div>
         </details>

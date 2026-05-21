@@ -1,3 +1,11 @@
 /*********
 All styles for Accordion
 *********/
+
+// default colours, overwritten by theme
+:root {
+	--wb-accordion-hover-bg: #f3f2f1;
+	--wb-accordion-focus-bg: #b1b4b6;
+	--wb-accordion-focus-visible-bg: #ffdd00;
+	--wb-accordion-focus-visible-outline: currentColor;
+}
