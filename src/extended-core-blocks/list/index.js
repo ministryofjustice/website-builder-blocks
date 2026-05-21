@@ -106,6 +106,7 @@ const customBulletPicker = createHigherOrderComponent((BlockEdit) => {
 								options={ [
 									{ label: 'Flow', value: '' },
 									{ label: 'Loose grid', value: 'grid--loose' },
+									{ label: 'Regular grid', value: 'grid--regular' },
 									{ label: 'Tight grid', value: 'grid--tight' },
 								] }
 								onChange={ ( value ) => setAttributes({ customListLayout: value }) }
