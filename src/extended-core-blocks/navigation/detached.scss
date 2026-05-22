@@ -6,6 +6,9 @@ nav.is-style-detached {
 	--detached-menu-gap: 1rem;
 
 	.wp-block-navigation__responsive-container-open {
+
+		padding: var(--spacing-2-5);
+
 		&[aria-expanded=false] svg.wb-close-icon {
 			display:none;
 		}

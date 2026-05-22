@@ -56,6 +56,10 @@ header {
 		
 			display: block;
 
+			.wp-block-search-toggle-button {
+				padding: var(--spacing-2-5);
+			}
+
 			@media (min-width: 768px) {
 				display: none;
 
