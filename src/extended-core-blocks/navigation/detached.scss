@@ -7,7 +7,7 @@ nav.is-style-detached {
 
 	.wp-block-navigation__responsive-container-open {
 
-		padding: var(--spacing-2-5);
+		padding: var(--spacing-2-5, 10px);
 
 		&[aria-expanded=false] svg.wb-close-icon {
 			display:none;
