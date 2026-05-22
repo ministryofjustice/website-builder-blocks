@@ -36,7 +36,7 @@ ul.is-style-horizontal {
 		position: relative;
 		margin-right: 4rem;
 
-		@media (max-width: 800px) {
+		@media (max-width: 781px) {
 			width: 100%;
 		}
 	}
@@ -47,8 +47,20 @@ ul.is-style-horizontal {
 		grid-template-columns: 1fr;
 
 		&--loose {
-			@media (min-width: 800px) {
+			@media (min-width: 782px) {
 				grid-template-columns: 1fr 1fr;
+			}
+		}
+		&--regular {
+			li {
+				width: auto;
+				margin-right: 2.5rem;
+			}
+			@media (min-width: 782px) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+			@media (min-width: 1080px) {
+				grid-template-columns: repeat(4, 1fr);
 			}
 		}
 		&--tight {
@@ -57,11 +69,10 @@ ul.is-style-horizontal {
 				width: auto;
 				margin-right: 2.5rem;
 			}
-			@media (min-width: 800px) {
+			@media (min-width: 781px) {
 				grid-template-columns: repeat(4, 1fr);
 			}
 		}
-
 	}
 }
 

@@ -23,6 +23,12 @@ frontend styles.
 			@extend .has-horizontal-layout-grid--loose;
 		}
 	}
+	&--regular {
+		ol.is-style-horizontal,
+		ul.is-style-horizontal {
+			@extend .has-horizontal-layout-grid--regular;
+		}
+	}
 	&--tight {
 		ol.is-style-horizontal,
 		ul.is-style-horizontal {
