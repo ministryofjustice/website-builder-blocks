@@ -12,6 +12,7 @@
 
 $tailwind_state_colours = "
 hover:bg-[var(--wb-accordion-hover-bg)]
+focus:text-(--wb-accordion-focus-text)
 focus:bg-[var(--wb-accordion-focus-bg)]
 focus-visible:bg-[var(--wb-accordion-focus-visible-bg)]
 focus-visible:shadow-[0_0_0_2px_var(--wb-accordion-focus-visible-outline)]
