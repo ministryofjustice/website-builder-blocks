@@ -17,6 +17,7 @@
  **/
 
 defined('ABSPATH') || exit;
+define('WB_BLOCKS_DIR', plugin_dir_path( __FILE__ ) );
 
 /**
  * Load translations (if any) for the plugin from the /languages/ folder.
