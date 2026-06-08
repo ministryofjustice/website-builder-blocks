@@ -1,71 +1,47 @@
 /**
- * Reveal
+ * Block: Reveal
+ *
+ * Arrow toggle to reveal content.
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { RichText } from '@wordpress/block-editor';
-const { InnerBlocks } = wp.blockEditor;
+import { RichText, InnerBlocks } from '@wordpress/block-editor';
 
-registerBlockType('wb-blocks/reveal', {
-    title: __('Reveal', 'wb_block'),
-    description: __("Arrow toggle to reveal text"),
-    category: 'wb-blocks',
-    icon: 'controls-play',
-    keywords: [__('show'),__('hide')],
-    attributes: {
-        revealTitle: {
-            type: 'string'
-        },
-        revealClassName: {
-            type: 'string'
-        }
-    },
-    edit: props => {
+import blockJson from './block.json';
 
-        const {
-            setAttributes,
-            attributes: {
-                revealTitle
-            },
-            className
-        } = props;
+registerBlockType( blockJson.name, {
+	...blockJson,
 
-        // Load allowed blocks to be added to content
-        const allowedBlocks = [ 'core/heading', 'core/paragraph' , 'core/list' ];
+	edit( { attributes, setAttributes, className } ) {
+		const { revealTitle } = attributes;
 
-        // Set className attribute for PHP frontend to use
-        setAttributes({ revealClassName: className });
+		const allowedBlocks = [ 'core/heading', 'core/paragraph', 'core/list' ];
 
-        // Grab newRevealTitle, set the value of revealTitle to newRevealTitle.
-        const onChangeRevealTitle = newRevealTitle => {
-            setAttributes({ revealTitle: newRevealTitle });
-        };
+		return (
+			<>
+				<div className={ className }>
+					<details className="wb-details" open>
+						<summary className="wb-details__summary">
+							<a className="wb-details__summary-text">
+								<RichText
+									value={ revealTitle }
+									placeholder={ __( 'Add reveal title', 'wb_blocks' ) }
+									onChange={ ( newValue ) =>
+										setAttributes( { revealTitle: newValue } )
+									}
+								/>
+							</a>
+						</summary>
+						<div className="wb-details__text">
+							<InnerBlocks allowedBlocks={ allowedBlocks } />
+						</div>
+					</details>
+				</div>
+			</>
+		);
+	},
 
-        return ([
-            <div className={`revealClassName`}>
-                <details className="wb-details" open>
-                    <summary className="wb-details__summary">
-                        <a className="wb-details__summary-text">
-                            <RichText
-                            value={ revealTitle }
-                            placeholder={ __('Add reveal title') }
-                            keepPlaceholderOnFocus
-                            onChange={ onChangeRevealTitle }
-                            />
-                        </a>
-                    </summary>
-                    <div className="wb-details__text">
-                        <InnerBlocks
-                            allowedBlocks={allowedBlocks}
-                        />
-                    </div>
-                </details>
-            </div>
-        ]);
-    },
-
-    save: () => {
-        return <InnerBlocks.Content />;
-    }
-});
-
+	save() {
+		return <InnerBlocks.Content />;
+	},
+} );

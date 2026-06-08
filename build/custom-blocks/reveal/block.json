@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wb-blocks/reveal",
+  "version": "1.0.0",
+  "title": "Reveal",
+  "description": "Arrow toggle to reveal text.",
+  "category": "wb-blocks",
+  "icon": "controls-play",
+  "keywords": [
+    "show",
+    "hide",
+    "reveal",
+    "details"
+  ],
+  "textdomain": "wb_blocks",
+  "editorScript": "file:../../../../build/index.js",
+  "attributes": {
+    "revealTitle": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "customClassName": true
+  }
+}
