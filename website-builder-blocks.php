@@ -201,21 +201,7 @@ function wb_blocks_register_blocks()
         ]
     );
 
-	register_block_type(
-		'wb-blocks/reveal',
-		[
-			'editor_script' => 'wb-blocks-editor-script',
-			'render_callback' => 'wb_blocks_render_callback_reveal_block',
-			'attributes' => [
-				'revealClassName' => [
-					'type' => 'string'
-				],
-				'revealTitle' => [
-					'type' => 'string'
-				]
-			]
-		]
-	);
+	// wb-blocks/reveal is registered via block.json in src/custom-blocks/reveal/index.php
 
 	register_block_type(
 		'wb-blocks/filterable-listing',
