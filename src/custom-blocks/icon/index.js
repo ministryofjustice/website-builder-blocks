@@ -113,7 +113,7 @@ registerBlockType('wb-blocks/icon', {
 
 			// Check whether the currently selected style is disabled
 			let selectedStyleDisabled = styles.some(
-				option => option.disabled == true
+				option => option.disabled && option.value === iconStyle
 			);
 			// If it is disabled, set the style to the default style
 			if (selectedStyleDisabled) {
