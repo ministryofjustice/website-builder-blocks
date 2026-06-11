@@ -16,7 +16,7 @@ function wb_blocks_render_callback_icon_block($attributes) {
 	// Parse attributes found in index.js
 	$attribute_icon_className = esc_attr($attributes['className'] ?? '');
 	$attribute_icon_svg = esc_attr($attributes['icon'] ?? 'action/group_work');
-	$attribute_icon_style = esc_attr($attributes['style'] ?? '');
+	$attribute_icon_style = esc_attr($attributes['iconStyle'] ?? '');
 	$attribute_icon_colour = esc_attr($attributes['colour'] ?? 'currentColor');
 	$attribute_icon_size = esc_attr($attributes['size'] ?? "1");
 	$attribute_icon_alt_text = esc_attr($attributes['alt'] ?? "");

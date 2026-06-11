@@ -114,6 +114,7 @@ function wb_blocks_register_blocks()
 	}, $icon_directories);
 	$icons = [];
 	$icon_dir = plugins_url("assets/icons", __FILE__ );
+	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
 
 	foreach($categories as $category) {
 		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
@@ -121,13 +122,22 @@ function wb_blocks_register_blocks()
 			if (!file_exists($file."/materialicons/24px.svg")) {
 				continue; // Only accept icons where the normal files are used
 			}
+			$icon_styles = [array( "label" => 'Standard', "value" => '' )];
+			foreach ($icon_style_choices as $style_choice) {
+				if (file_exists("{$file}/materialicons{$style_choice[1]}/24px.svg")) {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}" );
+				} else {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
+				}
+			}
 			$name = basename(plugins_url($file, __FILE__));
 			$object = new stdClass();
 			$object->label = ucfirst(str_replace("_"," ",$name));
 			$object->value = $category ."/". $name;
 			$icons[] = [
 				'label' => ucfirst(str_replace("_"," ",$name)),
-				'value' => $category ."/". $name
+				'value' => $category ."/". $name,
+				'styles' => $icon_styles
 			];
 		}	
 	}
