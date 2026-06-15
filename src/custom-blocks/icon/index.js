@@ -11,6 +11,8 @@ const iconRootDirectory = IconData.rootDirectory + "/";
 const iconCategories = IconData.categories;
 const iconOptions = IconData.options;
 const iconSuffix = "/materialicons/24px.svg";
+const iconStyleDir = "/materialicons";
+const iconFilename = "/24px.svg";
 
 registerBlockType('wb-blocks/icon', {
 	title: __('Icon', 'wb_block'),
@@ -39,6 +41,22 @@ registerBlockType('wb-blocks/icon', {
 		icon: {
 			type: 'string',
 			default: 'action/group_work'
+			// the default icon should be abstract, and support all styles
+		},
+		iconStyle: {
+			type: 'string',
+			default: ''
+		},
+		// available styles are those styles which the icon supports, it is set when the icon is changed
+		availableStyles: {
+			type: 'array',
+			default: [
+				{ label: 'Standard', value: '' },
+				{ label: 'Outlined', value: 'outlined' },
+				{ label: 'Rounded', value: 'round' },
+				{ label: 'Sharp', value: 'sharp' },
+				{ label: 'Two-tone', value: 'twotone' }
+			]
 		},
 		size: {
 			type: 'number',
@@ -62,6 +80,8 @@ registerBlockType('wb-blocks/icon', {
 				colour,
 				icon,
 				size,
+				iconStyle,
+				availableStyles,
 				alt
 			},
 			className
@@ -76,14 +96,31 @@ registerBlockType('wb-blocks/icon', {
 		const onChangeAlt = value => {
 			setAttributes({ alt: value });
 		};
+		const onChangeIconStyle = value => {
+			setAttributes({ iconStyle: value });
+		};
 		const onChangeSize = value => {
 			setAttributes({ size: value });
 		};
 		const onChangeColour = value => {
 			setAttributes({ colour: value });
 		};
-		const onChangeIcon = value => {
-			setAttributes({ icon: value });
+		const onChangeIcon = (value, styles) => {
+			setAttributes({
+				icon: value, // Sets the icon
+				availableStyles: styles // Sets the available styles for that icon
+			});
+
+			// Check whether the currently selected style is disabled
+			let selectedStyleDisabled = styles.some(
+				option => option.disabled && option.value === iconStyle
+			);
+			// If it is disabled, set the style to the default style
+			if (selectedStyleDisabled) {
+				setAttributes({
+					iconStyle: ""
+				});
+			}
 		};
 
 
@@ -93,8 +130,9 @@ registerBlockType('wb-blocks/icon', {
 			{name: 'Green',color: 'var(--colour-green)'},
 			{name: 'Blue',color: 'var(--colour-blue)'}
 		]
+
 		const allColours = [...colorPalette,...extraIconColours];
-		const iconPathURL = `url('${iconRootDirectory}${icon}${iconSuffix}')`;
+		const iconPathURL = `url('${iconRootDirectory}${icon}${iconStyleDir}${iconStyle}${iconFilename}')`;
 		return ([
 			<InspectorControls group="settings">
 				<PanelBody title="Icon picker" initialOpen={ true } >
@@ -113,7 +151,7 @@ registerBlockType('wb-blocks/icon', {
 						{filteredIcons.map(([index, data]) => (
 							<button
 								key={data.value}
-								onClick={() => onChangeIcon(data.value)}
+								onClick={() => onChangeIcon(data.value, data.styles)}
 								style={{
 									border: icon === data.value ? '8px solid #0ff' : '1px solid #ccc',
 									filter: icon === data.value ? 'invert(1)' : 'none',
@@ -142,6 +180,13 @@ registerBlockType('wb-blocks/icon', {
 						min={ 1 }
 						max={ 12 }
 						step={ 0.5 }
+					/>
+					<SelectControl
+						label="Style"
+						value={ iconStyle }
+						options={ availableStyles }
+						onChange={ onChangeIconStyle }
+						__next40pxDefaultSize
 					/>
 					<PanelColorSettings
 						title='Icon colour'
