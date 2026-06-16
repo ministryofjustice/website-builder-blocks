@@ -42,6 +42,7 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		sticky,
 		scrollSpy,
 		tocClassName,
+		dualLevel,
 		className
 	} = attributes;
 
@@ -60,6 +61,9 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	const setScrollSpy = newScrollSpy => {
 		setAttributes({ scrollSpy: newScrollSpy });
 	};
+	const setDualLevel = newDualLevel => {
+		setAttributes({ dualLevel: newDualLevel });
+	};
 	const inspectorControls = (
 		<InspectorControls>
 			<PanelBody
@@ -77,6 +81,12 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					help="Marks the current ToC item as you scroll down the page, designed to be used with the above where the ToC is always visible on Desktop displays."
 					checked={ scrollSpy }
 					onChange={ setScrollSpy }
+				/>
+				<ToggleControl
+					label="Include H3s in the table of contents"
+					help="By default, only H2 headings are included; but their subheadings (H3s) can be included too."
+					checked={ dualLevel }
+					onChange={ setDualLevel }
 				/>
 				<TextControl
 					__nextHasNoMarginBottom

@@ -30,6 +30,10 @@ registerBlockType("wb-blocks/table-of-contents", {
       type: "boolean",
       default: false
     },
+    dualLevel: {
+      type: "boolean",
+      default: false
+    },
     tocClassName: {
       type: "string"
     }

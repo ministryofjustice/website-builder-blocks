@@ -12,8 +12,37 @@ Block: Filterable Listing (Frontend styles)
 	margin-bottom: 2rem;
 	border-bottom: 1px solid;
 
+	&__sub-list {
+		border-left: 0.1rem solid;
+	}
+
 	@media print {
 		border-bottom: none;
+
+		&__sub-list {
+			padding-left: 0.5rem;
+			border-left-width: 0;
+			&:not(.dual-level *) {
+				display: none;
+			}
+		}
+		&__item {
+			break-inside: avoid-column;
+		}
+		.wb-print-col {
+			column-rule: #000 solid 1px;
+
+			&--2 {
+				column-count: 2;
+				-webkit-column-count: 2;
+				-moz-column-count: 2;
+			}
+			&--3 {
+				column-count: 3;
+				-webkit-column-count: 3;
+				-moz-column-count: 3;
+			}
+		}
 	}
 
 	@media screen {
@@ -38,6 +67,16 @@ Block: Filterable Listing (Frontend styles)
 				list-style-type: decimal;
 			}
 		}
+		&__sub-list {
+			display: none;
+			font-weight: 400;
+			&:has(.wb-table-of-contents__item--current),
+			&:is(.wb-table-of-contents__item--current *) {
+				&:is(.dual-level *) {
+					display: block;
+				}
+			}
+		}
 		&__item {
 
 			&:hover {
@@ -49,6 +88,7 @@ Block: Filterable Listing (Frontend styles)
 			margin-bottom: 10px;
 		
 			@media (min-width:782px) {
+				&:has(.wb-table-of-contents__item--current),
 				&--current {
 					font-weight: 700;
 				}
