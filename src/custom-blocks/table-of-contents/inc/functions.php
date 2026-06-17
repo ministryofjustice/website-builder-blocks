@@ -94,47 +94,41 @@
 		$index = wb_get_ordered_content($content)["index"];
 
 		// Create the table of contents
-		$list_of_headings = "";
+		$toc_list = "";
 		$count_headings = 0;
-		$sub_headings = false;
+		$h2_array = [];
+		$h3_array = [];
+		$list_item_start = "<li class='wb-table-of-contents__item'>";
 
 		foreach ($index as $content_item) {
 			$this_id = esc_attr($content_item["id"]);
 			$this_title = esc_html($content_item["title"]);
 			$this_parent = esc_html($content_item["parent"]);
 			$this_level = esc_html($content_item["level"]);
-			$new_item_not_closed = "<li class='wb-table-of-contents__item'><a id='anchor-for-$this_id' href='#$this_id'>$this_title</a>";
+
+			$link = "<a id='anchor-for-$this_id' href='#$this_id'>$this_title</a>";
 
 			if ($this_parent == "") {
-				// No parent, an H2 or an H3 with no previous H2 in the ToC
-				if ($sub_headings) {
-					// If there is a sub-heading, we need to close the sub-heading list & the previous H2
-					$list_of_headings .= "</ol></li>$new_item_not_closed";
-					$sub_headings = false;
-				} elseif ($count_headings) {
-					// There is a previous H2 which needs to be closed
-					$list_of_headings .= "</li>$new_item_not_closed";
-				} else {
-					// This is the first H2, we don't need to close the previous one
-					$list_of_headings .= $new_item_not_closed;
-				}
-			} elseif (!$sub_headings) {
-				// First item under this H2, start the sub-heading list
-				$list_of_headings .= "<ol class='wb-table-of-contents__sub-list' data-parent='$this_parent'>";
-				$list_of_headings .= $new_item_not_closed."</li>"; //always close the H3s
-				$sub_headings = true;
+				$h2_array[$this_id] = $link;
 			} else {
-				// Subsequent items under this H2
-				$list_of_headings .= $new_item_not_closed."</li>"; //always close the H3s
+				$h3_array[$this_parent][$this_id] = $link;
 			}
 			$count_headings++;
 		}
-		if ($this_parent != "" && $sub_headings) {
-			// If there is an unclosed list, we close it
-			$list_of_headings .= "</ol></li>";
-		}
 
-		if ($list_of_headings == "") return ""; // If there are no matched headings, then there is no table of contents to shew
+		if (!$count_headings) return ""; // No headings for the table of contents
+
+		foreach($h2_array as $id => $h2) {
+			$toc_list .= $list_item_start.$h2;
+			if (array_key_exists($id,$h3_array)) {
+				$toc_list .= "<ol class='wb-table-of-contents__sub-list' data-parent='$id'>";
+				foreach($h3_array[$id] as $h3) {
+					$toc_list .= $list_item_start.$h3."</li>";
+				}
+				$toc_list .= "</ol>";
+			}
+			$toc_list .= "</li>";
+		}
 
 		$print_columns = "";
 		// If there are more than 15 headings, put it in columns to make better use of the page
@@ -145,7 +139,7 @@
 		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class'>
 				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>$toc_title</h2>
 				<p hidden><b id='back-to-top-link-text'>$top</b></p>
-				<ol class='wb-table-of-contents__list $list_class $print_columns'>$list_of_headings</ol>
+				<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>
 			</div>";
 
 		return $toc;

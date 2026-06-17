@@ -19,6 +19,10 @@ Block: Filterable Listing (Frontend styles)
 	@media print {
 		border-bottom: none;
 
+		.toc-sub-menu-control {
+			display:none;
+		}
+
 		&__sub-list {
 			padding-left: 0.5rem;
 			border-left-width: 0;
@@ -76,6 +80,11 @@ Block: Filterable Listing (Frontend styles)
 					display: block;
 				}
 			}
+			@media (max-width:782px) {
+				&:is(.dual-level [aria-expanded="true"]+*) {
+					display: block;
+				}
+			}
 		}
 		&__item {
 
@@ -99,6 +108,29 @@ Block: Filterable Listing (Frontend styles)
 
 				&:hover {
 					text-decoration: underline;
+				}
+			}
+		}
+
+		.toc-sub-menu-control {
+			display: none;
+			padding: 0;
+			margin: 0.3rem;
+			width: 1.5rem;
+			cursor: pointer;
+			@media (max-width:782px) {
+				display: inline-block;
+			}
+
+			&__text {
+				&:after {
+					content:"+";
+					position: relative;
+					top:2px;
+				}
+				&:is([aria-expanded="true"]+*):after {
+					content:"–";
+					top:0;
 				}
 			}
 		}
