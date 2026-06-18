@@ -24,11 +24,7 @@ Block: Filterable Listing (Frontend styles)
 		}
 
 		&__sub-list {
-			padding-left: 0.5rem;
-			border-left-width: 0;
-			&:not(.dual-level *) {
-				display: none;
-			}
+			display: none;
 		}
 		&__item {
 			break-inside: avoid-column;
@@ -74,22 +70,29 @@ Block: Filterable Listing (Frontend styles)
 		&__sub-list {
 			display: none;
 			font-weight: 400;
-			&:has(.wb-table-of-contents__item--current),
-			&:is(.wb-table-of-contents__item--current *) {
-				&:is(.dual-level *) {
-					display: block;
+
+			&:is(.toc-sticky *) {
+				&:has(.wb-table-of-contents__item--current),
+				&:is(.wb-table-of-contents__item--current *) {
+					&:is(.dual-level *) {
+						display: block;
+					}
 				}
 			}
-			@media (max-width:782px) {
-				&:is(.dual-level [aria-expanded="true"]+*) {
-					display: block;
-				}
+			&:is(.dual-level [aria-expanded="true"]+*) {
+				display: block;
 			}
 		}
 		&__item {
 
-			&:hover {
-				background: #00000014;
+			a {
+				&:hover {
+					background-color: color-mix(
+						in srgb,
+						var(--colour-page-background) 92.65%,
+						var(--colour-foreground)
+					);
+				}
 			}
 			padding-left: 15px;
 			padding-top: 0.2rem;
@@ -113,22 +116,18 @@ Block: Filterable Listing (Frontend styles)
 		}
 
 		.toc-sub-menu-control {
-			display: none;
 			padding: 0;
 			margin: 0.3rem;
 			width: 1.5rem;
 			cursor: pointer;
-			@media (max-width:782px) {
-				display: inline-block;
-			}
-
+		
 			&__text {
 				&:after {
 					content:"+";
 					position: relative;
 					top:2px;
 				}
-				&:is([aria-expanded="true"]+*):after {
+				&:is([aria-expanded="true"] *):after {
 					content:"–";
 					top:0;
 				}

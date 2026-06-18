@@ -21,3 +21,20 @@ div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
 	color: #b1b4b6;
 	font-style: italic;
 }
+
+.toc-sub-menu-control:not(.dual-level *) {
+	display: none;
+}
+
+.sub-heading {
+	&:not(.dual-level *) {
+		display: none;
+	}
+
+	margin: 0 1rem;
+	border-left: 1px solid;
+
+	a {
+		margin-left:0.5rem;
+	}
+}

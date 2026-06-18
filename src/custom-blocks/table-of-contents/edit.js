@@ -21,14 +21,19 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		}
 		let contentsList = document.getElementById("table-of-contents-contents-list");
 		const mutationObserver = new MutationObserver((mutationList) => {
-			let headingItems = contentArea.querySelectorAll("h2:not(.wb-toc-ignore)");
+			let headingItems = contentArea.querySelectorAll("main h2:not(.wb-toc-ignore), main h3:not(.wb-toc-ignore)");
 			let contentItems = contentsList.querySelectorAll("li");
 			if (headingItems.length != contentItems.length) {
 				contentsList.innerHTML = "";
 				for(let i=0;i<headingItems.length;i++) {
 					if (headingItems[i].innerHTML.includes(tocTitle)) continue;
+					let hasSubMenuButton = false;
+					if (i<(headingItems.length-1) && headingItems[i].tagName == "H2" && headingItems[i+1].tagName == "H3" ) {
+						// Not last item, is H2 before an H3
+						hasSubMenuButton = true;
+					}
 					onClassChange(headingItems[i]); // Live updating of contents item if content is changed without re-writing the entire table of contents
-					contentsList.innerHTML += createContentItem(headingItems[i]);
+					contentsList.innerHTML += createContentItem(headingItems[i],hasSubMenuButton);
 				}
 			}
 
@@ -103,8 +108,8 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	return (
 		<Fragment >
 			{ inspectorControls }
-			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''}`}>
-				<div id="table-of-contents" class="wb-table-of-contents toc-sticky toc-scrollspy">
+			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''} ${dualLevel ? "dual-level" : ""}`}>
+				<div id="table-of-contents" class="wb-table-of-contents">
 					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
 						<RichText
 							value={tocTitle}
@@ -120,15 +125,20 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	
 }
 
-function createContentItem(heading) {
+function createContentItem(heading,hasSubMenuButton = false) {
 	// This function creates the entries for the table of contents.
-	let additionalClass = "";
+	let additionalClass = " ";
 	let hintText = "";
+	let subMenuButton = "";
+	if (hasSubMenuButton) subMenuButton = '<button class="toc-sub-menu-control wp-element-button"><span class="toc-sub-menu-control__text"></span></button>';
 	if (heading.innerText.trim() == "") {
-		additionalClass = "empty";
+		additionalClass += "empty ";
 		hintText = "Empty item";
 	}
-	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a></li>';
+	if (heading.tagName == "H3") {
+		additionalClass += "sub-heading "
+	}
+	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a> '+subMenuButton+'</li>';
 }
 
 function onClassChange(node) {
@@ -161,6 +171,10 @@ function alterHeading(heading) {
 
 	// Check: has the text changed
 	if (heading.innerText != headingContentItem.innerText) {
-		headingContentItem.outerHTML = createContentItem(heading);
+		if (headingContentItem.innerHTML.includes("<button")) {
+			headingContentItem.outerHTML = createContentItem(heading,true);
+		} else {
+			headingContentItem.outerHTML = createContentItem(heading,false);
+		}
 	}
 }

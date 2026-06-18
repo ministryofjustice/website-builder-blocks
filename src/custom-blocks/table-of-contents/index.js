@@ -35,7 +35,8 @@ registerBlockType("wb-blocks/table-of-contents", {
       default: false
     },
     tocClassName: {
-      type: "string"
+      type: "string",
+      default: ""
     }
   },
   edit,

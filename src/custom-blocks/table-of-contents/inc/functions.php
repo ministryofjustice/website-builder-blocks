@@ -110,13 +110,13 @@
 
 			if ($this_parent == "") {
 				$h2_array[$this_id] = $link;
+				$count_headings++; //we only count top headings
 			} else {
 				$h3_array[$this_parent][$this_id] = $link;
 			}
-			$count_headings++;
 		}
 
-		if (!$count_headings) return ""; // No headings for the table of contents
+		if (!$count_headings) return ""; // No top headings for the table of contents = no table of contents
 
 		foreach($h2_array as $id => $h2) {
 			$toc_list .= $list_item_start.$h2;
@@ -131,8 +131,9 @@
 		}
 
 		$print_columns = "";
-		// If there are more than 15 headings, put it in columns to make better use of the page
+		// If there are more than 15 top headings, put it in columns to make better use of the page
 		// Increase to 3 columns after 25 (less space might make more wrap)
+		// Only top level headings are displayed when printing
 		if ($count_headings > 15) $print_columns = "wb-print-col wb-print-col--2";
 		if ($count_headings > 25) $print_columns = "wb-print-col wb-print-col--3";
 
