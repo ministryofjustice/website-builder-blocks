@@ -1,6 +1,6 @@
 {
-    "/frontend.min.js": "/frontend.min.js",
-    "/style-gutenburg.min.css": "/style-gutenburg.min.css",
-    "/style-frontend.min.css": "/style-frontend.min.css",
-    "/moj-frontend.js": "/moj-frontend.js"
+    "/frontend.min.js": "/frontend.min.js?id=d1ef6ce5612624d923a715ddbd2ddec1",
+    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=1f830d0f104efd149853ee68c8633161",
+    "/style-frontend.min.css": "/style-frontend.min.css?id=50d0f17adfe6c3154d12c27917a4fcd0",
+    "/moj-frontend.js": "/moj-frontend.js?id=29197821c95f733a7bf23b58fd05a861"
 }

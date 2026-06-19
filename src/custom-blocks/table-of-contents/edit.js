@@ -152,6 +152,7 @@ function onClassChange(node) {
 			if (item.attributeName === "class") {
 				const classString = node.classList.toString();
 				if (classString !== lastClassString) {
+					applyButtonFunctionality();
 					alterHeading(node);
 					lastClassString = classString;
 					break;
@@ -177,4 +178,42 @@ function alterHeading(heading) {
 			headingContentItem.outerHTML = createContentItem(heading,false);
 		}
 	}
+}
+
+function applyButtonFunctionality () {
+	// Function to duplicate the open close functionality of the frontend
+	// The backend list is a series of non-nested list-items, for reasons
+	const toc = document.getElementById("table-of-contents-contents-list");
+
+	// Scan for buttons, but targetting the button's list item
+	const controllingListItems = toc.querySelectorAll(".wb-table-of-contents__item:has(button)");
+
+	controllingListItems.forEach(item => {
+		const button = item.querySelector("button");
+
+		const openCloseSubordinates = (e) => {
+			// Scan for subordinates - these are all the "sub-headings" until the next non-sub-heading.
+			// Only difference in the HTML is "sub-heading" class
+			// So we continue scanning until a non-sub-heading class is found or the list ends
+			const thisItem = e.target.closest("li");
+			let nextItem = thisItem.nextElementSibling;
+			if (nextItem && nextItem.classList.contains("sub-heading")) {
+				for (let i = 0; i < 1000; i++) {
+					if (nextItem && nextItem.classList.contains("sub-heading")) {
+						nextItem.classList.toggle("expanded");
+						nextItem = nextItem.nextElementSibling;
+					} else {
+						break;
+					}
+				}
+				thisItem.querySelector("button").classList.toggle("opened");
+			}
+		};
+
+		// Add the click handler, making sure it is only added once
+		if (!button._hasClickHandler) {
+			button.addEventListener("click", openCloseSubordinates);
+			button._hasClickHandler = true;
+		}
+	});
 }

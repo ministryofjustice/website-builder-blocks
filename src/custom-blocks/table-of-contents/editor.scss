@@ -27,7 +27,8 @@ div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
 }
 
 .sub-heading {
-	&:not(.dual-level *) {
+	&:not(.dual-level *),
+	&:not(.expanded) {
 		display: none;
 	}
 

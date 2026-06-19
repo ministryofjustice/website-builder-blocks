@@ -120,14 +120,15 @@ Block: Filterable Listing (Frontend styles)
 			margin: 0.3rem;
 			width: 1.5rem;
 			cursor: pointer;
-		
+
 			&__text {
 				&:after {
 					content:"+";
 					position: relative;
 					top:2px;
 				}
-				&:is([aria-expanded="true"] *):after {
+				&:is([aria-expanded="true"] *):after,
+				&:is(.opened *):after {
 					content:"–";
 					top:0;
 				}
