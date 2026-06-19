@@ -32,16 +32,9 @@
 		$tags = $xpath->query('//h2 | //h3');
 		$hidden_tags = $xpath->query('//b');
 		$current_H2 = "";
-		foreach($hidden_tags as $tag) {
-			$tag_id = $tag->getAttribute('id');
-			if ($tag_id == "back-to-top-link-text") {
-				$back_to_top_text = esc_html($tag->nodeValue);
-				// This grabs the text content of the B tag with the correct ID, so it can be passed into the content below.
-				// This text content is set in the block settings.
-				break;
-			};
-		}
-		if (!isset($back_to_top_text) || !$back_to_top_text) $back_to_top_text = "Back to top"; //fallback
+		$back_to_top_node = $xpath->query('//b[@id="back-to-top-link-text"]')->item(0);
+		if (!empty($back_to_top_node)) $back_to_top_text = esc_html($back_to_top_node->nodeValue);
+		if (empty($back_to_top_text)) $back_to_top_text = "Back to top"; //fallback
 		foreach($tags as $tag) {
 			$heading_class = $tag->getAttribute('class');
 			if (
@@ -100,7 +93,7 @@
 
 		$style_string = "";
 		if ($both_levels && $nesting_icon!="") {
-			$style_string = "style='--bullet-icon: \"$nesting_icon\"'";
+			$style_string = "style='--bullet-icon: \"".esc_attr($nesting_icon)."\"'";
 		}
 
 		$index = wb_get_ordered_content($content)["index"];
