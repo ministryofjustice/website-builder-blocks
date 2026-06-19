@@ -23,9 +23,15 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 	$attribute_sticky = $attributes['sticky'] ?? false;
 	$attribute_scrollSpy = $attributes['scrollSpy'] ?? false;
 	$attribute_both_levels = $attributes['dualLevel'] ?? false;
+	$attribute_nesting = $attributes['customNesting'] ?? "";
 
 	if ($attribute_sticky) $attribute_className .= " toc-sticky";
 	if ($attribute_scrollSpy) $attribute_className .= " toc-scrollspy";
+	if (!$attribute_nesting) {
+		$attribute_className .= " toc-no-marker";
+	} elseif ($attribute_nesting == "|") {
+		$attribute_className .= " toc-border";
+	}
 	$attribute_className = trim($attribute_className);
 	
 	// Turn on buffering so we can collect all the html markup below and load it via the return
@@ -33,13 +39,15 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
 	ob_start();
 
+	// Echo out the table of contents returned by the function
 	echo wb_table_of_contents(
 		get_the_content(),
 		$class=$attribute_className,
 		$title=$attribute_title,
 		$top=esc_html($attribute_backToTopText),
-		$both_levels=$attribute_both_levels
-	); //This creates the table of contents
+		$both_levels=$attribute_both_levels,
+		$nesting_icon=$attribute_nesting
+	);
 
 	// Get all the html/content that has been captured in the buffer and output via return
 	$output = ob_get_contents();

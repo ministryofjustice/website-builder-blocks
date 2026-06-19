@@ -87,9 +87,21 @@
 	 * gets from the above funciton
 	 */
 
-	function wb_table_of_contents($content, $class="", $toc_title="Table of contents", $top="Back to top", $both_levels=false) {
+	function wb_table_of_contents(
+		$content,
+		$class="",
+		$toc_title="Table of contents",
+		$top="Back to top",
+		$both_levels=false,
+		$nesting_icon=""
+	) {
 		$list_class = "";
 		if ($both_levels) $list_class .= "dual-level";
+
+		$style_string = "";
+		if ($both_levels && $nesting_icon!="") {
+			$style_string = "style='--bullet-icon: \"$nesting_icon\"'";
+		}
 
 		$index = wb_get_ordered_content($content)["index"];
 
@@ -137,7 +149,7 @@
 		if ($count_headings > 15) $print_columns = "wb-print-col wb-print-col--2";
 		if ($count_headings > 25) $print_columns = "wb-print-col wb-print-col--3";
 
-		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class'>
+		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class' $style_string>
 				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>$toc_title</h2>
 				<p hidden><b id='back-to-top-link-text'>$top</b></p>
 				<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>

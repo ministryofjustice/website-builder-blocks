@@ -34,6 +34,10 @@ registerBlockType("wb-blocks/table-of-contents", {
       type: "boolean",
       default: false
     },
+    customNesting: {
+      type: "string",
+      default: ""
+    },
     tocClassName: {
       type: "string",
       default: ""

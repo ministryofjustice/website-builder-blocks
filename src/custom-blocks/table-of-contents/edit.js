@@ -48,8 +48,23 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		scrollSpy,
 		tocClassName,
 		dualLevel,
+		customNesting,
 		className
 	} = attributes;
+
+	const allowedBullets = [
+		"-", // hyphen
+		"–", // en dash (longer than hyphen)
+		"•", // normal bullet
+		"∘", // hollow circle
+		"▪", // little square
+		"▫", // hollow square
+		"▸", // little triangle
+		"▹", // hollow triangle
+		"➤", // slick triangle
+		"|", // pipe (special case - denotes a left border)
+	];
+
 
 	// Set className attribute for PHP frontend to use
 	setAttributes({ tocClassName: className });
@@ -68,6 +83,11 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	};
 	const setDualLevel = newDualLevel => {
 		setAttributes({ dualLevel: newDualLevel });
+	};
+	const setCustomNesting = (data) => {
+		setAttributes({
+			customNesting: attributes.customNesting === data ? "" : data //toggle
+		});
 	};
 	const inspectorControls = (
 		<InspectorControls>
@@ -102,13 +122,64 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					onChange={ setBackToTopText }
 				/>
 			</PanelBody>
+			{dualLevel && (
+				<PanelBody title="Nested style">
+					<div style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(4, 1fr)',
+						gap: '10px'
+					}}>
+						<button
+							onClick={() => setCustomNesting("")}
+							style={{
+								outline: attributes.customNesting === "" ? '8px solid #0ff' : '1px solid #ccc',
+								filter: attributes.customNesting === "" ? 'invert(1)' : 'none',
+								padding: '10px',
+								background: 'white',
+								cursor: 'pointer',
+								textAlign: 'center',
+								fontWeight: '700',
+								gridColumn: 'span 2'
+							}}
+						>
+							None
+						</button>
+						{allowedBullets.map((data) => (
+							<button
+								key={data}
+								onClick={() => setCustomNesting(data)}
+								style={{
+									outline: attributes.customNesting === data ? '8px solid #0ff' : '1px solid #ccc',
+									filter: attributes.customNesting === data ? 'invert(1)' : 'none',
+									padding: '10px',
+									background: 'white',
+									cursor: 'pointer',
+									textAlign: 'center'
+								}}
+							>
+								{data}
+							</button>
+						))}
+					</div>
+				</PanelBody>
+			)}
 		</InspectorControls>
 	);
 
 	return (
 		<Fragment >
 			{ inspectorControls }
-			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''} ${dualLevel ? "dual-level" : ""}`}>
+			<div
+				className={`
+					wb-blocks-toc
+					${tocClassName ? tocClassName : ""}
+					${sticky ? 'toc-sticky' : ''}
+					${customNesting ? "" : 'toc-no-marker'}
+					${customNesting == "|" ? 'toc-border' : ""}
+					${dualLevel ? "dual-level" : ""}
+				`}
+				style={{'--bullet-icon': "'"+customNesting+"'"}}
+			>
 				<div id="table-of-contents" class="wb-table-of-contents">
 					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
 						<RichText

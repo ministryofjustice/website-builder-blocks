@@ -7,6 +7,10 @@ Block: Filterable Listing (Gutenberg editor styles)
 
 @import 'style.scss';
 
+.wb-table-of-contents {
+	margin-left: 0.1px; // this is to make the thin submenu border more visible when the item is highlighted for editing
+}
+
 // This mimicks the sticky behaviour, moving out of the way of the block controls if selected.
 div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
 	position: sticky;
@@ -33,9 +37,24 @@ div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
 	}
 
 	margin: 0 1rem;
-	border-left: 1px solid;
+	padding: 0;
+	list-style-type: var(--bullet-icon);
+	list-style-position: inside;
+
+	&::marker {
+		// The current page will be bold, so we add this to stop the marker from flickering as the page scrolls
+		font-weight: 400;
+	}
 
 	a {
-		margin-left:0.5rem;
+		margin-left: 0.5rem;
+	}
+
+	&:is(.toc-no-marker *) {
+		list-style-type: none;
+	}
+	&:is(.toc-border *) {
+		border-left: 1px solid;
+		list-style-type: none;
 	}
 }

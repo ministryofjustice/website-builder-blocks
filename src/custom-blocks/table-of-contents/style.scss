@@ -81,7 +81,8 @@ Block: Filterable Listing (Frontend styles)
 
 			li {
 				padding: 0;
-				list-style: inside;
+				list-style-type: var(--bullet-icon);
+				list-style-position: inside;
 
 				&::marker {
 					// The current page will be bold, so we add this to stop the marker from flickering as the page scrolls
@@ -92,6 +93,25 @@ Block: Filterable Listing (Frontend styles)
 					margin-left: 0.5rem;
 				}
 
+				&:is(.toc-no-marker *) {
+					list-style-type: none;
+					margin-left: 0.5rem;
+
+					a {
+						margin-left: 0;
+					}
+
+				}
+
+			}
+			&:is(.toc-border *) {
+				border-left: 1px solid;
+
+				li {
+					list-style-type: none;
+					margin-left: 0;
+					padding-left: 0.5rem;
+				}
 			}
 		}
 		&__item {
