@@ -21,14 +21,19 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		}
 		let contentsList = document.getElementById("table-of-contents-contents-list");
 		const mutationObserver = new MutationObserver((mutationList) => {
-			let headingItems = contentArea.querySelectorAll("h2:not(.wb-toc-ignore)");
+			let headingItems = contentArea.querySelectorAll("main h2:not(.wb-toc-ignore), main h3:not(.wb-toc-ignore)");
 			let contentItems = contentsList.querySelectorAll("li");
 			if (headingItems.length != contentItems.length) {
 				contentsList.innerHTML = "";
 				for(let i=0;i<headingItems.length;i++) {
 					if (headingItems[i].innerHTML.includes(tocTitle)) continue;
+					let hasSubMenuButton = false;
+					if (i<(headingItems.length-1) && headingItems[i].tagName == "H2" && headingItems[i+1].tagName == "H3" ) {
+						// Not last item, is H2 before an H3
+						hasSubMenuButton = true;
+					}
 					onClassChange(headingItems[i]); // Live updating of contents item if content is changed without re-writing the entire table of contents
-					contentsList.innerHTML += createContentItem(headingItems[i]);
+					contentsList.innerHTML += createContentItem(headingItems[i],hasSubMenuButton);
 				}
 			}
 
@@ -42,8 +47,24 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		sticky,
 		scrollSpy,
 		tocClassName,
+		dualLevel,
+		customNesting,
 		className
 	} = attributes;
+
+	const allowedBullets = [
+		"-", // hyphen
+		"–", // en dash (longer than hyphen)
+		"•", // normal bullet
+		"∘", // hollow circle
+		"▪", // little square
+		"▫", // hollow square
+		"▸", // little triangle
+		"▹", // hollow triangle
+		"➤", // slick triangle
+		"|", // pipe (special case - denotes a left border)
+	];
+
 
 	// Set className attribute for PHP frontend to use
 	setAttributes({ tocClassName: className });
@@ -59,6 +80,14 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	};
 	const setScrollSpy = newScrollSpy => {
 		setAttributes({ scrollSpy: newScrollSpy });
+	};
+	const setDualLevel = newDualLevel => {
+		setAttributes({ dualLevel: newDualLevel });
+	};
+	const setCustomNesting = (data) => {
+		setAttributes({
+			customNesting: attributes.customNesting === data ? "" : data //toggle
+		});
 	};
 	const inspectorControls = (
 		<InspectorControls>
@@ -78,6 +107,12 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					checked={ scrollSpy }
 					onChange={ setScrollSpy }
 				/>
+				<ToggleControl
+					label="Dual-level table of contents"
+					help="If enabled, H3 headings will included as well as H2 headings"
+					checked={ dualLevel }
+					onChange={ setDualLevel }
+				/>
 				<TextControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
@@ -87,14 +122,65 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					onChange={ setBackToTopText }
 				/>
 			</PanelBody>
+			{dualLevel && (
+				<PanelBody title="Nested style">
+					<div style={{
+						display: 'grid',
+						gridTemplateColumns: 'repeat(4, 1fr)',
+						gap: '10px'
+					}}>
+						<button
+							onClick={() => setCustomNesting("")}
+							style={{
+								outline: attributes.customNesting === "" ? '8px solid #0ff' : '1px solid #ccc',
+								filter: attributes.customNesting === "" ? 'invert(1)' : 'none',
+								padding: '10px',
+								background: 'white',
+								cursor: 'pointer',
+								textAlign: 'center',
+								fontWeight: '700',
+								gridColumn: 'span 2'
+							}}
+						>
+							None
+						</button>
+						{allowedBullets.map((data) => (
+							<button
+								key={data}
+								onClick={() => setCustomNesting(data)}
+								style={{
+									outline: attributes.customNesting === data ? '8px solid #0ff' : '1px solid #ccc',
+									filter: attributes.customNesting === data ? 'invert(1)' : 'none',
+									padding: '10px',
+									background: 'white',
+									cursor: 'pointer',
+									textAlign: 'center'
+								}}
+							>
+								{data}
+							</button>
+						))}
+					</div>
+				</PanelBody>
+			)}
 		</InspectorControls>
 	);
 
 	return (
 		<Fragment >
 			{ inspectorControls }
-			<div className={`wb-blocks-toc ${tocClassName} ${sticky ? 'toc-sticky' : ''}`}>
-				<div id="table-of-contents" class="wb-table-of-contents toc-sticky toc-scrollspy">
+			<div
+				className={`
+					wb-blocks-toc
+					${tocClassName ? tocClassName : ""}
+					${sticky ? 'toc-sticky' : ''}
+					${customNesting ? "" : 'toc-no-marker'}
+					${customNesting == "|" ? 'toc-border' : ""}
+					${dualLevel ? "dual-level" : ""}
+				`}
+				style={{'--bullet-icon': "'"+customNesting+"'"}}
+			>
+				<div id="table-of-contents" class="wb-table-of-contents">
 					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
 						<RichText
 							value={tocTitle}
@@ -110,15 +196,20 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	
 }
 
-function createContentItem(heading) {
+function createContentItem(heading,hasSubMenuButton = false) {
 	// This function creates the entries for the table of contents.
 	let additionalClass = "";
 	let hintText = "";
+	let subMenuButton = "";
+	if (hasSubMenuButton) subMenuButton = '<button class="toc-sub-menu-control wp-element-button"><span class="toc-sub-menu-control__text"></span></button>';
 	if (heading.innerText.trim() == "") {
-		additionalClass = "empty";
+		additionalClass += "empty ";
 		hintText = "Empty item";
 	}
-	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a></li>';
+	if (heading.tagName == "H3") {
+		additionalClass += "sub-heading "
+	}
+	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a> '+subMenuButton+'</li>';
 }
 
 function onClassChange(node) {
@@ -132,6 +223,7 @@ function onClassChange(node) {
 			if (item.attributeName === "class") {
 				const classString = node.classList.toString();
 				if (classString !== lastClassString) {
+					applyButtonFunctionality();
 					alterHeading(node);
 					lastClassString = classString;
 					break;
@@ -151,6 +243,48 @@ function alterHeading(heading) {
 
 	// Check: has the text changed
 	if (heading.innerText != headingContentItem.innerText) {
-		headingContentItem.outerHTML = createContentItem(heading);
+		if (headingContentItem.innerHTML.includes("<button")) {
+			headingContentItem.outerHTML = createContentItem(heading,true);
+		} else {
+			headingContentItem.outerHTML = createContentItem(heading,false);
+		}
 	}
+}
+
+function applyButtonFunctionality () {
+	// Function to duplicate the open close functionality of the frontend
+	// The backend list is a series of non-nested list-items, for reasons
+	const toc = document.getElementById("table-of-contents-contents-list");
+
+	// Scan for buttons, but targetting the button's list item
+	const controllingListItems = toc.querySelectorAll(".wb-table-of-contents__item:has(button)");
+
+	controllingListItems.forEach(item => {
+		const button = item.querySelector("button");
+
+		const openCloseSubordinates = (e) => {
+			// Scan for subordinates - these are all the "sub-headings" until the next non-sub-heading.
+			// Only difference in the HTML is "sub-heading" class
+			// So we continue scanning until a non-sub-heading class is found or the list ends
+			const thisItem = e.target.closest("li");
+			let nextItem = thisItem.nextElementSibling;
+			if (nextItem && nextItem.classList.contains("sub-heading")) {
+				for (let i = 0; i < 1000; i++) {
+					if (nextItem && nextItem.classList.contains("sub-heading")) {
+						nextItem.classList.toggle("expanded");
+						nextItem = nextItem.nextElementSibling;
+					} else {
+						break;
+					}
+				}
+				thisItem.querySelector("button").classList.toggle("opened");
+			}
+		};
+
+		// Add the click handler, making sure it is only added once
+		if (!button._hasClickHandler) {
+			button.addEventListener("click", openCloseSubordinates);
+			button._hasClickHandler = true;
+		}
+	});
 }

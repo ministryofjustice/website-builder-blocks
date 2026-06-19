@@ -30,8 +30,17 @@ registerBlockType("wb-blocks/table-of-contents", {
       type: "boolean",
       default: false
     },
+    dualLevel: {
+      type: "boolean",
+      default: false
+    },
+    customNesting: {
+      type: "string",
+      default: ""
+    },
     tocClassName: {
-      type: "string"
+      type: "string",
+      default: ""
     }
   },
   edit,

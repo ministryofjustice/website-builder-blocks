@@ -29,18 +29,12 @@
 		}
 		libxml_clear_errors();
 		$xpath = new DOMXPath($dom);
-		$tags = $xpath->query('//h2');
-		$hiddentags = $xpath->query('//b');
-		$back_to_top_text = "Back to top"; //fallback
-		foreach($hiddentags as $tag) {
-			$tag_id = $tag->getAttribute('id');
-			if ($tag_id == "back-to-top-link-text") {
-				$back_to_top_text = esc_html($tag->nodeValue);
-				// This grabs the text content of the B tag with the correct ID, so it can be passed into the content below.
-				// This text content is set in the block settings.
-				break;
-			};
-		}
+		$tags = $xpath->query('//h2 | //h3');
+		$hidden_tags = $xpath->query('//b');
+		$current_H2 = "";
+		$back_to_top_node = $xpath->query('//b[@id="back-to-top-link-text"]')->item(0);
+		if (!empty($back_to_top_node)) $back_to_top_text = esc_html($back_to_top_node->nodeValue);
+		if (empty($back_to_top_text)) $back_to_top_text = "Back to top"; //fallback
 		foreach($tags as $tag) {
 			$heading_class = $tag->getAttribute('class');
 			if (
@@ -52,7 +46,15 @@
 			$title = $tag->nodeValue;
 			$id = preg_replace('/[^a-zA-Z0-9]/', '', remove_accents($title));
 			$id = ++$count."-$id"; //$count is incremented & added to ID (this ensures no duplicates)
-			$index[] = ["title"=>$title,"id"=>$id];
+
+			$parent = "";
+			if ($tag->nodeName === 'h2') {
+				$current_H2 = $id;
+			} elseif ($tag->nodeName === 'h3' && $current_H2) {
+				$parent = $current_H2;
+			}
+
+			$index[] = ["title"=>$title,"id"=>$id,"parent"=>$parent,"level"=>$tag->nodeName];
 
 			//Jump to top link
 			$jump_link = $dom->createElement("a",$back_to_top_text);
@@ -78,35 +80,75 @@
 	 * gets from the above funciton
 	 */
 
-	function wb_table_of_contents($content, $class="", $toc_title="Table of contents", $top="Back to top") {
+	function wb_table_of_contents(
+		$content,
+		$class="",
+		$toc_title="Table of contents",
+		$top="Back to top",
+		$both_levels=false,
+		$nesting_icon=""
+	) {
 		$list_class = "";
+		if ($both_levels) $list_class .= "dual-level";
+
+		$style_string = "";
+		if ($both_levels && $nesting_icon!="") {
+			$style_string = "style='--bullet-icon: \"".esc_attr($nesting_icon)."\"'";
+		}
 
 		$index = wb_get_ordered_content($content)["index"];
 
 		// Create the table of contents
-		$list_of_headings = "";
+		$toc_list = "";
 		$count_headings = 0;
+		$h2_array = [];
+		$h3_array = [];
+		$list_item_start = "<li class='wb-table-of-contents__item'>";
+
 		foreach ($index as $content_item) {
 			$this_id = esc_attr($content_item["id"]);
 			$this_title = esc_html($content_item["title"]);
-			$list_of_headings .= '<li class="wb-table-of-contents__item"><a id="anchor-for-'.$this_id.'" href="#'.$this_id.'">'.$this_title.'</a></li>';
-			$count_headings++;
+			$this_parent = esc_html($content_item["parent"]);
+			$this_level = esc_html($content_item["level"]);
+
+			$link = "<a id='anchor-for-$this_id' href='#$this_id'>$this_title</a>";
+
+			if ($this_parent == "") {
+				$h2_array[$this_id] = $link;
+				$count_headings++; //we only count top headings
+			} else {
+				$h3_array[$this_parent][$this_id] = $link;
+			}
 		}
 
-		if ($list_of_headings == "") return ""; // If there are no matched headings, then there is no table of contents to shew
+		if (!$count_headings) return ""; // No top headings for the table of contents = no table of contents
+
+		foreach($h2_array as $id => $h2) {
+			$toc_list .= $list_item_start.$h2;
+			if (array_key_exists($id,$h3_array)) {
+				$toc_list .= "<ol id='submenu-under-$id' class='wb-table-of-contents__sub-list' data-parent='$id'>";
+				foreach($h3_array[$id] as $h3) {
+					$toc_list .= $list_item_start.$h3."</li>";
+				}
+				$toc_list .= "</ol>";
+			}
+			$toc_list .= "</li>";
+		}
 
 		$print_columns = "";
-		// If there are more than 15 headings, put it in columns to make better use of the page
+		// If there are more than 15 top headings, put it in columns to make better use of the page
 		// Increase to 3 columns after 25 (less space might make more wrap)
+		// Only top level headings are displayed when printing
 		if ($count_headings > 15) $print_columns = "wb-print-col wb-print-col--2";
 		if ($count_headings > 25) $print_columns = "wb-print-col wb-print-col--3";
 
-		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class'>
+		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class' $style_string>
 				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>$toc_title</h2>
 				<p hidden><b id='back-to-top-link-text'>$top</b></p>
-				<ol class='wb-table-of-contents__list $list_class $print_columns'>$list_of_headings</ol>
+				<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>
 			</div>";
 
 		return $toc;
 	}
+
 ?>

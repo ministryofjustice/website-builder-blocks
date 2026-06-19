@@ -7,6 +7,7 @@
 
 ( function() {
 	indicateCurrentLocation();
+	addSubmenuControl();
 })();
 
 document.addEventListener('scroll', function() {
@@ -44,4 +45,49 @@ function indicateCurrentLocation(){
 		item.classList.remove("wb-table-of-contents__item--current");
 	});
 	contents[i].classList.add("wb-table-of-contents__item--current");
+}
+
+function addSubmenuControl() {
+	if (!document.querySelector("#table-of-contents>.dual-level")) {
+		// We don't add the controls if we're in a single-level ToC
+		return;
+	}
+	let toc = document.querySelector("#table-of-contents");
+	let topLevelItems = toc.querySelectorAll(".wb-table-of-contents__item:has(.wb-table-of-contents__sub-list)");
+
+	if (!topLevelItems.length) {
+		// If no items with sub-list, end here
+		return;
+	}
+
+	let subMenuControl = document.createElement("button");
+	subMenuControl.classList.add("toc-sub-menu-control");
+	subMenuControl.classList.add("wp-element-button");
+	subMenuControl.setAttribute('aria-label', 'Expand submenu');
+	subMenuControl.setAttribute('aria-expanded', 'false');
+	subMenuControl.innerHTML = "<span class='toc-sub-menu-control__text'></span>";
+	topLevelItems.forEach(e => {
+		e.classList.add("has-sub-toc");
+		const submenuID = e.querySelector("ol").id;
+		if (e.querySelector(".toc-sub-menu-control")) return;
+		const link = e.querySelector('a');
+		const control = subMenuControl.cloneNode(true);
+		if (!link || !control) return;
+		control.setAttribute("aria-controls",submenuID);
+		link.after(control);
+
+		control.addEventListener('click', function() {
+			if (control.getAttribute('aria-expanded') == "true" ) {
+				control.setAttribute('aria-label', 'Collapse submenu');
+				control.setAttribute('aria-expanded', 'false');
+			} else {
+				document.querySelectorAll('.toc-sub-menu-control').forEach(otherControl => {
+					otherControl.setAttribute('aria-label', 'Collapse submenu');
+					otherControl.setAttribute('aria-expanded', 'false');
+				});
+				control.setAttribute('aria-label', 'Expand submenu');
+				control.setAttribute('aria-expanded', 'true');
+			}
+		});
+	})
 }
