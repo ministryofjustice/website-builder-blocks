@@ -66,15 +66,14 @@ function addSubmenuControl() {
 	subMenuControl.setAttribute('aria-label', 'Expand submenu');
 	subMenuControl.setAttribute('aria-expanded', 'false');
 	subMenuControl.innerHTML = "<span class='toc-sub-menu-control__text'></span>";
-	topLevelItems.forEach(element => {
-		element.classList.add("has-sub-toc");
-	});
 	topLevelItems.forEach(e => {
+		e.classList.add("has-sub-toc");
+		const submenuID = e.querySelector("ol").id;
 		if (e.querySelector(".toc-sub-menu-control")) return;
 		const link = e.querySelector('a');
 		const control = subMenuControl.cloneNode(true);
 		if (!link || !control) return;
-
+		control.setAttribute("aria-controls",submenuID);
 		link.after(control);
 
 		control.addEventListener('click', function() {

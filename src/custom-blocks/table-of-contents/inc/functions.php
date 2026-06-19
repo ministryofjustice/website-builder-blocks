@@ -133,7 +133,7 @@
 		foreach($h2_array as $id => $h2) {
 			$toc_list .= $list_item_start.$h2;
 			if (array_key_exists($id,$h3_array)) {
-				$toc_list .= "<ol class='wb-table-of-contents__sub-list' data-parent='$id'>";
+				$toc_list .= "<ol id='submenu-under-$id' class='wb-table-of-contents__sub-list' data-parent='$id'>";
 				foreach($h3_array[$id] as $h3) {
 					$toc_list .= $list_item_start.$h3."</li>";
 				}
