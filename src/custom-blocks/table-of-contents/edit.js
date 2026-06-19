@@ -88,8 +88,8 @@ export default function tocEdit({ attributes, setAttributes} ) {
 					onChange={ setScrollSpy }
 				/>
 				<ToggleControl
-					label="Include H3s in the table of contents"
-					help="By default, only H2 headings are included; but their subheadings (H3s) can be included too."
+					label="Dual-level table of contents"
+					help="If enabled, H3 headings will included as well as H2 headings"
 					checked={ dualLevel }
 					onChange={ setDualLevel }
 				/>
@@ -127,7 +127,7 @@ export default function tocEdit({ attributes, setAttributes} ) {
 
 function createContentItem(heading,hasSubMenuButton = false) {
 	// This function creates the entries for the table of contents.
-	let additionalClass = " ";
+	let additionalClass = "";
 	let hintText = "";
 	let subMenuButton = "";
 	if (hasSubMenuButton) subMenuButton = '<button class="toc-sub-menu-control wp-element-button"><span class="toc-sub-menu-control__text"></span></button>';
