@@ -269,6 +269,35 @@ function wb_blocks_register_blocks()
 		]
 	);
 	register_block_type(
+		'wb-blocks/graph',
+		[
+			'editor_script' => 'wb-blocks-editor-script',
+			'render_callback' => 'wb_blocks_render_callback_graph_block',
+			'attributes' => [
+				'chartType' => [ 'type' => 'string' ],
+				'columns' => [ 'type' => 'array' ],
+				'dataRows' => [ 'type' => 'array' ],
+				'xColumn' => [ 'type' => 'string' ],
+				'xAxisType' => [ 'type' => 'string' ],
+				'showAllXLabels' => [ 'type' => 'boolean' ],
+				'aggregate' => [ 'type' => 'string' ],
+				'yColumns' => [ 'type' => 'array' ],
+				'graphTitle' => [ 'type' => 'string' ],
+				'xAxisLabel' => [ 'type' => 'string' ],
+				'yAxisLabel' => [ 'type' => 'string' ],
+				'palette' => [ 'type' => 'string' ],
+				'axisColour' => [ 'type' => 'string' ],
+				'showLegend' => [ 'type' => 'boolean' ],
+				'showGridlines' => [ 'type' => 'boolean' ],
+				'showDownload' => [ 'type' => 'boolean' ],
+				'showTable' => [ 'type' => 'boolean' ],
+				'fileName' => [ 'type' => 'string' ],
+				'parseError' => [ 'type' => 'string' ],
+				'graphClassName' => [ 'type' => 'string' ],
+			]
+		]
+	);
+	register_block_type(
 		'wb-blocks/table-of-contents',
 		[
 			'editor_script' => 'wb-blocks-editor-script',
@@ -364,6 +393,17 @@ function wb_blocks_enqueue_style()
             false,
             true
         );  
+
+        // Graph block bundles D3 — only load it where the block is used.
+        if ( has_block( 'wb-blocks/graph', $post ) ) {
+            wp_enqueue_script(
+                'wb-blocks-graph-js',
+                plugins_url('/build/graph.min.js', __FILE__),
+                array(),
+                '1.0',
+                true
+            );
+        }
 
         // Check for the block in the post content
         if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {

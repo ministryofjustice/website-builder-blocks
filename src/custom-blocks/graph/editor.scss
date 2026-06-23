@@ -1,0 +1,73 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Graph (Gutenberg editor styles)
+
+**********************************************************************************************/
+
+@import 'style.scss';
+
+.wb-graph--editor {
+
+	.wb-graph__placeholder {
+		border: 2px dashed var(--wb-graph-table-border, #b1b4b6);
+		border-radius: 4px;
+		padding: 2rem 1.5rem;
+		text-align: center;
+		background: #fbfbfb;
+
+		&-title {
+			font-weight: 700;
+			font-size: 1.1rem;
+			margin: 0 0 0.25rem;
+		}
+
+		.components-form-file-upload {
+			margin-top: 1rem;
+		}
+	}
+
+	.wb-graph__filename {
+		font-size: 0.85rem;
+		color: #505a5f;
+		margin: 0.5rem 0 0;
+		word-break: break-all;
+	}
+}
+
+// Upload size hint shown under the upload buttons.
+.wb-graph__upload-hint {
+	font-size: 0.75rem;
+	color: #757575;
+	margin: 0.5rem 0 0;
+}
+
+// Sub-heading that groups the X / Y mapping controls.
+.wb-graph__group-heading {
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: #1e1e1e;
+	margin: 0.5rem 0 0.25rem;
+}
+
+// Column picker fieldset inside the inspector.
+.wb-graph__fieldset {
+	border: 1px solid #e0e0e0;
+	border-radius: 2px;
+	padding: 0.5rem 0.75rem;
+	margin: 0 0 1rem;
+
+	legend {
+		font-size: 0.8rem;
+		font-weight: 600;
+		padding: 0 0.25rem;
+	}
+
+	.wb-graph__fieldset-help {
+		font-size: 0.72rem;
+		color: #757575;
+		margin: 0 0 0.5rem;
+	}
+}

@@ -4,6 +4,7 @@
 
 import "./accordion";
 import "./filterable-listing";
+import "./graph";
 import "./icon";
 import "./hmg-svg";
 import "./reveal";
