@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * Reveal block
+ * Frontend PHP code
+ *
+ * Uses WordPress' dynamic block method
+ * https://developer.wordpress.org/block-editor/tutorials/block-tutorial/creating-dynamic-blocks/
+ *
+ * @package wb_blocks
+ *
+ */
+
+function wb_blocks_render_callback_reveal_block($attributes, $content)
+{
+
+    // Parse attributes found in index.js
+    $attribute_reveal_className = $attributes['revealClassName'] ?? '';
+    $attribute_reveal_revealTitle = $attributes['revealTitle'] ?? '';
+
+    // Turn on buffering so we can collect all the html markup below and load it via the return
+    // This is an alternative method to using sprintf(). By using buffering you can write your
+    // code below as you would in any other PHP file rather then having to use the sprintf() syntax
+    ob_start();
+
+    ?>
+
+    <div class="wb-blocks-reveal <?php _e(esc_html($attribute_reveal_className)); ?>">
+        <details class="wb-details">
+            <summary class="wb-details__summary">
+                <?php
+                    /**
+                     * We are using an anchor tag <a> without an href
+                     * So link colouring is picked up without link behaviour
+                     */
+                ?>
+                <a class="wb-details__summary-text">
+                    <?php _e(esc_html($attribute_reveal_revealTitle)); ?>
+                </a>
+            </summary>
+            <div class="wb-details__text py-2 [&_p:first-child]:mt-0!">
+                <?php _e(esc_html($content)); ?>
+            </div>
+        </details>
+    </div>
+
+    <?php
+
+    // Get all the html/content that has been captured in the buffer and output via return
+    $output = ob_get_contents();
+
+    // Decode the output in case editors want to add in hyperlinks or other markup
+    $output = html_entity_decode($output);
+
+    ob_end_clean();
+
+    return $output;
+}
