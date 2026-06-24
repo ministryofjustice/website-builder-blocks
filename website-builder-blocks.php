@@ -229,6 +229,25 @@ function wb_blocks_register_blocks()
 	);
 
 	register_block_type(
+		'wb-blocks/print-button',
+		[
+			'editor_script' => 'wb-blocks-editor-script',
+			'render_callback' => 'wb_blocks_render_callback_print_button_block',
+			'attributes' => [
+				'buttonClassName' => [
+					'type' => 'string'
+				],
+				'buttonShowIcon' => [
+					'type' => 'boolean'
+				],
+				'buttonText' => [
+					'type' => 'string'
+				]
+			]
+		]
+	);
+
+	register_block_type(
 		'wb-blocks/filterable-listing',
 		[
 			'editor_script' => 'wb-blocks-editor-script',
