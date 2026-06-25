@@ -3,12 +3,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
+import { RichText, InspectorControls} from '@wordpress/block-editor';
+import { ToggleControl, PanelBody, PanelRow } from '@wordpress/components';
 
 registerBlockType('wb-blocks/print-button', {
 	title: __('Print button', 'wb_block'),
 	description: __("Button to print page"),
 	category: 'wb-blocks',
-	icon: 'controls-play',
+	icon: 'printer',
 	keywords: [__('print'),__('click')],
 	attributes: {
 		buttonText: {
@@ -29,7 +31,8 @@ registerBlockType('wb-blocks/print-button', {
 			setAttributes,
 			attributes: {
 				buttonText,
-				buttonShowIcon
+				buttonShowIcon,
+				buttonClassName,
 			},
 			className
 		} = props;
@@ -43,10 +46,31 @@ registerBlockType('wb-blocks/print-button', {
 		};
 
 		return ([
-			<div className={`buttonClassName`}>
-				button
-				
-			</div>
+			<InspectorControls>
+				<PanelBody title={ __( "Print icon", "wb_block" ) } initialOpen={true} >
+					<PanelRow>
+						<ToggleControl
+							label={__("Show icon", "wb_block" )}
+							help=""
+							checked={ buttonShowIcon }
+							onChange= {(x) => {
+			setAttributes({ buttonShowIcon: x });
+		}}
+						/>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>,
+
+			<button className={`wb-print-button ${buttonClassName} wp-element-button ${buttonShowIcon ? 'wb-print-button--has-icon': ""} `}>
+				<span className='wb-print-button__text'>
+					<RichText
+					value={ buttonText }
+					placeholder={ __('Add butoon text') }
+					keepPlaceholderOnFocus
+					onChange={ onChangeButtonText }
+					/>
+				</span>
+			</button>
 		]);
 	},
 

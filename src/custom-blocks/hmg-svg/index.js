@@ -63,10 +63,10 @@ registerBlockType('wb-blocks/hmg-svg', {
         
         return ([
             <InspectorControls>
-                <PanelBody title={ __( 'Government identity' ) } initialOpen={true} >
+                <PanelBody title={ __( "Government identity", "wb_block" ) } initialOpen={true} >
                     <PanelRow>
                         <SelectControl
-                            label={__("Identity mark", "mojblocks" )}
+                            label={__("Identity mark", "wb_block" )}
                             help=""
                             value={ logo }
                             options={ logoOptions }

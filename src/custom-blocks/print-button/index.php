@@ -26,9 +26,9 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 	?>
 
-	<div class="wb-blocks-reveal <?php _e(esc_html($attribute_reveal_className)); ?>">
-		
-	</div>
+	<button class="wp-element-button<?php _e(esc_attr($attribute_print_button_className)); ?>">
+		<?php echo esc_html($attribute_print_button_text); ?>
+	</button>
 
 	<?php
 

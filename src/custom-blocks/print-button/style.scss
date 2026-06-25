@@ -5,3 +5,23 @@ Block: Print Button (Frontend styles)
 
 **********************************************************************************************/
 
+.wb-print-button{
+	&--has-icon{
+		--right-icon:url('https://hale.docker/cjsm/wp-content/plugins/website-builder-blocks/assets/icons/action/print/materialicons/24px.svg');
+	}
+	&:after {
+		background-color: currentColor;
+		width: 1.25em;
+		height: 1.25em;
+		position: relative;
+		top: 5px;
+		display: inline-block;
+		mask-size: contain;
+		mask-position:center;
+		mask-repeat:no-repeat;
+		content:"";
+		margin-left: 6px;
+		mask-image: var(--right-icon);
+	}
+}
+
