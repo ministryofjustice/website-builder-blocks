@@ -99,10 +99,13 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 
 	// Parse attributes found in index.js
 	$attribute_accordion_section_className = esc_attr($attributes['accordionSectionClassName']) ?? '';
-	$attribute_accordion_heading_level = $attributes['accordionHeadingLevel'] ?? '3';
 	$attribute_accordion_heading_size = esc_html($attributes['accordionHeadingFontSize'] ?? 'base');
 	$attribute_accordion_section_title = esc_html($attributes['sectionTitle'] ?? '');
 	$attribute_accordion_section_open_by_default = $attributes['defaultOpen'] ?? false;
+	$attribute_accordion_heading_level = (int) ($attributes['accordionHeadingLevel'] ?? 3);
+	if ($attribute_accordion_heading_level < 2 || $attribute_accordion_heading_level > 6) {
+		$attribute_accordion_heading_level = 3;
+	}
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
