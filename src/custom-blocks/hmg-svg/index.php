@@ -31,7 +31,7 @@ function wb_blocks_render_callback_hmg_svg_block($attributes) {
 
 	?>
 
-	<div class="wb-hmg-svg <?php _e(esc_html($attribute_hmgsvg_className)); ?>">
+	<div class="wb-hmg-svg <?= esc_attr($attribute_hmgsvg_className); ?>">
 		<?php include __DIR__ . "/svg/{$attribute_hmgsvg_logo}.svg"; ?>
 	</div>
 
@@ -39,9 +39,6 @@ function wb_blocks_render_callback_hmg_svg_block($attributes) {
 
 	// Get all the html/content that has been captured in the buffer and output via return
 	$output = ob_get_contents();
-
-	// Decode the output in case editors want to add in hyperlinks or other markup
-	$output = html_entity_decode($output);
 
 	ob_end_clean();
 
