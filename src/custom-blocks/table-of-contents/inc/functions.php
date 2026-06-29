@@ -142,8 +142,8 @@
 		if ($count_headings > 15) $print_columns = "wb-print-col wb-print-col--2";
 		if ($count_headings > 25) $print_columns = "wb-print-col wb-print-col--3";
 
-		$toc = "<div id='table-of-contents' class='wb-table-of-contents $class' $style_string>
-				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>$toc_title</h2>
+		$toc = "<div id='table-of-contents' class='wb-table-of-contents " . esc_attr($class) . "' $style_string>
+				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>" . esc_html($toc_title) . "</h2>
 				<p hidden><b id='back-to-top-link-text'>$top</b></p>
 				<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>
 			</div>";
