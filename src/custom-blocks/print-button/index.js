@@ -89,12 +89,8 @@ registerBlockType("wb-blocks/print-button", {
         className={`wb-print-button ${buttonClassName} wp-element-button ${
           buttonShowIcon ? "wb-print-button--has-icon" : ""
         }
+        
           wb-print-button--icon-${buttonIconPosition}`}
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            window.print();
-          }}
       >
         <span className="wb-print-button__text">
           <RichText
