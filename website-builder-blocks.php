@@ -242,6 +242,9 @@ function wb_blocks_register_blocks()
 				],
 				'buttonText' => [
 					'type' => 'string'
+				],
+				'buttonIconPosition' => [
+					'type' => 'string',
 				]
 			]
 		]

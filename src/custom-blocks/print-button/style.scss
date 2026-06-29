@@ -7,21 +7,41 @@ Block: Print Button (Frontend styles)
 
 .wb-print-button{
 	&--has-icon{
-		--right-icon:url('https://hale.docker/cjsm/wp-content/plugins/website-builder-blocks/assets/icons/action/print/materialicons/24px.svg');
+		--icon:url('https://hale.docker/cjsm/wp-content/plugins/website-builder-blocks/assets/icons/action/print/materialicons/24px.svg');
+	
+	&.wb-print-button--icon-left:before {
+			background-color: currentColor;
+			width: 1.25em;
+			height: 1.25em;
+			position: relative;
+			top: 5px;
+			display: inline-block;
+			mask-size: contain;
+			mask-image: var(--icon);
+			mask-position:center;
+			mask-repeat:no-repeat;
+			content:"";
+			margin-right: 6px;
+			
+			
+		}
+
+		&.wb-print-button--icon-right:after {
+			background-color: currentColor;
+			width: 1.25em;
+			height: 1.25em;
+			position: relative;
+			top: 5px;
+			display: inline-block;
+			content: "";
+			mask-image: var(--icon);
+			mask-size: contain;
+			mask-position: center;
+			mask-repeat: no-repeat;
+			margin-left: 6px;
+		}
+
 	}
-	&:after {
-		background-color: currentColor;
-		width: 1.25em;
-		height: 1.25em;
-		position: relative;
-		top: 5px;
-		display: inline-block;
-		mask-size: contain;
-		mask-position:center;
-		mask-repeat:no-repeat;
-		content:"";
-		margin-left: 6px;
-		mask-image: var(--right-icon);
-	}
+	
 }
 
