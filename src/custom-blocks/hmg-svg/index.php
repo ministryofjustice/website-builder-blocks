@@ -20,7 +20,7 @@ function wb_blocks_render_callback_hmg_svg_block($attributes) {
 	
 	// Use an allow list to prevent a malicious value from traversing the file system.
 	$allowed_logos = ['crest', 'crown', 'govuk', 'ogl'];
-	if (in_array($attributes['logo'], $allowed_logos, true)) {
+	if (in_array($attributes['logo'] ?? '', $allowed_logos, true)) {
 		$attribute_hmgsvg_logo = $attributes['logo'];
 	}
 
