@@ -71,6 +71,7 @@ registerBlockType("wb-blocks/print-button", {
             <PanelRow>
               <RadioControl
                 label={__("Icon position", "wb_block")}
+                help="Position icon left or right of the button text"
                 selected={buttonIconPosition}
                 options={[
                   { label: __("Left", "wb_block"), value: "left" },
