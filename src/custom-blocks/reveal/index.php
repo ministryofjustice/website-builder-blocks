@@ -39,7 +39,7 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
                 </a>
             </summary>
             <div class="wb-details__text py-2 [&_p:first-child]:mt-0!">
-                <?php _e(esc_html($content)); ?>
+                <?= wp_kses_post($content); ?>
             </div>
         </details>
     </div>
@@ -48,9 +48,6 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
 
     // Get all the html/content that has been captured in the buffer and output via return
     $output = ob_get_contents();
-
-    // Decode the output in case editors want to add in hyperlinks or other markup
-    $output = html_entity_decode($output);
 
     ob_end_clean();
 
