@@ -58,7 +58,7 @@ function wb_render_callback_accordion_block($attributes, $content)
 	?>
 
 	<div
-		class="wb-accordion <?php _e($accordionClassName); ?> "
+		class="wb-accordion <?= $accordionClassName; ?> "
 	>
 	<?php
 		// The Tailwind class "hidden" is removed by JS - which is needed for this to work
@@ -115,21 +115,19 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	?>
 
 	<details
-		class="<?php _e($attribute_accordion_section_className); ?> wb-accordion__section group mt-4"
+		class="<?= $attribute_accordion_section_className; ?> wb-accordion__section group mt-4"
 		<?php if ($attribute_accordion_section_open_by_default) echo "open"; ?>
 	>
 		<summary class="<?php echo $tailwind_remove_marker.$tailwind_state_colours; ?> cursor-pointer py-4 px-2 my-1 -ml-2">
 			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size";?> wp-block-heading inline-block !m-0">
-				<?php _e($attribute_accordion_section_title) ; ?>
+				<?= $attribute_accordion_section_title; ?>
 			</h<?php echo $attribute_accordion_heading_level; ?>>
 			<span
 				class="wb-accordion__section-chevron <?php echo $tailwind_chevron;?>">
 			</span>
 		</summary>
 		<div class="wb-accordion__section-content mt-1 [&_p:first-child]:mt-0! ">
-			<?php
-				_e($content);
-			?>
+			<?= wp_kses_post($content); ?>
 		</div>
 	</details>
 
