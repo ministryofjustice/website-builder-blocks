@@ -25,7 +25,7 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
 
     ?>
 
-    <div class="wb-blocks-reveal <?php _e(esc_html($attribute_reveal_className)); ?>">
+    <div class="wb-blocks-reveal <?= esc_attr($attribute_reveal_className); ?>">
         <details class="wb-details">
             <summary class="wb-details__summary">
                 <?php
@@ -35,11 +35,11 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
                      */
                 ?>
                 <a class="wb-details__summary-text">
-                    <?php _e(esc_html($attribute_reveal_revealTitle)); ?>
+                    <?= esc_html($attribute_reveal_revealTitle); ?>
                 </a>
             </summary>
             <div class="wb-details__text py-2 [&_p:first-child]:mt-0!">
-                <?php _e(esc_html($content)); ?>
+                <?= wp_kses_post($content); ?>
             </div>
         </details>
     </div>
@@ -48,9 +48,6 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
 
     // Get all the html/content that has been captured in the buffer and output via return
     $output = ob_get_contents();
-
-    // Decode the output in case editors want to add in hyperlinks or other markup
-    $output = html_entity_decode($output);
 
     ob_end_clean();
 
