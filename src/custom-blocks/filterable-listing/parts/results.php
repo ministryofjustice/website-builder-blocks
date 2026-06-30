@@ -54,8 +54,8 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                 ?>
             <div class="<?php echo $list_item_classes; ?> mb-4">
                 <h2 class="">
-                        <a href="<?php echo get_permalink(); ?>">
-                            <?php echo get_the_title(); ?>
+                        <a href="<?php echo esc_url(get_permalink()); ?>">
+                            <?php echo esc_html(get_the_title()); ?>
                         </a>
                 </h2>
                 <?php 
@@ -127,10 +127,10 @@ function wb_blocks_filterable_listing_item_details($display_fields){
         <div class="flex gap-2">
             <?php if(!empty( $field_label )){ ?>
                 <div class="font-semibold">
-                    <?php echo __($field_label,'wb_blocks'); ?>:
+                    <?php echo esc_html(__($field_label,'wb_blocks')); ?>:
                 </div>
             <?php }?>
-            <?php echo $field_value; ?>
+            <?php echo wp_kses_post($field_value); ?>
         </div>
         <br/>
 <?php
@@ -170,9 +170,9 @@ function  wb_blocks_filterable_listing_item_terms($taxonomies) {
                 foreach($taxTermsArray as $tax){
                     foreach ($tax['terms'] as $term) { ?>
                     <li class="">
-                        <a href="<?php echo get_term_link($term); ?>"
-                            class="wp-element-button inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-blue-700 transition"">
-                            <?php echo $term->name; ?>
+                        <a href="<?php echo esc_url(get_term_link($term)); ?>"
+                            class="wp-element-button inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-blue-700 transition">
+                            <?php echo esc_html($term->name); ?>
                         </a>
                     </li>
                 <?php 

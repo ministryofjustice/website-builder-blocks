@@ -78,9 +78,6 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
     // Get all the html/content that has been captured in the buffer and output via return
     $output = ob_get_contents();
 
-    // Decode the output in case editors want to add in hyperlinks or other markup
-    $output = html_entity_decode($output);
-
     ob_end_clean();
 
     return $output;

@@ -76,7 +76,7 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
             <label class="block font-medium text-gray-700 mb-1" for="listing-search-field">
                 <?php _e('Search', 'wb_blocks'); ?>
             </label>
-            <input id="listing-search-field" name="listing_search" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo $listing_search_text; ?>" type="search">
+            <input id="listing-search-field" name="listing_search" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?= esc_attr($listing_search_text); ?>" type="search">
         </div>
         <br/>
     <?php
