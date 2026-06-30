@@ -27,15 +27,17 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 	?>
 
-	<button 
-		hidden
-		class="wb-print-button wp-element-button <?php echo esc_attr($attribute_print_button_className); ?> <?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?> wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
-		onclick="event.preventDefault(); window.print();"
-	>
-		<span class="wb-print-button__text">
-			<?php echo esc_html($attribute_print_button_text); ?>
-		</span>
-	</button>
+	<div class="<?php echo esc_attr($attribute_print_button_className); ?>">
+		<button
+			hidden
+			class="wb-print-button wp-element-button <?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?> wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
+			onclick="event.preventDefault(); window.print();"
+		>
+			<span class="wb-print-button__text">
+				<?php echo esc_html($attribute_print_button_text); ?>
+			</span>
+		</button>
+	</div>
 
 	<?php
 
