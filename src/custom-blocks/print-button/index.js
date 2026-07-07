@@ -11,6 +11,18 @@ import {
   PanelRow,
 } from "@wordpress/components";
 
+const iconRootDirectory = IconData.rootDirectory + "/action/print/";
+const iconPathSuffix = "/24px.svg";
+const iconStyles = [
+  "materialicons",
+  "materialiconsoutlined",
+  "materialiconsround",
+  "materialiconssharp",
+  "materialiconstwotone",
+];
+const mask =
+  "url('" + iconRootDirectory + iconStyles[0] + iconPathSuffix + "')";
+
 registerBlockType("wb-blocks/print-button", {
   title: __("Print button", "wb_block"),
   description: __("Button to print page"),
@@ -33,6 +45,10 @@ registerBlockType("wb-blocks/print-button", {
       type: "string",
       default: "right",
     },
+    buttonIconStyle: {
+      type: "string",
+      default: "materialicons"
+    },
   },
   edit: (props) => {
     const {
@@ -42,6 +58,7 @@ registerBlockType("wb-blocks/print-button", {
         buttonShowIcon,
         buttonClassName,
         buttonIconPosition,
+        buttonIconStyle,
       },
       className,
     } = props;
@@ -51,6 +68,12 @@ registerBlockType("wb-blocks/print-button", {
 
     const onChangeButtonText = (newText) => {
       setAttributes({ buttonText: newText });
+    };
+
+    const chooseIcon = (data) => {
+      setAttributes({
+        buttonIconStyle: attributes.buttonIconStyle === data ? "" : data, //toggle
+      });
     };
 
     return [
@@ -66,7 +89,6 @@ registerBlockType("wb-blocks/print-button", {
               }}
             />
           </PanelRow>
-
           {buttonShowIcon && (
             <PanelRow>
               <RadioControl
@@ -83,6 +105,34 @@ registerBlockType("wb-blocks/print-button", {
               ></RadioControl>
             </PanelRow>
           )}
+          ,
+          {/* {iconStyles.map((data) => (
+            <button
+              key={data}
+              onClick={() => chooseIcon(data)}
+              style={{
+                outline:
+                  attributes.buttonIconStyle === data
+                    ? "8px solid #0ff"
+                    : "1px solid #ccc",
+                filter:
+                  attributes.buttonIconStyle === data ? "invert(1)" : "none",
+                padding: "10px",
+                background: "white",
+                cursor: "pointer",
+                textAlign: "center",
+              }}
+            >
+              <img
+                src={iconRootDirectory + data + iconPathSuffix}
+                width={24}
+                height={24}
+                alt={data}
+                loading="lazy"
+                style={{ display: "inline" }}
+              />
+            </button>
+          ))} */}
         </PanelBody>
       </InspectorControls>,
 
@@ -92,6 +142,7 @@ registerBlockType("wb-blocks/print-button", {
         }
         
           wb-print-button--icon-${buttonIconPosition}`}
+        style={{ "--icon": mask }}
       >
         <span className="wb-print-button__text">
           <RichText
