@@ -19,7 +19,12 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	$attribute_print_button_text = $attributes['buttonText'] ?? 'Print this page';
 	$attribute_show_button_icon = $attributes['buttonShowIcon'] ?? false;
 	$attribute_button_icon_position = $attributes['buttonIconPosition'] ?? 'right';
-	$attribute_button_icon_style = $attributes['buttonIconStyle'] ?? 'materialiconstwotone';
+	$attribute_button_icon_style = $attributes['buttonIconStyle'] ?? 'materialicons';
+
+	$print_icon_url = plugins_url(
+	'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
+	dirname(__DIR__, 3) . '/website-builder-blocks.php'
+		);
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -28,14 +33,22 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 	?>
 
-	<div class="<?php echo esc_attr($attribute_print_button_className); ?> "
-		style = "--icon:url('<?php echo plugins_url("assets/icons", __FILE__ ); ?>action/print/<?php echo esc_attr($attribute_button_icon_style);?>/24px.svg')";
-		>
+	<div 
+		class="<?php echo esc_attr($attribute_print_button_className); ?> "
+			style = "--icon:url('<?php echo esc_url(
+				plugins_url(
+				'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
+				dirname(__DIR__, 3) . '/website-builder-blocks.php'
+				)
+			); ?>');"
+			
+	>
 
 		<button
 			hidden
-			class="wb-print-button wp-element-button <?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?> wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
-			onclick="event.preventDefault(); window.print();"
+			class="wb-print-button wp-element-button <?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?>
+				wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
+				onclick="event.preventDefault(); window.print();"
 		>
 			<span class="wb-print-button__text">
 				<?php echo esc_html($attribute_print_button_text); ?>

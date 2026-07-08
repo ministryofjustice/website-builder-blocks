@@ -12,6 +12,7 @@ import {
 } from "@wordpress/components";
 
 const iconRootDirectory = IconData.rootDirectory + "/action/print/";
+console.log(IconData);
 const iconPathSuffix = "/24px.svg";
 const iconStyles = [
   "materialicons",
@@ -20,8 +21,6 @@ const iconStyles = [
   "materialiconssharp",
   "materialiconstwotone",
 ];
-const mask =
-  "url('" + iconRootDirectory + iconStyles[0] + iconPathSuffix + "')";
 
 registerBlockType("wb-blocks/print-button", {
   title: __("Print button", "wb_block"),
@@ -47,7 +46,7 @@ registerBlockType("wb-blocks/print-button", {
     },
     buttonIconStyle: {
       type: "string",
-      default: "materialicons"
+      default: "materialicons",
     },
   },
   edit: (props) => {
@@ -70,9 +69,14 @@ registerBlockType("wb-blocks/print-button", {
       setAttributes({ buttonText: newText });
     };
 
-    const chooseIcon = (data) => {
+    const selectedIconUrl =
+      iconRootDirectory + buttonIconStyle + iconPathSuffix;
+    const mask = `url('${selectedIconUrl}')`;
+
+    const chooseIconStyle = (iconStyle) => {
       setAttributes({
-        buttonIconStyle: attributes.buttonIconStyle === data ? "" : data, //toggle
+        buttonIconStyle:
+          buttonIconStyle === iconStyle ? "materialicons" : iconStyle, //toggle
       });
     };
 
@@ -105,18 +109,17 @@ registerBlockType("wb-blocks/print-button", {
               ></RadioControl>
             </PanelRow>
           )}
-          ,
-          {/* {iconStyles.map((data) => (
+
+          {/* {iconStyles.map((iconStyle) => (
             <button
-              key={data}
-              onClick={() => chooseIcon(data)}
+              key={iconStyle}
+              onClick={() => chooseIconStyle(iconStyle)}
               style={{
                 outline:
-                  attributes.buttonIconStyle === data
+                  buttonIconStyle === iconStyle
                     ? "8px solid #0ff"
                     : "1px solid #ccc",
-                filter:
-                  attributes.buttonIconStyle === data ? "invert(1)" : "none",
+                filter: buttonIconStyle === iconStyle ? "invert(1)" : "none",
                 padding: "10px",
                 background: "white",
                 cursor: "pointer",
@@ -124,20 +127,63 @@ registerBlockType("wb-blocks/print-button", {
               }}
             >
               <img
-                src={iconRootDirectory + data + iconPathSuffix}
+                src={iconRootDirectory + iconStyle + iconPathSuffix}
                 width={24}
                 height={24}
-                alt={data}
+                alt={iconStyle}
                 loading="lazy"
                 style={{ display: "inline" }}
               />
-            </button>
-          ))} */}
+            </button> */}
+
+          {buttonShowIcon && (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gap: "10px",
+                marginTop: "16px",
+              }}
+            >
+              {iconStyles.map((iconStyle) => (
+                <button
+                  key={iconStyle}
+                  type="button"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    chooseIconStyle(iconStyle);
+                  }}
+                  style={{
+                    outline:
+                      buttonIconStyle === iconStyle
+                        ? "8px solid #0ff"
+                        : "1px solid #ccc",
+                    filter:
+                      buttonIconStyle === iconStyle ? "invert(1)" : "none",
+                    padding: "10px",
+                    background: "white",
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
+                >
+                  <img
+                    src={`${iconRootDirectory}${iconStyle}${iconPathSuffix}`}
+                    width={24}
+                    height={24}
+                    alt={iconStyle}
+                    loading="lazy"
+                    style={{ display: "inline" }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </PanelBody>
       </InspectorControls>,
 
       <button
-        className={`wb-print-button ${buttonClassName} wp-element-button ${
+        className={`wb-print-button ${className} wp-element-button ${
           buttonShowIcon ? "wb-print-button--has-icon" : ""
         }
         
