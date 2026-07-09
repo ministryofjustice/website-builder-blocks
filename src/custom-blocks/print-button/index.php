@@ -21,7 +21,8 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	$attribute_show_button_icon = $attributes['buttonShowIcon'] ?? false;
 	$attribute_button_icon_position = $attributes['buttonIconPosition'] ?? 'right';
 	$attribute_button_icon_style = $attributes['buttonIconStyle'] ?? 'materialicons';
-	$attribute_button_icon_size = $attributes['buttonIconSize'] ?? 24;
+	$attribute_button_icon_size = $attributes['buttonIconSize'] ?? 1;
+	$frontend_icon_size = $attribute_show_button_text ? 1 : $attribute_button_icon_size;
 
 	$print_icon_url = plugins_url(
 	'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
@@ -37,7 +38,7 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 	<div 
 		class="<?php echo esc_attr($attribute_print_button_className); ?>"
-		style="--icon:url('<?php echo esc_url($print_icon_url); ?>'); --icon-size:<?php echo esc_attr($attribute_button_icon_size); ?>;"
+		style="--icon:url('<?php echo esc_url($print_icon_url); ?>'); --icon-size:<?php echo esc_attr($frontend_icon_size); ?>;"
 			
 	>
 

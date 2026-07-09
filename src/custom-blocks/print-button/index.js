@@ -55,7 +55,7 @@ registerBlockType("wb-blocks/print-button", {
     },
     buttonIconSize: {
       type: "number",
-      default: 6,
+      default: 1,
     },
   },
   edit: (props) => {
@@ -105,7 +105,10 @@ registerBlockType("wb-blocks/print-button", {
               help="Remove button text"
               checked={buttonShowText}
               onChange={(value) => {
-                setAttributes({ buttonShowText: value });
+                setAttributes({
+                  buttonShowText: value,
+                  buttonIconSize: value ? 1 : buttonIconSize,
+                });
               }}
             />
           </PanelRow>
@@ -115,8 +118,8 @@ registerBlockType("wb-blocks/print-button", {
               label={__("Show icon", "wb_block")}
               help="Remove icon"
               checked={buttonShowIcon}
-              onChange={(x) => {
-                setAttributes({ buttonShowIcon: x });
+              onChange={(value) => {
+                setAttributes({ buttonShowIcon: value });
               }}
             />
           </PanelRow>
@@ -238,7 +241,7 @@ registerBlockType("wb-blocks/print-button", {
         } wb-print-button--icon-${buttonIconPosition}`}
         style={{
           "--icon": mask,
-          "--icon-size": `${buttonIconSize}`,
+          "--icon-size": buttonShowText ? 1 : buttonIconSize,
         }}
       >
         {buttonShowText && (
