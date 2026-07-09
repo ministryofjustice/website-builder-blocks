@@ -23,6 +23,10 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	$attribute_button_icon_style = $attributes['buttonIconStyle'] ?? 'materialicons';
 	$attribute_button_icon_size = $attributes['buttonIconSize'] ?? 1;
 	$frontend_icon_size = $attribute_show_button_text ? 1 : $attribute_button_icon_size;
+	$button_aria_label = trim( $attribute_print_button_text ) !== ''
+	? trim( $attribute_print_button_text )
+	: 'Print this page';
+	
 
 	$print_icon_url = plugins_url(
 	'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
@@ -48,6 +52,9 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 			<?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?>
 			<?php echo $attribute_show_button_text ? 'wb-print-button--has-text' : 'wb-print-button--icon-only'; ?>
 			wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
+			<?php if ( ! $attribute_show_button_text ) : ?>
+				aria-label="<?php echo esc_attr($button_aria_label); ?>"
+			<?php endif; ?>
 			onclick="event.preventDefault(); window.print();"
 		>
 			<?php if ($attribute_show_button_text) : ?>
