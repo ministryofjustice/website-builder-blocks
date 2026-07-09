@@ -116,7 +116,11 @@ registerBlockType("wb-blocks/print-button", {
           <PanelRow>
             <ToggleControl
               label={__("Show icon", "wb_block")}
-              help="Remove icon"
+              help={
+                !buttonShowText
+                  ? __("Edit icon size in the Styles panel", "wb_block")
+                  : __("Remove icon", "wb_block")
+              }
               checked={buttonShowIcon}
               onChange={(value) => {
                 setAttributes({ buttonShowIcon: value });
