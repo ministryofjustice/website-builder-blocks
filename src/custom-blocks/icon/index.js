@@ -201,7 +201,7 @@ registerBlockType('wb-blocks/icon', {
 					/>
 					<TextControl
 						label="Alt text"
-						help="Describe the icon to aid users of assistive technology"
+						help="Alt text only needed here if you are using an icon in lieu of a word, e.g. if you are using the telephone icon instead of writing “Telephoone number”, write “Telephone number” here."
 						value={alt}
 						onChange={ onChangeAlt }
 						style={{ marginBottom: '8px' }}

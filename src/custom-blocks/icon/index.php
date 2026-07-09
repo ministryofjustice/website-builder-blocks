@@ -28,8 +28,12 @@ function wb_blocks_render_callback_icon_block($attributes) {
 	// materialiconssharp
 	// materialiconstwotone
 
-	// Ensure that a alt text is set
-	if (empty($attribute_icon_alt_text)) $attribute_icon_alt_text = str_replace("_"," ",ucfirst($attribute_icon_svg)). " icon";
+	// If no alt text, aria-hidden=true
+	if (empty($attribute_icon_alt_text)) {
+		$aria_attributes = 'aria-hidden="true"';
+	} else {
+		$aria_attributes = "aria-label='$attribute_icon_alt_text'";
+	}
 
 	$level = plugin_dir_url(dirname( dirname( dirname( __FILE__ ) )));
 
@@ -60,7 +64,7 @@ function wb_blocks_render_callback_icon_block($attributes) {
 	ob_start();
 
 	?>
-	<div role="image" aria-label="<?php echo $attribute_icon_alt_text;?>" class="wb-icon wb-icon--<?php echo $attribute_icon_style;?>" style="--icon-path:url(<?php echo $name;?>);--icon-size:<?php echo $attribute_icon_size;?>;background-color:<?php echo $attribute_icon_colour;?>;">
+	<div role="image" <?php echo $aria_attributes;?> class="wb-icon wb-icon--<?php echo $attribute_icon_style;?>" style="--icon-path:url(<?php echo $name;?>);--icon-size:<?php echo $attribute_icon_size;?>;background-color:<?php echo $attribute_icon_colour;?>;">
 	</div>
 
 	<?php
