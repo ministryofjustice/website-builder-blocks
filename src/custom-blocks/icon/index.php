@@ -19,7 +19,7 @@ function wb_blocks_render_callback_icon_block($attributes) {
 	$attribute_icon_style = esc_attr($attributes['iconStyle'] ?? '');
 	$attribute_icon_colour = esc_attr($attributes['colour'] ?? 'currentColor');
 	$attribute_icon_size = esc_attr($attributes['size'] ?? "1");
-	$attribute_icon_alt_text = esc_attr($attributes['alt'] ?? "");
+	$attribute_icon_alt_text = trim(esc_attr($attributes['alt'] ?? ""));
 
 	// Styles can be:
 	// materialicons
