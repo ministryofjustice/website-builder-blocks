@@ -9,6 +9,7 @@ import {
   RadioControl,
   PanelBody,
   PanelRow,
+  RangeControl,
 } from "@wordpress/components";
 
 const iconRootDirectory = IconData.rootDirectory + "/action/print/";
@@ -48,6 +49,10 @@ registerBlockType("wb-blocks/print-button", {
       type: "string",
       default: "materialicons",
     },
+    buttonIconSize: {
+      type: "number",
+      default: 6,
+    },
   },
   edit: (props) => {
     const {
@@ -58,12 +63,13 @@ registerBlockType("wb-blocks/print-button", {
         buttonClassName,
         buttonIconPosition,
         buttonIconStyle,
+        buttonIconSize,
       },
       className,
     } = props;
 
     // Set className attribute for PHP frontend to use
-    setAttributes({ buttonClassName: className });
+    // setAttributes({ buttonClassName: className });
 
     const onChangeButtonText = (newText) => {
       setAttributes({ buttonText: newText });
@@ -80,8 +86,12 @@ registerBlockType("wb-blocks/print-button", {
       });
     };
 
+    const onChangeSize = (value) => {
+      setAttributes({ buttonIconSize: value });
+    };
+
     return [
-      <InspectorControls>
+      <InspectorControls group="settings">
         <PanelBody title={__("Print icon", "wb_block")} initialOpen={true}>
           <PanelRow>
             <ToggleControl
@@ -182,19 +192,33 @@ registerBlockType("wb-blocks/print-button", {
         </PanelBody>
       </InspectorControls>,
 
+      <InspectorControls group="styles">
+        <RangeControl
+          label="Size"
+          value={buttonIconSize}
+          onChange={onChangeSize}
+          min={1}
+          max={12}
+          step={0.5}
+        />
+      </InspectorControls>,
+
       <button
         className={`wb-print-button ${className} wp-element-button ${
           buttonShowIcon ? "wb-print-button--has-icon" : ""
         }
         
           wb-print-button--icon-${buttonIconPosition}`}
-        style={{ "--icon": mask }}
+        style={{
+          "--icon": mask,
+          "--icon-size": `${buttonIconSize}`,
+        }}
       >
         <span className="wb-print-button__text">
           <RichText
             tagName="span"
             value={buttonText}
-            placeholder={__("Add butoon text")}
+            placeholder={__("Add button text")}
             keepPlaceholderOnFocus
             onChange={onChangeButtonText}
           />
