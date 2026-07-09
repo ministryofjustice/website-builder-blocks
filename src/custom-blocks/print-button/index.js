@@ -141,32 +141,6 @@ registerBlockType("wb-blocks/print-button", {
             </PanelRow>
           )}
 
-          {/* {iconStyles.map((iconStyle) => (
-            <button
-              key={iconStyle}
-              onClick={() => chooseIconStyle(iconStyle)}
-              style={{
-                outline:
-                  buttonIconStyle === iconStyle
-                    ? "8px solid #0ff"
-                    : "1px solid #ccc",
-                filter: buttonIconStyle === iconStyle ? "invert(1)" : "none",
-                padding: "10px",
-                background: "white",
-                cursor: "pointer",
-                textAlign: "center",
-              }}
-            >
-              <img
-                src={iconRootDirectory + iconStyle + iconPathSuffix}
-                width={24}
-                height={24}
-                alt={iconStyle}
-                loading="lazy"
-                style={{ display: "inline" }}
-              />
-            </button> */}
-
           {buttonShowIcon && (
             <div
               style={{
