@@ -49,6 +49,10 @@ registerBlockType("wb-blocks/print-button", {
       type: "string",
       default: "materialicons",
     },
+    buttonShowText: {
+      type: "boolean",
+      default: true,
+    },
     buttonIconSize: {
       type: "number",
       default: 6,
@@ -59,6 +63,7 @@ registerBlockType("wb-blocks/print-button", {
       setAttributes,
       attributes: {
         buttonText,
+        buttonShowText,
         buttonShowIcon,
         buttonClassName,
         buttonIconPosition,
@@ -77,6 +82,7 @@ registerBlockType("wb-blocks/print-button", {
 
     const selectedIconUrl =
       iconRootDirectory + buttonIconStyle + iconPathSuffix;
+
     const mask = `url('${selectedIconUrl}')`;
 
     const chooseIconStyle = (iconStyle) => {
@@ -95,14 +101,26 @@ registerBlockType("wb-blocks/print-button", {
         <PanelBody title={__("Print icon", "wb_block")} initialOpen={true}>
           <PanelRow>
             <ToggleControl
+              label={__("Show text", "wb_block")}
+              help="Remove button text"
+              checked={buttonShowText}
+              onChange={(value) => {
+                setAttributes({ buttonShowText: value });
+              }}
+            />
+          </PanelRow>
+
+          <PanelRow>
+            <ToggleControl
               label={__("Show icon", "wb_block")}
-              help=""
+              help="Remove icon"
               checked={buttonShowIcon}
               onChange={(x) => {
                 setAttributes({ buttonShowIcon: x });
               }}
             />
           </PanelRow>
+
           {buttonShowIcon && (
             <PanelRow>
               <RadioControl
@@ -193,36 +211,47 @@ registerBlockType("wb-blocks/print-button", {
       </InspectorControls>,
 
       <InspectorControls group="styles">
-        <RangeControl
-          label="Size"
-          value={buttonIconSize}
-          onChange={onChangeSize}
-          min={1}
-          max={12}
-          step={0.5}
-        />
+        <PanelBody
+          title={__("Print button styles", "wb_block")}
+          initialOpen={true}
+        >
+          {!buttonShowText && buttonShowIcon && (
+            <RangeControl
+              label="Size"
+              value={buttonIconSize}
+              onChange={onChangeSize}
+              min={1}
+              max={12}
+              step={0.5}
+            />
+          )}
+        </PanelBody>
       </InspectorControls>,
 
       <button
-        className={`wb-print-button ${className} wp-element-button ${
+        className={`wb-print-button ${className || ""} wp-element-button ${
           buttonShowIcon ? "wb-print-button--has-icon" : ""
-        }
-        
-          wb-print-button--icon-${buttonIconPosition}`}
+        } ${
+          buttonShowText
+            ? "wb-print-button--has-text"
+            : "wb-print-button--icon-only"
+        } wb-print-button--icon-${buttonIconPosition}`}
         style={{
           "--icon": mask,
           "--icon-size": `${buttonIconSize}`,
         }}
       >
-        <span className="wb-print-button__text">
-          <RichText
-            tagName="span"
-            value={buttonText}
-            placeholder={__("Add button text")}
-            keepPlaceholderOnFocus
-            onChange={onChangeButtonText}
-          />
-        </span>
+        {buttonShowText && (
+          <span className="wb-print-button__text">
+            <RichText
+              tagName="span"
+              value={buttonText}
+              placeholder={__("Add button text")}
+              keepPlaceholderOnFocus
+              onChange={onChangeButtonText}
+            />
+          </span>
+        )}
       </button>,
     ];
   },
