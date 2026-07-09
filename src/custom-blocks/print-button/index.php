@@ -17,9 +17,11 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	// Parse attributes found in index.js
 	$attribute_print_button_className = $attributes['buttonClassName'] ?? '';
 	$attribute_print_button_text = $attributes['buttonText'] ?? 'Print this page';
+	$attribute_show_button_text = $attributes['buttonShowText'] ?? true;
 	$attribute_show_button_icon = $attributes['buttonShowIcon'] ?? false;
 	$attribute_button_icon_position = $attributes['buttonIconPosition'] ?? 'right';
 	$attribute_button_icon_style = $attributes['buttonIconStyle'] ?? 'materialicons';
+	$attribute_button_icon_size = $attributes['buttonIconSize'] ?? 24;
 
 	$print_icon_url = plugins_url(
 	'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
@@ -34,25 +36,24 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	?>
 
 	<div 
-		class="<?php echo esc_attr($attribute_print_button_className); ?> "
-			style = "--icon:url('<?php echo esc_url(
-				plugins_url(
-				'/assets/icons/action/print/' . $attribute_button_icon_style . '/24px.svg',
-				dirname(__DIR__, 3) . '/website-builder-blocks.php'
-				)
-			); ?>');"
+		class="<?php echo esc_attr($attribute_print_button_className); ?>"
+		style="--icon:url('<?php echo esc_url($print_icon_url); ?>'); --icon-size:<?php echo esc_attr($attribute_button_icon_size); ?>;"
 			
 	>
 
 		<button
 			hidden
-			class="wb-print-button wp-element-button <?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?>
-				wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
-				onclick="event.preventDefault(); window.print();"
+			class="wb-print-button wp-element-button
+			<?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?>
+			<?php echo $attribute_show_button_text ? 'wb-print-button--has-text' : 'wb-print-button--icon-only'; ?>
+			wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>"
+			onclick="event.preventDefault(); window.print();"
 		>
-			<span class="wb-print-button__text">
-				<?php echo esc_html($attribute_print_button_text); ?>
-			</span>
+			<?php if ($attribute_show_button_text) : ?>
+				<span class="wb-print-button__text">
+					<?php echo esc_html($attribute_print_button_text); ?>
+				</span>
+			<?php endif; ?>
 		</button>
 	</div>
 
