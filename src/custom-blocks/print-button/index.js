@@ -76,8 +76,15 @@ registerBlockType("wb-blocks/print-button", {
     // Set className attribute for PHP frontend to use
     // setAttributes({ buttonClassName: className });
 
+    // const onChangeButtonText = (newText) => {
+    //   setAttributes({ buttonText: newText });
+    // };
     const onChangeButtonText = (newText) => {
-      setAttributes({ buttonText: newText });
+      const trimmedText = newText.trim();
+
+      setAttributes({
+        buttonText: trimmedText === "" ? "" : newText,
+      });
     };
 
     const selectedIconUrl =
@@ -96,6 +103,12 @@ registerBlockType("wb-blocks/print-button", {
       setAttributes({ buttonIconSize: value });
     };
 
+    const onBlurButtonText = () => {
+      if (buttonShowText && buttonText.trim() === "") {
+        setAttributes({ buttonText: "Print this page" });
+      }
+    };
+
     return [
       <InspectorControls group="settings">
         <PanelBody title={__("Print icon", "wb_block")} initialOpen={true}>
@@ -108,6 +121,10 @@ registerBlockType("wb-blocks/print-button", {
                 setAttributes({
                   buttonShowText: value,
                   buttonIconSize: value ? 1 : buttonIconSize,
+                  buttonText:
+                    value && buttonText.trim() === ""
+                      ? "Print this page"
+                      : buttonText,
                 });
               }}
             />
@@ -230,6 +247,7 @@ registerBlockType("wb-blocks/print-button", {
               placeholder={__("Add button text")}
               keepPlaceholderOnFocus
               onChange={onChangeButtonText}
+              onBlur={onBlurButtonText}
             />
           </span>
         )}
