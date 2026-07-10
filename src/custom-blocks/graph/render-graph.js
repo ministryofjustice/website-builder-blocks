@@ -18,9 +18,12 @@ import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import { toNumber, parseDate, resolveXType } from './data-prep';
 
+// anfunc colours are from the Analytical Function
+// https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-colours-in-charts/
 // MoJ / GOV.UK flavoured qualitative palette. Kept in JS (rather than pulling
 // in d3-scale-chromatic) so series colours match the design system.
 const PALETTES = {
+	anfunc: [ '#12436D', '#28A197', '#801650', '#F46A25', '#3D3D3D', '#A285D1' ],
 	govuk: [ '#1d70b8', '#d4351c', '#00703c', '#f47738', '#4c2c92', '#b58840', '#28a197', '#912b88' ],
 	blues: [ '#1d70b8', '#5694ca', '#003078', '#0b5cab', '#85994b', '#003a69', '#2e7da6', '#6f9fc8' ],
 	mono: [ '#0b0c0c', '#505a5f', '#6f777b', '#b1b4b6', '#383f43', '#626a6e', '#8e9395', '#cbcecf' ],
