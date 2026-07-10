@@ -1,0 +1,216 @@
+/*********************************************************************************************
+
+Block: Graph
+
+Styles shared by the editor preview and the public-facing chart. The chart SVG
+scales to its container (viewBox + width:100%) so it stays readable on mobile;
+the data table can scroll horizontally when it is wider than the viewport.
+
+**********************************************************************************************/
+
+:root {
+	// Default chart chrome colours, overridable by the theme.
+	// Text follows the theme (currentColor) so it stays readable in both light
+	// and dark modes; lines/backgrounds use neutral translucent grey that works
+	// on any background.
+	--wb-graph-axis: rgba(128, 128, 128, 0.8);
+	--wb-graph-text: currentColor;
+	--wb-graph-grid: rgba(128, 128, 128, 0.1);
+	--wb-graph-table-border: rgba(128, 128, 128, 0.35);
+	--wb-graph-table-stripe: rgba(128, 128, 128, 0.12);
+}
+
+.wb-graph {
+	margin: 1.5rem 0;
+
+	&__title {
+		font-weight: 700;
+		margin: 0 0 0.5rem;
+	}
+
+	&__canvas {
+		width: 100%;
+		min-height: 1px;
+	}
+
+	&__svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+		font-family: inherit;
+	}
+
+	&__empty {
+		color: var(--wb-graph-axis, rgba(128, 128, 128, 0.8));
+		font-style: italic;
+		margin: 0;
+	}
+
+	// Axes and gridlines.
+	// Fallback values are required so styling still applies inside the block
+	// editor, where the :root custom properties are not in scope.
+	&__axis {
+		font-size: 0.75rem;
+
+		text {
+			fill: var(--wb-graph-axis-text, var(--wb-graph-text, currentColor));
+		}
+
+		.domain,
+		line {
+			stroke: var(--wb-graph-axis, rgba(128, 128, 128, 0.8));
+		}
+	}
+
+	&__grid {
+		.domain {
+			display: none;
+		}
+
+		line {
+			stroke: var(--wb-graph-grid, rgba(128, 128, 128, 0.1));
+			stroke-width: 1;
+			shape-rendering: crispEdges;
+		}
+	}
+
+	&__axis-title {
+		fill: var(--wb-graph-axis-text, var(--wb-graph-text, currentColor));
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	&__legend-label {
+		fill: var(--wb-graph-text, currentColor);
+		font-size: 0.8rem;
+	}
+
+	&__bar,
+	&__slice,
+	&__point {
+		transition: opacity 0.15s ease-in-out;
+	}
+
+	&__bar:hover,
+	&__slice:hover,
+	&__point:hover {
+		opacity: 0.8;
+	}
+
+	// Toolbar beneath the chart: download button on its own right-aligned line,
+	// with the data table below it spanning the full width.
+	&__actions {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	// Optional download button — its own line, right-aligned, above the table.
+	&__download {
+		display: flex;
+		width: fit-content;
+		align-self: flex-end;
+		order: -1;
+		flex: 0 0 auto;
+		align-items: center;
+		gap: 0.4rem;
+		min-height: 44px; // AA 2.5.8 target size
+		padding: 0.4rem 0.9rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: inherit;
+		background: transparent;
+		// Use currentColor so the border keeps >= 3:1 non-text contrast (AA 1.4.11)
+		// against whatever background the theme uses.
+		border: 1px solid currentColor;
+		border-radius: 3px;
+		cursor: pointer;
+
+		&::before {
+			content: '';
+			width: 0.85em;
+			height: 0.85em;
+			background-color: currentColor;
+			mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 16l-6-6h4V4h4v6h4l-6 6zm-7 2h14v2H5v-2z'/%3E%3C/svg%3E");
+			mask-repeat: no-repeat;
+			mask-size: contain;
+		}
+
+		&:hover {
+			background: rgba(128, 128, 128, 0.12);
+		}
+
+		// Visible keyboard focus indicator (AA 2.4.7).
+		&:focus-visible {
+			outline: 3px solid #ffdd00;
+			outline-offset: 0;
+			box-shadow: 0 2px 0 currentColor;
+		}
+	}
+
+	// Data table / fallback — spans the full width below the download button.
+	&__table-wrap {
+		width: 100%;
+	}
+
+	&__table-toggle {
+		cursor: pointer;
+		font-size: 0.9rem;
+		padding: 0.25rem 0;
+
+		// Visible keyboard focus indicator (AA 2.4.7).
+		&:focus-visible {
+			outline: 3px solid #ffdd00;
+			outline-offset: 2px;
+		}
+	}
+
+	&__table-scroll {
+		overflow-x: auto;
+		margin-top: 0.5rem;
+	}
+
+	&__table-note {
+		font-size: 0.85rem;
+		font-style: italic;
+		opacity: 0.7;
+		margin: 0.5rem 0 0;
+	}
+
+	&__table {
+		border-collapse: collapse;
+		width: 100%;
+		font-size: 0.9rem;
+
+		caption {
+			text-align: left;
+			font-weight: 700;
+			padding-bottom: 0.5rem;
+		}
+
+		th,
+		td {
+			border: 1px solid var(--wb-graph-table-border, rgba(128, 128, 128, 0.35));
+			padding: 0.4rem 0.6rem;
+			text-align: left;
+			white-space: nowrap;
+		}
+
+		thead th {
+			background: var(--wb-graph-table-stripe, rgba(128, 128, 128, 0.12));
+		}
+
+		tbody tr:nth-child(even) {
+			background: var(--wb-graph-table-stripe, rgba(128, 128, 128, 0.12));
+		}
+	}
+
+	// When JS has drawn the chart, collapse the table by default — it is still
+	// reachable via the disclosure summary.
+	&--rendered &__table-wrap:not([open]) {
+		// nothing extra needed; <details> handles the collapse.
+	}
+}

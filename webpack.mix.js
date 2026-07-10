@@ -44,6 +44,10 @@ mix_.webpackConfig({
 const frontendFiles = glob.sync('src/**/frontend.js');
 mix_.js(frontendFiles, 'frontend.min.js');
 
+// Graph block bundles D3, so it is built separately and only enqueued on pages
+// that use the block (see website-builder-blocks.php) to keep it off every page.
+mix_.js('src/custom-blocks/graph/view.js', 'graph.min.js');
+
 
 
 if (mix_.inProduction()) {
