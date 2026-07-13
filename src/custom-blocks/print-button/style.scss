@@ -7,8 +7,6 @@ Block: Print Button (Frontend styles)
 
 .wb-print-button{
 	&--has-icon{
-		 
-	
 		&.wb-print-button--icon-left:before {
 			background-color: currentColor;
 			min-width: calc(1.2em * var(--icon-size));
@@ -24,8 +22,6 @@ Block: Print Button (Frontend styles)
 			mask-repeat:no-repeat;
 			content:"";
 			margin-right: 6px;
-			
-			
 		}
 
 		&.wb-print-button--icon-right:after {
@@ -46,6 +42,26 @@ Block: Print Button (Frontend styles)
 		}
 
 	}
-	
-}
+	&--icon-only {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 
+		&:before {
+		background-color: currentColor;
+
+		min-width: calc(1.2em * var(--icon-size));
+		min-height: calc(1.2em * var(--icon-size));
+		width: calc(1.2em * var(--icon-size));
+		height: calc(1.2em * var(--icon-size));
+
+		display: inline-block;
+		content: "";
+
+		mask-image: var(--icon);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		mask-position: center;
+		}
+	}
+}

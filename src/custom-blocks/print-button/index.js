@@ -239,13 +239,10 @@ registerBlockType("wb-blocks/print-button", {
       </InspectorControls>,
 
       <button
-        className={`wb-print-button ${className || ""} wp-element-button ${
-          buttonShowIcon ? "wb-print-button--has-icon" : ""
-        } ${
-          buttonShowText
-            ? "wb-print-button--has-text"
-            : "wb-print-button--icon-only"
-        } wb-print-button--icon-${buttonIconPosition}`}
+        className={`wb-print-button ${className || ""} wp-element-button
+          ${buttonShowIcon ? "wb-print-button--has-icon" : ""}
+          ${buttonShowText ? "wb-print-button--has-text" : "wb-print-button--icon-only"}
+          ${buttonShowText ? `wb-print-button--icon-${buttonIconPosition}` : ""}`}
         style={{
           "--icon": mask,
           "--icon-size": buttonShowText ? 1 : buttonIconSize,
