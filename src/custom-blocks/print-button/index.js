@@ -10,6 +10,7 @@ import {
   PanelBody,
   PanelRow,
   RangeControl,
+  TextControl,
 } from "@wordpress/components";
 
 const iconRootDirectory = IconData.rootDirectory + "/action/print/";
@@ -145,7 +146,7 @@ registerBlockType("wb-blocks/print-button", {
             />
           </PanelRow>
 
-          {buttonShowIcon && (
+          {buttonShowIcon && buttonShowText && (
             <PanelRow>
               <RadioControl
                 label={__("Icon position", "wb_block")}
@@ -159,6 +160,17 @@ registerBlockType("wb-blocks/print-button", {
                   setAttributes({ buttonIconPosition: value });
                 }}
               ></RadioControl>
+            </PanelRow>
+          )}
+
+          {!buttonShowText && (
+            <PanelRow>
+              <TextControl
+                label={__("Alt text", "wb_block")}
+                help="Add button description"
+                value={buttonText}
+                onChange={onChangeButtonText}
+              ></TextControl>
             </PanelRow>
           )}
 
