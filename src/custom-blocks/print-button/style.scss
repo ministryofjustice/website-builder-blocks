@@ -65,3 +65,9 @@ Block: Print Button (Frontend styles)
 		}
 	}
 }
+
+@media print {
+	.wb-print-button {
+		display: none !important;
+	}
+}
