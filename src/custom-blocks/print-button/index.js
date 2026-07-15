@@ -14,7 +14,6 @@ import {
 } from "@wordpress/components";
 
 const iconRootDirectory = IconData.rootDirectory + "/action/print/";
-console.log(IconData);
 const iconPathSuffix = "/24px.svg";
 const iconStyles = [
   "materialicons",
@@ -26,14 +25,14 @@ const iconStyles = [
 
 registerBlockType("wb-blocks/print-button", {
   title: __("Print button", "wb_block"),
-  description: __("Button to print page"),
+  description: __("Button to print page", "wb_block"),
   category: "wb-blocks",
   icon: "printer",
-  keywords: [__("print"), __("click")],
+  keywords: [__("print", "wb_block"), __("click", "wb_block")],
   attributes: {
     buttonText: {
       type: "string",
-      default: "Print this page",
+      default: __("Print this page", "wb_block"),
     },
     buttonShowIcon: {
       type: "boolean",
@@ -75,11 +74,8 @@ registerBlockType("wb-blocks/print-button", {
     } = props;
 
     // Set className attribute for PHP frontend to use
-    // setAttributes({ buttonClassName: className });
+    setAttributes({ buttonClassName: className });
 
-    // const onChangeButtonText = (newText) => {
-    //   setAttributes({ buttonText: newText });
-    // };
     const onChangeButtonText = (newText) => {
       const trimmedText = newText.trim();
 
@@ -106,7 +102,7 @@ registerBlockType("wb-blocks/print-button", {
 
     const onBlurButtonText = () => {
       if (buttonShowText && buttonText.trim() === "") {
-        setAttributes({ buttonText: "Print this page" });
+        setAttributes({ buttonText: __("Print this page", "wb_block") });
       }
     };
 
@@ -116,7 +112,7 @@ registerBlockType("wb-blocks/print-button", {
           <PanelRow>
             <ToggleControl
               label={__("Show text", "wb_block")}
-              help="Remove button text"
+              help={__("Remove button text", "wb_block")}
               checked={buttonShowText}
               onChange={(value) => {
                 setAttributes({
@@ -124,7 +120,7 @@ registerBlockType("wb-blocks/print-button", {
                   buttonIconSize: value ? 1 : buttonIconSize,
                   buttonText:
                     value && buttonText.trim() === ""
-                      ? "Print this page"
+                      ? __("Print this page", "wb_block")
                       : buttonText,
                 });
               }}
@@ -150,7 +146,10 @@ registerBlockType("wb-blocks/print-button", {
             <PanelRow>
               <RadioControl
                 label={__("Icon position", "wb_block")}
-                help="Position icon left or right of the button text"
+                help={__(
+                  "Position icon left or right of the button text",
+                  "wb_block",
+                )}
                 selected={buttonIconPosition}
                 options={[
                   { label: __("Left", "wb_block"), value: "left" },
@@ -167,7 +166,11 @@ registerBlockType("wb-blocks/print-button", {
             <PanelRow>
               <TextControl
                 label={__("Alt text", "wb_block")}
-                help="Add button description"
+                help={__(
+                  "Add button action description for screen readers",
+                  "wb_block",
+                  "wb_block",
+                )}
                 value={buttonText}
                 onChange={onChangeButtonText}
               ></TextControl>
@@ -225,15 +228,22 @@ registerBlockType("wb-blocks/print-button", {
           title={__("Print button styles", "wb_block")}
           initialOpen={true}
         >
-          {!buttonShowText && buttonShowIcon && (
+          {!buttonShowText && buttonShowIcon ? (
             <RangeControl
-              label="Size"
+              label={__("Adjust icon size", "wb_block")}
               value={buttonIconSize}
               onChange={onChangeSize}
               min={1}
               max={12}
               step={0.5}
             />
+          ) : (
+            <p>
+              {__(
+                "Style options are currently available only when displaying an icon-only print button.",
+                "wb_block",
+              )}
+            </p>
           )}
         </PanelBody>
       </InspectorControls>,
@@ -241,8 +251,14 @@ registerBlockType("wb-blocks/print-button", {
       <button
         className={`wb-print-button ${className || ""} wp-element-button
           ${buttonShowIcon ? "wb-print-button--has-icon" : ""}
-          ${buttonShowText ? "wb-print-button--has-text" : "wb-print-button--icon-only"}
-          ${buttonShowText ? `wb-print-button--icon-${buttonIconPosition}` : ""}`}
+          ${
+            buttonShowText
+              ? "wb-print-button--has-text"
+              : "wb-print-button--icon-only"
+          }
+          ${
+            buttonShowText ? `wb-print-button--icon-${buttonIconPosition}` : ""
+          }`}
         style={{
           "--icon": mask,
           "--icon-size": buttonShowText ? 1 : buttonIconSize,
@@ -253,7 +269,7 @@ registerBlockType("wb-blocks/print-button", {
             <RichText
               tagName="span"
               value={buttonText}
-              placeholder={__("Add button text")}
+              placeholder={__("Add button text", "wb_block")}
               keepPlaceholderOnFocus
               onChange={onChangeButtonText}
               onBlur={onBlurButtonText}

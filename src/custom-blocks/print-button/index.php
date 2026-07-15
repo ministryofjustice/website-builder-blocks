@@ -40,33 +40,6 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 	?>
 
-	<!-- <div 
-		class="<?php echo esc_attr($attribute_print_button_className); ?>"
-		style="--icon:url('<?php echo esc_url($print_icon_url); ?>'); --icon-size:<?php echo esc_attr($frontend_icon_size); ?>;"
-			
-	>
-
-		<button
-			hidden
-			class="wb-print-button wp-element-button
-			<?php echo $attribute_show_button_icon ? 'wb-print-button--has-icon' : ''; ?>
-			<?php echo $attribute_show_button_text ? 'wb-print-button--has-text' : 'wb-print-button--icon-only'; ?>
-			<?php if ( $attribute_show_button_text ) : ?>
-				wb-print-button--icon-<?php echo esc_attr($attribute_button_icon_position); ?>
-			<?php endif; ?>"
-
-			<?php if ( ! $attribute_show_button_text ) : ?>
-				aria-label="<?php echo esc_attr($button_aria_label); ?>"
-			<?php endif; ?>
-			onclick="event.preventDefault(); window.print();"
-		>
-			<?php if ($attribute_show_button_text) : ?>
-				<span class="wb-print-button__text">
-					<?php echo esc_html($attribute_print_button_text); ?>
-				</span>
-			<?php endif; ?>
-		</button>
-	</div> -->
 	<div class="<?php echo esc_attr($attribute_print_button_className); ?>">
 
 		<button
