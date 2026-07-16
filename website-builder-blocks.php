@@ -312,11 +312,6 @@ foreach($dir_listing as $file) {
 }
 
 /**
- * Load PHP extended core blocks
- */
-//include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/file/index.php';
-
-/**
  * Queues up the gutenberg editor style
  */
 function wb_blocks_gutenberg_editor_styles()
@@ -485,4 +480,5 @@ include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/query-pagination-n
 include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/query-total/index.php';
 include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/file/index.php';
 include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/search/index.php';
+include plugin_dir_path(__FILE__) . 'src/extended-core-blocks/separator/index.php';
 
