@@ -5,6 +5,20 @@ Block: Print Button (Frontend styles)
 
 **********************************************************************************************/
 
+@media (width < 782px) {
+	main .wp-block-wb-blocks-print-button {
+		width: 100%;
+
+		.wb-print-button {
+			width: 100%;
+		}
+
+		.wb-print-button--icon-only {
+			--icon-size: 1 !important;
+		}
+	}
+}
+
 .wb-print-button{
 	&--has-icon{
 		&.wb-print-button--icon-left:before {
