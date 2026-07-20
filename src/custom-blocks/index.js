@@ -8,3 +8,4 @@ import "./icon";
 import "./hmg-svg";
 import "./reveal";
 import "./table-of-contents";
+import "./print-button";

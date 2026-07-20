@@ -6,7 +6,7 @@
  * Plugin name: Website Builder Blocks
  * Plugin URI:  https://github.com/ministryofjustice/website-builder-blocks
  * Description: Introduces new Wordpress blocks
- * Version:     2.0.4
+ * Version:     2.1.0
  * Author:      Ministry of Justice
  * Text domain: wb_blocks
  * Domain Path: /languages
@@ -223,6 +223,28 @@ function wb_blocks_register_blocks()
 				],
 				'revealTitle' => [
 					'type' => 'string'
+				]
+			]
+		]
+	);
+
+	register_block_type(
+		'wb-blocks/print-button',
+		[
+			'editor_script' => 'wb-blocks-editor-script',
+			'render_callback' => 'wb_blocks_render_callback_print_button_block',
+			'attributes' => [
+				'buttonClassName' => [
+					'type' => 'string'
+				],
+				'buttonShowIcon' => [
+					'type' => 'boolean'
+				],
+				'buttonText' => [
+					'type' => 'string'
+				],
+				'buttonIconPosition' => [
+					'type' => 'string',
 				]
 			]
 		]

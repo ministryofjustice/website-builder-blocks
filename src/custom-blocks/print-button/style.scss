@@ -1,0 +1,87 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Block: Print Button (Frontend styles)
+
+**********************************************************************************************/
+
+@media (width < 782px) {
+	main .wp-block-wb-blocks-print-button {
+		width: 100%;
+
+		.wb-print-button {
+			width: 100%;
+		}
+
+		.wb-print-button--icon-only {
+			--icon-size: 1 !important;
+		}
+	}
+}
+
+.wb-print-button{
+	&--has-icon{
+		&.wb-print-button--icon-left:before {
+			background-color: currentColor;
+			min-width: calc(1.2em * var(--icon-size));
+			min-height: calc(1.2em * var(--icon-size));
+			width: calc(1.2em * var(--icon-size));
+			height: calc(1.2em * var(--icon-size));
+			position: relative;
+			top: 5px;
+			display: inline-block;
+			mask-size: contain;
+			mask-image: var(--icon);
+			mask-position:center;
+			mask-repeat:no-repeat;
+			content:"";
+			margin-right: 6px;
+		}
+
+		&.wb-print-button--icon-right:after {
+			background-color: currentColor;
+			min-width: calc(1.2em * var(--icon-size));
+			min-height: calc(1.2em * var(--icon-size));
+			width: calc(1.2em * var(--icon-size));
+			height: calc(1.2em * var(--icon-size));
+			position: relative;
+			top: 5px;
+			display: inline-block;
+			content: "";
+			mask-image: var(--icon);
+			mask-size: contain;
+			mask-position: center;
+			mask-repeat: no-repeat;
+			margin-left: 6px;
+		}
+
+	}
+	&--icon-only {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		&:before {
+		background-color: currentColor;
+
+		min-width: calc(1.2em * var(--icon-size));
+		min-height: calc(1.2em * var(--icon-size));
+		width: calc(1.2em * var(--icon-size));
+		height: calc(1.2em * var(--icon-size));
+
+		display: inline-block;
+		content: "";
+
+		mask-image: var(--icon);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		mask-position: center;
+		}
+	}
+}
+
+@media print {
+	.wb-print-button {
+		display: none !important;
+	}
+}
