@@ -251,6 +251,20 @@ function wb_blocks_register_blocks()
 	);
 
 	register_block_type(
+        'wb-blocks/allowed-third-party-embed',
+        [
+            'editor_script'   => 'wb-blocks-editor-script',
+            'render_callback' => 'wb_blocks_render_callback_allowed_third_party_embed',
+            'attributes'      => [
+                'embedCode' => [
+                    'type'    => 'string',
+                    'default' => '',
+                ],
+            ],
+        ]
+    );
+
+	register_block_type(
 		'wb-blocks/filterable-listing',
 		[
 			'editor_script' => 'wb-blocks-editor-script',
