@@ -46,6 +46,7 @@
     "watch:tailwind:backend": "npx tailwindcss -i ./assets/scss/tailwind-gutenberg.css -o ./build/main-gutenberg.min.css --watch",
     "watch:block:js": "wp-scripts start",
     "watch:block:styles": "webpack --watch --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "npm-run-all --parallel watch:block:js watch:block:styles watch:tailwind watch:tailwind:backend"
+    "watch": "npm-run-all --parallel watch:block:js watch:block:styles watch:tailwind watch:tailwind:backend",
+    "test:unit": "wp-scripts test-unit-js"
   }
 }
