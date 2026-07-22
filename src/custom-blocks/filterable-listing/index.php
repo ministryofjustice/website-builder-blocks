@@ -31,6 +31,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         $listing_settings = [];
         $listing_settings['postType'] = $postType;
         $listing_settings['searchTextFilter'] = $attributes['listingSearchTextFilter'] ?? true;
+        $listing_settings['displayImage'] = $attributes['listingDisplayImage'] ?? true;
         $listing_settings['filters'] = $attributes['listingFilters'] ?? [];
         $listing_settings['displayFields'] = $attributes['listingDisplayFields'] ?? [];
         $listing_settings['displayTerms'] = $attributes['listingDisplayTerms'] ?? [];

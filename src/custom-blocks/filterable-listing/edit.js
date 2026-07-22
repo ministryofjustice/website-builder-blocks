@@ -28,6 +28,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const {
 		listingPostType,
 		listingSearchTextFilter,
+		listingDisplayImage,
 		listingFilters,
 		listingDisplayFields,
 		listingDisplayTerms,
@@ -255,6 +256,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
 
+	const setListingDisplayImage = setDisplayImage => {
+		setAttributes({ listingDisplayImage: setDisplayImage });
+	};
+
 	const setListingFilters = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingFilters: values });
@@ -315,6 +320,16 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 							label="Search Text Filter"
 							checked={ listingSearchTextFilter }
 							onChange={ setListingSearchTextFilter }
+						/>
+					)
+				}
+
+				{
+					(listingPostType.length > 0) && (	
+						<ToggleControl
+							label="Display featured image"
+							checked={ listingDisplayImage }
+							onChange={ setListingDisplayImage }
 						/>
 					)
 				}

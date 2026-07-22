@@ -52,7 +52,20 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                 }
                 
                 ?>
-            <div class="<?php echo $list_item_classes; ?> mb-4">
+            <div class="<?php echo $list_item_classes; ?> mb-4 flow-root">
+                <?php
+                    if ($listing_settings['displayImage']) {
+                        // if there is a post thumbnail, and the listing page has it set to display, we echo it out here
+                        $thumb_id = get_post_thumbnail_id(get_the_ID());
+                        $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+                        if (!empty($thumb_url)) {
+                            $thumb_class = "float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px] bg-no-repeat bg-center ml-[5px] mb-[2px] border";
+                            $alt_text = esc_attr__(get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ),"hale");
+    
+                            echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url')\"></div>";
+                        }
+                    }
+                ?>
                 <h2 class="">
                         <a href="<?php echo esc_url(get_permalink()); ?>">
                             <?php echo esc_html(get_the_title()); ?>
