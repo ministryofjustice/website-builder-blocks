@@ -8,7 +8,7 @@ import { registerBlockType } from "@wordpress/blocks";
 import Edit from "./edit";
 
 registerBlockType("wb-blocks/allowed-third-party-embed", {
-  title: __("allowed third party embed", "wb_block", "wb_block"),
+  title: __("allowed third party embed", "wb_block"),
   description: __("Add code from an allowed third party provider", "wb_block"),
   category: "wb-blocks",
   icon: "embed-generic",
