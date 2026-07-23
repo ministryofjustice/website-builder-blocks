@@ -57,18 +57,14 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
     ?>
 
     <div class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
-    data-block-id="<?php echo esc_attr($block_id); ?>"
-    data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(',', $tax_filters) : ''); ?>"
+        data-block-id="<?php echo esc_attr($block_id); ?>"
+        data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(',', $tax_filters) : ''); ?>"
     >
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
         <?php
-
             wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
-
         ?>
-
-        <div class="col-span-2 p-4"> 
+        <div class="col-span-2"> 
             <?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters);  ?> 
         </div>
         </div>

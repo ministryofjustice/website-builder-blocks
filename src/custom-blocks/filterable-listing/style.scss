@@ -5,3 +5,11 @@ Block: Filterable Listing (Frontend styles)
 
 **********************************************************************************************/
 
+.wb-listing,
+.wb-listing-thumbnail {
+	border-color: #b1b4b6;
+}
+
+.wb-listing-thumbnail {
+	border-radius: var(--site-radius);
+}

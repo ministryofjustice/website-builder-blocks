@@ -1,12 +1,18 @@
 /**
-These colours are fallback colours, they are hopefully set in the theme.
-If they are changed, the different blocks (list, icon at the moment) will need
-to be updated too so the new colours are selctable.
+These variables are fallback variables for colours etc, they are hopefully set in the theme.
+If they are changed, the different blocks will need to be updated too, so the new colours 
+are selectable in the colour picker.
+
+Blocks which use these variables:
+- list (RGB colours)
+- icon (RGB colours)
+- filterable listing (radius)
+
 */
 
 :root,
 .editor-styles-wrapper {
-	// Setting defaults for the colour variables
+	// Setting defaults for the colour (etc) variables
 	// They should be set in the theme but if not, they take the values here.
 	--colour-red: #b10e1e;
 	--colour-green: #00703c;
@@ -19,4 +25,7 @@ to be updated too so the new colours are selctable.
 		--colour-green: currentColor;
 		--colour-blue: currentColor;
 	}
+
+	// Site radius
+	--site-radius: 0.25rem;
 }

@@ -3,10 +3,10 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
+	NumberControl,
 	BaseControl,
 	Button,
 } from '@wordpress/components';
-import { NumberControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import {
 	InnerBlocks,
@@ -333,7 +333,6 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 						/>
 					)
 				}
-
 				{
 					(filterOptionList.length > 0) && (
 						<BaseControl label="Listing Filters">

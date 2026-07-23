@@ -19,12 +19,12 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
     ?>
 
     <!-- Lefthand column with filters and search -->
-    <div class="col-span-1 p-4">
+    <div class="col-span-1">
     <form action="<?= esc_url(get_permalink()); ?>" method="GET">
     <?php
    
     wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
-
+    
     foreach($listing_settings['filters'] as $filter){
 
         if (taxonomy_exists($filter)) {
@@ -34,19 +34,14 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 
             wb_blocks_filterable_listing_block_date_filter("published_date", "", $active_filters);
 
-        }
-        else {
+        } else {
          
             $field_object = get_field_object($filter);
 
             if(!empty($field_object)){
-
                 if($field_object['type'] == 'date_picker'){
-
                     wb_blocks_filterable_listing_block_date_filter($field_object['name'], $field_object['label'], $active_filters);
-            
                 }
-                
             }
         }
     }
