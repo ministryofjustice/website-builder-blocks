@@ -6,81 +6,115 @@ import {
   BlockControls,
 } from "@wordpress/block-editor";
 import {
+  Button,
+  Placeholder,
   SandBox,
   TextareaControl,
   ToolbarButton,
   ToolbarGroup,
 } from "@wordpress/components";
 
-import { useState } from "@wordpress/element";
+const MODES = {
+  PLACEHOLDER: "placeholder",
+  EDIT: "edit",
+  PREVIEW: "preview",
+};
+
+import { useState, useEffect } from "@wordpress/element";
 
 export default function Edit(props) {
   const {
     setAttributes,
     attributes: { embedCode },
     className,
+    isSelected,
   } = props;
 
-  const [isPreview, setIsPreview] = useState(false);
+  const [mode, setMode] = useState(
+    embedCode ? MODES.PREVIEW : MODES.PLACEHOLDER,
+  );
 
-  const onChangeEmbedCode = (newEmbedCode) => {
-    setAttributes({
-      embedCode: newEmbedCode,
-    });
+  //Mode should be Edit when the block is selected
+  //When block is no longer in focus chnage the state of MODES to edit
+  useEffect(() => {
+    if (!isSelected && embedCode) {
+      setMode(MODES.EDIT);
+    }
+  }, [isSelected, embedCode]);
 
-    //reset to edit mode when code chnages so we don't display
-    //an outdated prewiew
-    setIsPreview(false);
-  };
+  //Block initially added to the page
+  if (mode === MODES.PLACEHOLDER) {
+    return (
+      <Placeholder
+        label={__("Third-party Embed", "wb_blocks")}
+        instructions={__(
+          "Paste embed code from an approved provider.",
+          "wb_blocks",
+        )}
+      >
+        <Button variant="primary" onClick={() => setMode(MODES.EDIT)}>
+          {__("Edit embed", "wb_blocks")}
+        </Button>
+      </Placeholder>
+    );
+  }
 
+  //Placeholder displayed in the page when not in focus
+  //Additional info will be inluded here suh as third
+  //party provider after validatonhas been implemented   
+  if (!isSelected && embedCode) {
+    return (
+      <Placeholder label={__("Third-party Embed", "wb_blocks")}>
+        <p>{__("Embed configured", "wb_blocks")}</p>
+      </Placeholder>
+    );
+  }
+
+  //Display status when in focus and editing/previewing
   return (
     <>
       <BlockControls>
         <ToolbarGroup>
-          <ToolbarButton
-            isPressed={!isPreview}
-            onClick={() => {
-              setIsPreview(false);
-            }}
-          >
-            {__("Edit", "wb_block")}
-          </ToolbarButton>
+          {mode === MODES.EDIT && (
+            <ToolbarButton
+              onClick={() => setMode(MODES.PREVIEW)}
+              disabled={!embedCode.trim()}
+            >
+              {__("Preview", "wb_blocks")}
+            </ToolbarButton>
+          )}
 
-          <ToolbarButton
-            isPressed={isPreview}
-            disabled={!embedCode.trim()}
-            onClick={() => {
-              setIsPreview(true);
-            }}
-          >
-            {__("Preview", "wb_block")}
-          </ToolbarButton>
+          {mode === MODES.PREVIEW && (
+            <ToolbarButton
+              onClick={() => {
+                setMode(MODES.EDIT);
+              }}
+            >
+              {__("Edit", "wb_block")}
+            </ToolbarButton>
+          )}
         </ToolbarGroup>
       </BlockControls>
-      
+
       <div className={`wb-allowed-third-party-embed ${className || ""}`}>
-        {isPreview ? (
-          <div className="wb-allowed-third-party-embed__preview">
-            <SandBox
-              key={embedCode}
-              html={embedCode}
-              title={__("Third-party embed preview", "wb_block")}
-              type="embed"
-            />
-          </div>
-        ) : (
-          <div className="wb-allowed-third-party-embed__editor">
-            <TextareaControl
-              label={__("Third-party embed code", "wb_block")}
-              help={__(
-                "For now, paste some simple HTML to test the block.",
-                "wb_block",
-              )}
-              value={embedCode}
-              onChange={onChangeEmbedCode}
-              rows={10}
-            />
-          </div>
+        {mode === MODES.EDIT && (
+          <TextareaControl
+            label={__("Third-party embed code", "wb_blocks")}
+            value={embedCode}
+            onChange={(value) =>
+              setAttributes({
+                embedCode: value,
+              })
+            }
+          />
+        )}
+
+        {mode === MODES.PREVIEW && (
+          <SandBox
+            html={embedCode}
+            title={__("Third-party embed preview", "wb_blocks")}
+            type="embed"
+          />
         )}
       </div>
     </>
