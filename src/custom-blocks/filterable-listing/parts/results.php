@@ -65,7 +65,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                         }
                     }
                 ?>
-                <h2 class="">
+                <h2 class="font-bold text-2xl">
                         <a href="<?php echo esc_url(get_permalink()); ?>">
                             <?php echo esc_html(get_the_title()); ?>
                         </a>
@@ -85,7 +85,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         wb_blocks_filterable_listing_pagination($listing_query);
     }
     else { ?>
-        <h2 class="">
+        <h2 class="font-bold text-2xl">
             <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'hale'); ?>
         </h2>
         <p class="">
@@ -136,9 +136,9 @@ function wb_blocks_filterable_listing_item_details($display_fields){
      
         if(!empty( $field_value )){ 
     ?>
-        <div class="flex gap-2">
+        <div class="flex gap-2 mt-4">
             <?php if(!empty( $field_label )){ ?>
-                <div class="font-semibold">
+                <div class="font-bold">
                     <?php echo esc_html(__($field_label,'wb_blocks')); ?>:
                 </div>
             <?php }?>
