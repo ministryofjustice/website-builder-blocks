@@ -45,11 +45,11 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                 $list_item_classes = "wb-listing ";
 
                 if($listing_settings['styles']['stylesResultsShadedBackground'] == true){
-                    $list_item_classes .= "bg-gray-100 p-4";
+                    $list_item_classes .= "wb-shaded p-4";
                 } else {
                     $list_item_classes .= "border-b pb-2";
                 }
-                
+
                 ?>
             <div class="<?php echo $list_item_classes; ?> mb-4 flow-root">
                 <?php
@@ -83,8 +83,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 
     <?php
         wb_blocks_filterable_listing_pagination($listing_query);
-    }
-    else { ?>
+    } else { ?>
         <h2 class="font-bold text-2xl">
             <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'hale'); ?>
         </h2>
@@ -93,9 +92,6 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         </p>
         <?php
     }
-    ?>
-  
-    <?php
 }
 
   
