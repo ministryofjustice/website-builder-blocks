@@ -56,15 +56,17 @@ export const validateEmbedCode = (embedCode) => {
 			isValid: false,
 			message:
 				"The embed code must start with an opening script tag and end with a closing script tag.",
+      provider: null,
 		};
 	}
 
     if(!provider){
         return {
-            isValid: false,
-            message:
-                "The embed provider is not approved.",
-            };
+          isValid: false,
+          message:
+              "The embed provider is not approved.",
+          provider:provider,
+          };
 
     }
     
@@ -74,7 +76,8 @@ export const validateEmbedCode = (embedCode) => {
         validateAllowedDomains(embedCode, provider)
     ) return {
         isValid: true,
-                message: "Embed code has been validated",
+        message: "Embed code has been validated",
+        provider:provider,
     }
 
 }

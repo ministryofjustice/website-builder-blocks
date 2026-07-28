@@ -260,6 +260,18 @@ function wb_blocks_register_blocks()
                     'type'    => 'string',
                     'default' => '',
                 ],
+				 'provider' => [
+                'type'    => 'string',
+                'default' => '',
+				],
+				'validationStatus' => [
+					'type'    => 'string',
+					'default' => 'not-validated',
+				],
+				'validationMessage' => [
+					'type'    => 'string',
+					'default' => '',
+				],
             ],
         ]
     );

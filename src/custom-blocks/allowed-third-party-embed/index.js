@@ -22,6 +22,18 @@ registerBlockType("wb-blocks/allowed-third-party-embed", {
       type: "string",
       default: "",
     },
+    provider: {
+        type: "string",
+        default: "",
+      },
+    validationStatus: {
+      type: "string",
+      default: "not-validated",
+    },
+    validationMessage: {
+      type: "string",
+      default: "",
+    },
   },
   edit: Edit,
   save: () => null,

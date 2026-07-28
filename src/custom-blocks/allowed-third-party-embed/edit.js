@@ -1,18 +1,18 @@
 import { __ } from "@wordpress/i18n";
-import { registerBlockType } from "@wordpress/blocks";
-import {
-  RichText,
-  InspectorControls,
-  BlockControls,
-} from "@wordpress/block-editor";
+import { BlockControls } from "@wordpress/block-editor";
 import {
   Button,
+  Notice,
   Placeholder,
   SandBox,
   TextareaControl,
   ToolbarButton,
   ToolbarGroup,
+  Tooltip
 } from "@wordpress/components";
+import { useState } from "@wordpress/element";
+
+import { validateEmbedCode } from "./provider-validation";
 
 const MODES = {
   PLACEHOLDER: "placeholder",
@@ -20,30 +20,108 @@ const MODES = {
   PREVIEW: "preview",
 };
 
-import { useState, useEffect } from "@wordpress/element";
+const VALIDATION_STATUSES = {
+  NOT_VALIDATED: "not-validated",
+  VALID: "valid",
+  INVALID: "invalid",
+};
 
-export default function Edit(props) {
-  const {
-    setAttributes,
-    attributes: { embedCode },
-    className,
-    isSelected,
-  } = props;
-
+export default function Edit({
+  setAttributes,
+  attributes: {
+    embedCode,
+    provider,
+    validationStatus,
+    validationMessage,
+  },
+  className,
+  isSelected,
+}) {
   const [mode, setMode] = useState(
-    embedCode ? MODES.PREVIEW : MODES.PLACEHOLDER,
+    embedCode ? MODES.EDIT : MODES.PLACEHOLDER,
   );
 
-  //Mode should be Edit when the block is selected
-  //When block is no longer in focus chnage the state of MODES to edit
-  useEffect(() => {
-    if (!isSelected && embedCode) {
-      setMode(MODES.EDIT);
-    }
-  }, [isSelected, embedCode]);
+  // This is temporary feedback shown while editing.
+  const [validationNotice, setValidationNotice] = useState(null);
 
-  //Block initially added to the page
-  if (mode === MODES.PLACEHOLDER) {
+  const handleEditEmbed = () => {
+    setValidationNotice(null);
+    setMode(MODES.EDIT);
+  };
+
+  const handleEmbedCodeChange = (value) => {
+    /*
+     * Any change to the embed code invalidates its previous validation.
+     * Clear the saved provider and validation information.
+     */
+    setAttributes({
+      embedCode: value,
+      provider: "",
+      validationStatus: VALIDATION_STATUSES.NOT_VALIDATED,
+      validationMessage: "",
+    });
+
+    setValidationNotice(null);
+    setMode(MODES.EDIT);
+  };
+
+  const handlePreview = () => {
+    const result = validateEmbedCode(embedCode);
+
+    if (!result.isValid) {
+      setAttributes({
+        provider: result.provider?.name ?? "",
+        validationStatus: VALIDATION_STATUSES.INVALID,
+        validationMessage: result.message,
+      });
+
+      setValidationNotice({
+        status: "error",
+        message: result.message,
+      });
+
+      setMode(MODES.EDIT);
+      return;
+    }
+
+    setAttributes({
+      provider: result.provider.name,
+      validationStatus: VALIDATION_STATUSES.VALID,
+      validationMessage: result.message,
+    });
+
+    setValidationNotice(null);
+    setMode(MODES.PREVIEW);
+  };
+
+  const getStatusLabel = () => {
+    switch (validationStatus) {
+      case VALIDATION_STATUSES.VALID:
+        return __("Validated", "wb_blocks");
+
+      case VALIDATION_STATUSES.INVALID:
+        return __("Validation failed", "wb_blocks");
+
+      default:
+        return __("Not validated", "wb_blocks");
+    }
+  };
+
+  const getStatusMessage = () => {
+    if (validationMessage) {
+      return validationMessage;
+    }
+
+    return __(
+      "This embed has not yet been validated.",
+      "wb_blocks",
+    );
+  };
+
+  /*
+   * Initial placeholder shown before embed code has been entered.
+   */
+  if (mode === MODES.PLACEHOLDER && !embedCode) {
     return (
       <Placeholder
         label={__("Third-party Embed", "wb_blocks")}
@@ -52,67 +130,123 @@ export default function Edit(props) {
           "wb_blocks",
         )}
       >
-        <Button variant="primary" onClick={() => setMode(MODES.EDIT)}>
-          {__("Edit embed", "wb_blocks")}
+        <Button
+          variant="primary"
+          onClick={handleEditEmbed}
+        >
+          {__("Add embed code", "wb_blocks")}
         </Button>
       </Placeholder>
     );
   }
 
-  //Placeholder displayed in the page when not in focus
-  //Additional info will be inluded here suh as third
-  //party provider after validatonhas been implemented   
+  /*
+   * Summary shown when the configured block is not selected.
+   * The values are now saved in block attributes, so that they persist after reloading.
+   */
   if (!isSelected && embedCode) {
     return (
-      <Placeholder label={__("Third-party Embed", "wb_blocks")}>
-        <p>{__("Embed configured", "wb_blocks")}</p>
+      <Placeholder
+        label={__("Third-party Embed", "wb_blocks")}
+      >
+        <div>
+          <p>
+            <strong>
+              {__("Provider:", "wb_blocks")}
+            </strong>{" "}
+            {provider ||
+              __("Unknown", "wb_blocks")}
+          </p>
+
+          <p>
+            <strong>
+              {__("Status:", "wb_blocks")}
+            </strong>{" "}
+            {getStatusLabel()}
+          </p>
+
+          <p>{getStatusMessage()}</p>
+        </div>
       </Placeholder>
     );
   }
 
-  //Display status when in focus and editing/previewing
   return (
     <>
       <BlockControls>
         <ToolbarGroup>
           {mode === MODES.EDIT && (
-            <ToolbarButton
-              onClick={() => setMode(MODES.PREVIEW)}
-              disabled={!embedCode.trim()}
-            >
-              {__("Preview", "wb_blocks")}
-            </ToolbarButton>
+            <Tooltip
+              text={__(
+                "The embed code will be validated before the preview is displayed.",
+                "wb_blocks",
+              )}
+              >
+              <ToolbarButton
+                onClick={handlePreview}
+                disabled={!embedCode.trim()}
+                label={__("Preview embed", "wb_blocks")}
+              >
+                {__("Preview", "wb_blocks")}
+              </ToolbarButton>
+            </Tooltip>
           )}
 
           {mode === MODES.PREVIEW && (
             <ToolbarButton
-              onClick={() => {
-                setMode(MODES.EDIT);
-              }}
+              onClick={handleEditEmbed}
+              label={__(
+                "Edit embed code",
+                "wb_blocks",
+              )}
             >
-              {__("Edit", "wb_block")}
+              {__("Edit", "wb_blocks")}
             </ToolbarButton>
           )}
         </ToolbarGroup>
       </BlockControls>
 
-      <div className={`wb-allowed-third-party-embed ${className || ""}`}>
+      <div
+        className={`wb-allowed-third-party-embed ${
+          className || ""
+        }`}
+      >
         {mode === MODES.EDIT && (
-          <TextareaControl
-            label={__("Third-party embed code", "wb_blocks")}
-            value={embedCode}
-            onChange={(value) =>
-              setAttributes({
-                embedCode: value,
-              })
-            }
-          />
+          <>
+            <TextareaControl
+              label={__(
+                "Third-party embed code",
+                "wb_blocks",
+              )}
+              value={embedCode}
+              onChange={handleEmbedCodeChange}
+            />
+
+            {validationNotice && (
+              <Notice
+                status={validationNotice.status}
+                isDismissible={false}
+              >
+                <strong>
+                  {__(
+                    "Preview unavailable.",
+                    "wb_blocks",
+                  )}
+                </strong>{" "}
+                {validationNotice.message}
+              </Notice>
+            )}
+          </>
         )}
 
         {mode === MODES.PREVIEW && (
           <SandBox
+            key={embedCode}
             html={embedCode}
-            title={__("Third-party embed preview", "wb_blocks")}
+            title={__(
+              "Third-party embed preview",
+              "wb_blocks",
+            )}
             type="embed"
           />
         )}
