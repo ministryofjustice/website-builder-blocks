@@ -65,7 +65,7 @@ export const validateEmbedCode = (embedCode) => {
           isValid: false,
           message:
               "The embed provider is not approved.",
-          provider:provider,
+          provider:null,
           };
 
     }

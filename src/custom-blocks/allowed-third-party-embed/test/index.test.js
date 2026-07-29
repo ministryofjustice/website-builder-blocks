@@ -41,6 +41,18 @@ describe("Confirms allowed third-party embed block registration", () => {
             type: "string",
             default: "",
           },
+          provider: {
+          type: "string",
+          default: "",
+          },
+          validationStatus: {
+            type: "string",
+            default: "not-validated",
+          },
+          validationMessage: {
+            type: "string",
+            default: "",
+          },
         },
         edit: expect.any(Function),
         save: expect.any(Function),

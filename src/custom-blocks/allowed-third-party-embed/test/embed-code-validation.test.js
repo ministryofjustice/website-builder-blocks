@@ -19,10 +19,13 @@ describe("validateEmbedCode", () => {
     it("returns a valid status and message for allowed embed codeembed code", () =>{
         const result = validateEmbedCode(validEmbedCode);
 
-        expect(result).toEqual({
+        expect(result).toMatchObject({
             isValid: true,
             message: "Embed code has been validated",
         });
+
+        expect(result.provider).not.toBeNull();
+        expect(result.provider.name).toBe("SmartSurvey");
     });
     
     it("returns an invalid result when the script tags are incomplete", () => {
@@ -35,6 +38,7 @@ describe("validateEmbedCode", () => {
             isValid: false,
             message:
                 "The embed code must start with an opening script tag and end with a closing script tag.",
+            provider: null,
         });
     });
 
@@ -46,8 +50,8 @@ describe("validateEmbedCode", () => {
 
         expect(validateEmbedCode(invalidEmbed)).toEqual({
             isValid: false,
-            message:
-                "The embed provider is not approved.",
+            message:"The embed provider is not approved.",
+            provider: null,
             });
         });
 

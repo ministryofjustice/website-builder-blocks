@@ -1,5 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import { BlockControls } from "@wordpress/block-editor";
+import { BlockControls, InspectorControls } from "@wordpress/block-editor";
 import {
   Button,
   Notice,
@@ -8,7 +8,8 @@ import {
   TextareaControl,
   ToolbarButton,
   ToolbarGroup,
-  Tooltip
+  Tooltip,
+  PanelBody
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
 
@@ -41,6 +42,7 @@ export default function Edit({
     embedCode ? MODES.EDIT : MODES.PLACEHOLDER,
   );
 
+
   // This is temporary feedback shown while editing.
   const [validationNotice, setValidationNotice] = useState(null);
 
@@ -48,6 +50,11 @@ export default function Edit({
     setValidationNotice(null);
     setMode(MODES.EDIT);
   };
+
+  // Temporary debugging
+  if (mode === MODES.PREVIEW) {
+    console.count("Preview render");
+  }
 
   const handleEmbedCodeChange = (value) => {
     /*
@@ -66,6 +73,7 @@ export default function Edit({
   };
 
   const handlePreview = () => {
+    console.count("handlePreview");
     const result = validateEmbedCode(embedCode);
 
     if (!result.isValid) {
@@ -142,7 +150,8 @@ export default function Edit({
 
   /*
    * Summary shown when the configured block is not selected.
-   * The values are now saved in block attributes, so that they persist after reloading.
+   * The values are now saved in block attributes,
+   *  so that they persist after reloading.
    */
   if (!isSelected && embedCode) {
     return (
@@ -170,9 +179,55 @@ export default function Edit({
       </Placeholder>
     );
   }
-
+  
   return (
     <>
+
+      <InspectorControls>
+        <PanelBody
+            title={__(
+                "Third-party embed",
+                "wb_blocks",
+            )}
+            initialOpen={true}
+        >
+            <p>
+                {__(
+                    "Use this block to add approved third-party embed code to the page. The code is checked before a preview is displayed.",
+                    "wb_blocks",
+                )}
+            </p>
+
+            <p>
+                {__(
+                    "Only embed code from approved providers can be used. This helps prevent unsupported or unsafe code from being added to the site.",
+                    "wb_blocks",
+                )}
+            </p>
+
+            <Notice
+                status="info"
+                isDismissible={false}
+            >
+                <strong>
+                    {__(
+                        "Need to use a new provider?",
+                        "wb_blocks",
+                    )}
+                </strong>
+
+                <p>
+                    {__(
+                        "Message the Website Builder team in the Slack channel #ask-website-builder and include the embed code and provider details for review.",
+                        "wb_blocks",
+                    )}
+                </p>
+            </Notice>
+        </PanelBody>
+    </InspectorControls>
+
+
+
       <BlockControls>
         <ToolbarGroup>
           {mode === MODES.EDIT && (
@@ -240,8 +295,8 @@ export default function Edit({
         )}
 
         {mode === MODES.PREVIEW && (
+          
           <SandBox
-            key={embedCode}
             html={embedCode}
             title={__(
               "Third-party embed preview",
