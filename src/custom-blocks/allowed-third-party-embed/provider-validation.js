@@ -55,11 +55,17 @@ export const validateEmbedCode = (embedCode) => {
   const provider = findProvider(embedCode);
   const domains = extractDomains(embedCode);
 
-  // console.log({
-  //   scriptTagsValid: validateScriptTags(embedCode),
-  //   extractedDomains: extractDomains(embedCode),
-  //   provider: findProvider(embedCode),
-  // });
+  /**
+   * Keep for debugging domain name matching
+   * ***
+    console.log({
+    scriptTagsValid: validateScriptTags(embedCode),
+    extractedDomains: extractDomains(embedCode),
+    provider: findProvider(embedCode),
+    });
+   * 
+   */
+  
 
   if (!scriptTagsValid) {
     return {

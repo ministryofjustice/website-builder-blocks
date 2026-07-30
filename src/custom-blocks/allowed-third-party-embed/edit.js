@@ -9,7 +9,7 @@ import {
   ToolbarButton,
   ToolbarGroup,
   Tooltip,
-  PanelBody
+  PanelBody,
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
 
@@ -29,19 +29,11 @@ const VALIDATION_STATUSES = {
 
 export default function Edit({
   setAttributes,
-  attributes: {
-    embedCode,
-    provider,
-    validationStatus,
-    validationMessage,
-  },
+  attributes: { embedCode, provider, validationStatus, validationMessage },
   className,
   isSelected,
 }) {
-  const [mode, setMode] = useState(
-    embedCode ? MODES.EDIT : MODES.PLACEHOLDER,
-  );
-
+  const [mode, setMode] = useState(embedCode ? MODES.EDIT : MODES.PLACEHOLDER);
 
   // This is temporary feedback shown while editing.
   const [validationNotice, setValidationNotice] = useState(null);
@@ -120,10 +112,7 @@ export default function Edit({
       return validationMessage;
     }
 
-    return __(
-      "This embed has not yet been validated.",
-      "wb_blocks",
-    );
+    return __("This embed has not yet been validated.", "wb_blocks");
   };
 
   /*
@@ -138,10 +127,7 @@ export default function Edit({
           "wb_blocks",
         )}
       >
-        <Button
-          variant="primary"
-          onClick={handleEditEmbed}
-        >
+        <Button variant="primary" onClick={handleEditEmbed}>
           {__("Add embed code", "wb_blocks")}
         </Button>
       </Placeholder>
@@ -155,23 +141,15 @@ export default function Edit({
    */
   if (!isSelected && embedCode) {
     return (
-      <Placeholder
-        label={__("Third-party Embed", "wb_blocks")}
-      >
+      <Placeholder label={__("Third-party Embed", "wb_blocks")}>
         <div>
           <p>
-            <strong>
-              {__("Provider:", "wb_blocks")}
-            </strong>{" "}
-            {provider ||
-              __("Unknown", "wb_blocks")}
+            <strong>{__("Provider:", "wb_blocks")}</strong>{" "}
+            {provider || __("Unknown", "wb_blocks")}
           </p>
 
           <p>
-            <strong>
-              {__("Status:", "wb_blocks")}
-            </strong>{" "}
-            {getStatusLabel()}
+            <strong>{__("Status:", "wb_blocks")}</strong> {getStatusLabel()}
           </p>
 
           <p>{getStatusMessage()}</p>
@@ -179,54 +157,54 @@ export default function Edit({
       </Placeholder>
     );
   }
-  
+
   return (
     <>
-
       <InspectorControls>
         <PanelBody
-            title={__(
-                "Third-party embed",
-                "wb_blocks",
-            )}
-            initialOpen={true}
+          title={__("Third-party embed", "wb_blocks")}
+          initialOpen={true}
         >
-            <p>
-                {__(
-                    "Use this block to add approved third-party embed code to the page. The code is checked before a preview is displayed.",
-                    "wb_blocks",
-                )}
-            </p>
+          <p>
+            {__(
+              "Use this block to add approved third-party embed code to the page. The code is checked before a preview is displayed.",
+              "wb_blocks",
+            )}
+          </p>
+
+          <p>
+            {__(
+              "Only embed code from approved providers can be used. This helps prevent unsupported or unsafe code from being added to the site.",
+              "wb_blocks",
+            )}
+          </p>
+
+          <Notice status="info" isDismissible={false}>
+            <strong>{__("Need to use a new provider?", "wb_blocks")}</strong>
 
             <p>
-                {__(
-                    "Only embed code from approved providers can be used. This helps prevent unsupported or unsafe code from being added to the site.",
-                    "wb_blocks",
-                )}
+              {__(
+                "Message the Website Builder team and include the embed code and provider details for review.",
+                "wb_blocks",
+              )}
             </p>
-
-            <Notice
-                status="info"
-                isDismissible={false}
-            >
-                <strong>
-                    {__(
-                        "Need to use a new provider?",
-                        "wb_blocks",
-                    )}
-                </strong>
-
-                <p>
-                    {__(
-                        "Message the Website Builder team in the Slack channel #ask-website-builder and include the embed code and provider details for review.",
-                        "wb_blocks",
-                    )}
-                </p>
-            </Notice>
+            <ul>
+              <li>
+                <strong>{__("Email", "wb_blocks")}</strong>
+                <br />
+                <a href="mailto:wordpress@justice.gov.uk">
+                  wordpress@justice.gov.uk
+                </a>
+              </li>
+              <li>
+                <strong>{__("Slack", "wb_blocks")}</strong>
+                <br />
+                #ask-website-builder
+              </li>
+            </ul>
+          </Notice>
         </PanelBody>
-    </InspectorControls>
-
-
+      </InspectorControls>
 
       <BlockControls>
         <ToolbarGroup>
@@ -236,7 +214,7 @@ export default function Edit({
                 "The embed code will be validated before the preview is displayed.",
                 "wb_blocks",
               )}
-              >
+            >
               <ToolbarButton
                 onClick={handlePreview}
                 disabled={!embedCode.trim()}
@@ -250,10 +228,7 @@ export default function Edit({
           {mode === MODES.PREVIEW && (
             <ToolbarButton
               onClick={handleEditEmbed}
-              label={__(
-                "Edit embed code",
-                "wb_blocks",
-              )}
+              label={__("Edit embed code", "wb_blocks")}
             >
               {__("Edit", "wb_blocks")}
             </ToolbarButton>
@@ -261,33 +236,18 @@ export default function Edit({
         </ToolbarGroup>
       </BlockControls>
 
-      <div
-        className={`wb-allowed-third-party-embed ${
-          className || ""
-        }`}
-      >
+      <div className={`wb-allowed-third-party-embed ${className || ""}`}>
         {mode === MODES.EDIT && (
           <>
             <TextareaControl
-              label={__(
-                "Third-party embed code",
-                "wb_blocks",
-              )}
+              label={__("Third-party embed code", "wb_blocks")}
               value={embedCode}
               onChange={handleEmbedCodeChange}
             />
 
             {validationNotice && (
-              <Notice
-                status={validationNotice.status}
-                isDismissible={false}
-              >
-                <strong>
-                  {__(
-                    "Preview unavailable.",
-                    "wb_blocks",
-                  )}
-                </strong>{" "}
+              <Notice status={validationNotice.status} isDismissible={false}>
+                <strong>{__("Preview unavailable.", "wb_blocks")}</strong>{" "}
                 {validationNotice.message}
               </Notice>
             )}
@@ -295,13 +255,9 @@ export default function Edit({
         )}
 
         {mode === MODES.PREVIEW && (
-          
           <SandBox
             html={embedCode}
-            title={__(
-              "Third-party embed preview",
-              "wb_blocks",
-            )}
+            title={__("Third-party embed preview", "wb_blocks")}
             type="embed"
           />
         )}
