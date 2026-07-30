@@ -1,4 +1,4 @@
-import { findProvider, validateAllowedDomains, validateScriptTags } from "../provider-validation";
+import { findProvider, validateAllowedDomains, validateScriptTags, extractDomains } from "../provider-validation";
 import { Providers } from "../third-party-providers"
 
 const testEmbedCode = 
@@ -25,13 +25,21 @@ const testEmbedCode2 =`
 
 describe("findProvider", () => {
     it("returns the matching proivder when the supplied code contains an approved domain", () => {
+        
+        //smart-survey
         const result = findProvider(testEmbedCode);
         expect(result.id).toBe("smart-survey");
+
+        //ticket-tailor
+        const result_tt = findProvider(testEmbedCode2);
+        expect(result_tt.id).toBe("ticket-tailor");
+
     })
 
     it("returns undefined when no approved provider is found", () => {
+        //generic test
         const testEmbedCode = `
-         <script> const url = "https://drevil.com"</script>
+         <script> const url = " https://drevil.com"</script>
         `;
         const result = findProvider(testEmbedCode);
 
@@ -47,21 +55,49 @@ describe("validateAllowedDomains", () => {
             domains: ["smartsurvey.co.uk"],
         }
 
+        const provider_tt = {
+            id:"ticket-tailor",
+            name: "Ticket Tailor",
+            domains: [
+            "cdn.tickettailor.com",
+            "www.tickettailor.com",
+            ],
+        }
+        //smart-survey
         const result = validateAllowedDomains(testEmbedCode, provider1);
-
         expect(result).toBe(true);
+
+        //ticket-tailor
+        const result_tt = validateAllowedDomains(testEmbedCode2, provider_tt);
+        expect(result_tt).toBe(true);
+        
+
     });
 
+    //
     it("returns true when a domain belongs to the provder", () => {
         const provider1 = {
             id:"smart-survey",
             name:"SmartSurvey",
             domains: ["smartsurvey.co.uk"],
+        };
+
+         const provider_tt = {
+            id:"ticket-tailor",
+            name: "Ticket Tailor",
+            domains: [
+            "cdn.tickettailor.com",
+            "www.tickettailor.com",
+            ],
         }
 
+        //smart-survey
         const result = validateAllowedDomains(testEmbedCode, provider1);
-
         expect(result).toBe(true);
+        //ticket-tailor
+        const result_tt = validateAllowedDomains(testEmbedCode2, provider_tt);
+        expect(result_tt).toBe(true);
+
     });
 
     it("returns true when all domains belong to the provder", () => {
@@ -71,9 +107,22 @@ describe("validateAllowedDomains", () => {
             domains: ["smartsurvey.co.uk", "smartsurvey.cdn"],
         }
 
-        const result = validateAllowedDomains(testEmbedCode, provider1);
+        const provider_tt = {
+            id:"ticket-tailor",
+            name: "Ticket Tailor",
+            domains: [
+            "cdn.tickettailor.com",
+            "www.tickettailor.com",
+            ],
+        }
 
+        //smart-survey
+        const result = validateAllowedDomains(testEmbedCode, provider1);
         expect(result).toBe(true);
+        //ticket-tailor
+        const result_tt = validateAllowedDomains(testEmbedCode2, provider_tt);
+        expect(result_tt).toBe(true);
+
 
     });
 
@@ -82,7 +131,16 @@ describe("validateAllowedDomains", () => {
             id:"smart-survey",
             name:"SmartSurvey",
             domains: ["smartsurvey.co.uk"],
-        }
+        };
+
+        const provider_tt = {
+            id:"ticket-tailor",
+            name: "Ticket Tailor",
+            domains: [
+            "cdn.tickettailor.com",
+            "www.tickettailor.com",
+            ],
+        };
 
         const embedSuspect = `
             <script> 
@@ -92,10 +150,16 @@ describe("validateAllowedDomains", () => {
             </script>
         
         `
-
+        //
         const result = validateAllowedDomains(embedSuspect, provider1);
-
         expect(result).toBe(false);
+
+        //ticket-tailor
+        const result_tt = validateAllowedDomains(embedSuspect, provider_tt);
+        expect(result).toBe(false);
+
+
+
     });
 
     it("returns false when no domains are extracted", () => {
@@ -143,6 +207,7 @@ describe("validateScriptTags", () => {
     });
 
     it("returns true when there are multiple complete script elements", () => {
+        //generic test
         const embedCode = `
         <script src="https://testing1.com/hello.js"></script>
         <div>Widget content</div>
@@ -150,9 +215,11 @@ describe("validateScriptTags", () => {
         `;
 
         expect(validateScriptTags(embedCode)).toBe(true);
+
     });
 
     it("returns false when there are no script elements", () => {
+        //generic
         const embedCode = `
         <div>
             <p>No scripts here</p>
@@ -163,6 +230,7 @@ describe("validateScriptTags", () => {
     });
 
     it("returns false when an opening script tag is missing", () => {
+        //generic
         const embedCode = `
         console.log("test");
         </script>
@@ -170,7 +238,7 @@ describe("validateScriptTags", () => {
 
         expect(validateScriptTags(embedCode)).toBe(false);
     });
-
+        //generic
         it("returns false when an opening script tag is incomplete", () => {
         const embedCode = `
         <script id="ss-embed-123456"
@@ -181,19 +249,22 @@ describe("validateScriptTags", () => {
         expect(validateScriptTags(embedCode)).toBe(false);
     });
 
-    it("returns false when the closing script tag script tag is missing", ()=> {
+    it("returns false when the closing script tag is missing", ()=> {
+        //generic
         const testEmbedCode = ` <script id="ss-embed-123456">  `;
         expect(validateScriptTags(testEmbedCode)).toBe(false);
 
     })
 
     it("returns false when the closing tag is imcomplete", ()=> {
-            const testEmbedCode = ` script id="ss-embed-123456">  </script`;
+        //generic
+        const testEmbedCode = ` script id="ss-embed-123456">  </script`;
         expect(validateScriptTags(testEmbedCode)).toBe(false );
 
     });
 
     it("returns false when there are more opening tags than closing tags", () => {
+        //generic
         const embedCode = `
         <script src="https://example.com/first.js"></script>
         <script src="https://example.com/second.js">
@@ -203,13 +274,30 @@ describe("validateScriptTags", () => {
     });
 
     it("returns false when there are more closing tags than opening tags", () => {
+        //generic
         const embedCode = `
         <script src="https://example.com/first.js"></script>
         </script>
         `;
 
         expect(validateScriptTags(embedCode)).toBe(false);
-        });
+    });
+
+    describe("extractDomains", () =>{
+        it("extracts domains when URLs containing leading whitespace (catch tt)", () =>{
+           //generic
+            const embedCode = `
+                    <script src=" https://cdn.tickettailor.com/js/widgets/min/widget.js"
+                    data-url=" https://www.tickettailor.com/all-tickets/test/" ></script>
+               
+                `;
+                expect(extractDomains(embedCode)).toEqual([
+                    "cdn.tickettailor.com",
+                    "www.tickettailor.com",
+                ])
+        })
+
+    })
 })
 
 
