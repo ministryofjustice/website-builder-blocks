@@ -26,8 +26,12 @@ const extractDomains = (embedCode) => {
 };
 
 export const validateAllowedDomains = (embedCode, provider) => {
-  //regex match for http(s)://text
+  
   const domains = extractDomains(embedCode);
+
+  //case when no domains identified
+  if (domains.length === 0) return false;
+
   //  for every domain found, check whether it appears in the allowed list
   //  if a domain is not matched return false
   return domains.every((domain) =>
@@ -39,45 +43,47 @@ export const validateAllowedDomains = (embedCode, provider) => {
 };
 
 export const validateScriptTags = (embedCode) => {
-    const openingTag = /^<script\b[^>]*>/i;
-    const closingTag = /<\/script>\s*$/i;
+  const openingTags = embedCode.match(/<script\b[^<>]*>/gi) || [];
 
-    const trimEmbedCode = embedCode.trim();
-
-    return (openingTag.test(trimEmbedCode) && closingTag.test(trimEmbedCode));
-	
+  const closingTags = embedCode.match(/<\/script\s*>/gi) || [];
+  //console.log(openingTags, closingTags);
+  return openingTags.length > 0 && openingTags.length === closingTags.length;
 };
 
 export const validateEmbedCode = (embedCode) => {
-    const provider = findProvider(embedCode);
+  const provider = findProvider(embedCode);
 
-    if (!validateScriptTags(embedCode)) {
-		return {
-			isValid: false,
-			message:
-				"The embed code must start with an opening script tag and end with a closing script tag.",
+  console.log({
+    scriptTagsValid: validateScriptTags(embedCode),
+    extractedDomains: extractDomains(embedCode),
+    provider: findProvider(embedCode),
+  });
+
+  if (!validateScriptTags(embedCode)) {
+    return {
+      isValid: false,
+      message:
+        "The embed code must start with an opening script tag and end with a closing script tag.",
       provider: null,
-		};
-	}
+    };
+  }
 
-    if(!provider){
-        return {
-          isValid: false,
-          message:
-              "The embed provider is not approved.",
-          provider:null,
-          };
+  if (!provider) {
+    return {
+      isValid: false,
+      message: "The embed provider is not approved.",
+      provider: null,
+    };
+  }
 
-    }
-    
-    if (
-        provider &&
-        validateScriptTags(embedCode) &&
-        validateAllowedDomains(embedCode, provider)
-    ) return {
-        isValid: true,
-        message: "Embed code has been validated",
-        provider:provider,
-    }
-
-}
+  if (
+    provider &&
+    validateScriptTags(embedCode) &&
+    validateAllowedDomains(embedCode, provider)
+  )
+    return {
+      isValid: true,
+      message: "Embed code has been validated",
+      provider: provider,
+    };
+};
