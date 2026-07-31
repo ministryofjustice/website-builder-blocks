@@ -58,6 +58,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                         $thumb_id = get_post_thumbnail_id(get_the_ID());
                         $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
                         if (!empty($thumb_url)) {
+                            $thumb_url = esc_url($thumb_url);
                             $thumb_class = "wb-listing-thumbnail float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px] bg-no-repeat bg-center ml-[5px] mb-[2px] border";
                             $alt_text = esc_attr__(get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ),"hale");
     
