@@ -32,7 +32,17 @@ add_filter( 'render_block', function( $block_content, $block ) {
 		}
 		$block_content = str_replace(
 			'</video>',
-			"</video><button type='button' data-poster-exists='$poster_exists' data-pause-text='$pause_button_text' data-play-text='$play_button_text' class='wp-element-button video-pause-button absolute bottom-4 left-4 z-10' aria-controls='" . esc_attr( $video_id ) . "' >$pause_button_text</button>",
+			"</video>
+			<button
+				type='button'
+				data-poster-exists='$poster_exists'
+				data-pause-text='".esc_attr($pause_button_text)."'
+				data-play-text='".esc_attr($play_button_text)."'
+				class='wp-element-button video-pause-button absolute bottom-4 left-4 z-10'
+				aria-controls='".esc_attr($video_id)."'
+			>
+				".esc_html($pause_button_text)."
+			</button>",
 			$block_content
 		);
 	}

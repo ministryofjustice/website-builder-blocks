@@ -27,9 +27,9 @@ function togglePause(video, button) {
 function playVid(video, button) {
 	button.innerText = button.dataset.pauseText;
 	let videoSource = video.getAttribute("src");
-	if (videoSource.includes("_http")) {
+	if (videoSource.startsWith("禁用_http")) {
 		// Restore the SRC if it was changed
-		video.setAttribute("src", videoSource.replace("_http", "http"))
+		video.setAttribute("src", videoSource.replace(/^禁用_/, ""));
 	}
 	video.play();
 }
@@ -39,9 +39,10 @@ function pauseVid(video, button, videoBackupImageExists) {
 	button.innerText = button.dataset.playText;
 	if (button.dataset.posterExists) {
 		// If there is a poster, we sabotage the SRC so the poster appears
+		// 禁用 = disabled, but just unicode characters which aren't going to be found in any URL
 		let videoSource = video.getAttribute("src");
 		if (!videoSource.startsWith("_")) {
-			video.setAttribute("src", "_" + videoSource);
+			video.setAttribute("src", "禁用_" + videoSource);
 		}
 	}
 }
