@@ -26,23 +26,25 @@ function togglePause(video, button) {
 
 function playVid(video, button) {
 	button.innerText = button.dataset.pauseText;
-	let videoSource = video.getAttribute("src");
-	if (videoSource.startsWith("禁用_http")) {
+	let videoSource = video.dataset.src;
+	if (videoSource && videoSource !== "") {
 		// Restore the SRC if it was changed
-		video.setAttribute("src", videoSource.replace(/^禁用_/, ""));
+		video.setAttribute("src", videoSource);
+		video.removeAttribute("data-src");
 	}
 	video.play();
 }
 
-function pauseVid(video, button, videoBackupImageExists) {
+function pauseVid(video, button) {
 	video.pause();
 	button.innerText = button.dataset.playText;
-	if (button.dataset.posterExists) {
+	if (button.dataset.posterExists === "yes") {
 		// If there is a poster, we sabotage the SRC so the poster appears
-		// 禁用 = disabled, but just unicode characters which aren't going to be found in any URL
+		// SRC is blanked; old SRC is moved to data-src attribute
 		let videoSource = video.getAttribute("src");
-		if (!videoSource.startsWith("_")) {
-			video.setAttribute("src", "禁用_" + videoSource);
+		if (videoSource && videoSource !== "") {
+			video.setAttribute("src", "");
+			video.setAttribute("data-src", videoSource);
 		}
 	}
 }
