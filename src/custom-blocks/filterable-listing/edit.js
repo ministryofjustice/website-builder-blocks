@@ -3,10 +3,10 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
+	NumberControl,
 	BaseControl,
 	Button,
 } from '@wordpress/components';
-import { NumberControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import {
 	InnerBlocks,
@@ -28,6 +28,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const {
 		listingPostType,
 		listingSearchTextFilter,
+		listingDisplayImage,
 		listingFilters,
 		listingDisplayFields,
 		listingDisplayTerms,
@@ -255,6 +256,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
 
+	const setListingDisplayImage = setDisplayImage => {
+		setAttributes({ listingDisplayImage: setDisplayImage });
+	};
+
 	const setListingFilters = (selectedItems) => {
 		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
 		setAttributes({ listingFilters: values });
@@ -319,6 +324,15 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					)
 				}
 
+				{
+					(listingPostType.length > 0) && (	
+						<ToggleControl
+							label="Display featured image"
+							checked={ listingDisplayImage }
+							onChange={ setListingDisplayImage }
+						/>
+					)
+				}
 				{
 					(filterOptionList.length > 0) && (
 						<BaseControl label="Listing Filters">

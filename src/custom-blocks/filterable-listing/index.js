@@ -21,6 +21,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "boolean",
       default: true
     },
+    listingDisplayImage: {
+      type: "boolean",
+      default: true
+    },
     listingFilters: {
       type: "array",
       default: ""
