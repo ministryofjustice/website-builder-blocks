@@ -66,6 +66,11 @@ export const validateEmbedCode = (embedCode) => {
    * 
    */
   
+    console.log({
+    scriptTagsValid: validateScriptTags(embedCode),
+    extractedDomains: extractDomains(embedCode),
+    provider: findProvider(embedCode),
+    });
 
   if (!scriptTagsValid) {
     return {

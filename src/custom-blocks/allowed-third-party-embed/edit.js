@@ -4,21 +4,20 @@ import {
   Button,
   Notice,
   Placeholder,
-  SandBox,
   TextareaControl,
   ToolbarButton,
   ToolbarGroup,
   Tooltip,
   PanelBody,
 } from "@wordpress/components";
-import { useState } from "@wordpress/element";
+import { useState, useEffect } from "@wordpress/element";
 
 import { validateEmbedCode } from "./provider-validation";
 
 const MODES = {
   PLACEHOLDER: "placeholder",
   EDIT: "edit",
-  PREVIEW: "preview",
+  VALIDATED: "validated",
 };
 
 const VALIDATION_STATUSES = {
@@ -34,6 +33,10 @@ export default function Edit({
   isSelected,
 }) {
   const [mode, setMode] = useState(embedCode ? MODES.EDIT : MODES.PLACEHOLDER);
+  useState(() => {
+    console.log("Initial mode");
+    return embedCode ? MODES.EDIT : MODES.PLACEHOLDER;
+  });
 
   // This is temporary feedback shown while editing.
   const [validationNotice, setValidationNotice] = useState(null);
@@ -43,10 +46,12 @@ export default function Edit({
     setMode(MODES.EDIT);
   };
 
-  // Temporary debugging
-  if (mode === MODES.PREVIEW) {
-    console.count("Preview render");
-  }
+  //Case:block added to page & empty textarea & not in focus ---> display initial placeholder
+  useEffect(() => {
+	if (!isSelected && !embedCode) {
+		setMode(MODES.PLACEHOLDER);
+	}
+}, [isSelected, embedCode]);
 
   const handleEmbedCodeChange = (value) => {
     /*
@@ -64,8 +69,7 @@ export default function Edit({
     setMode(MODES.EDIT);
   };
 
-  const handlePreview = () => {
-    console.count("handlePreview");
+  const handleValidateEmbedCode = () => {
     const result = validateEmbedCode(embedCode);
 
     if (!result.isValid) {
@@ -91,7 +95,7 @@ export default function Edit({
     });
 
     setValidationNotice(null);
-    setMode(MODES.PREVIEW);
+    setMode(MODES.VALIDATED);
   };
 
   const getStatusLabel = () => {
@@ -167,7 +171,7 @@ export default function Edit({
         >
           <p>
             {__(
-              "Use this block to add approved third-party embed code to the page. The code is checked before a preview is displayed.",
+              "Use this block to add approved third-party embed code to the page. The code must be validated before it can be used.",
               "wb_blocks",
             )}
           </p>
@@ -210,22 +214,19 @@ export default function Edit({
         <ToolbarGroup>
           {mode === MODES.EDIT && (
             <Tooltip
-              text={__(
-                "The embed code will be validated before the preview is displayed.",
-                "wb_blocks",
-              )}
+              text={__("Click to validate the embed code.", "wb_blocks")}
             >
               <ToolbarButton
-                onClick={handlePreview}
+                onClick={handleValidateEmbedCode}
                 disabled={!embedCode.trim()}
-                label={__("Preview embed", "wb_blocks")}
+                label={__("Validate embed code", "wb_blocks")}
               >
-                {__("Preview", "wb_blocks")}
+                {__("Validate", "wb_blocks")}
               </ToolbarButton>
             </Tooltip>
           )}
 
-          {mode === MODES.PREVIEW && (
+          {mode === MODES.VALIDATED && (
             <ToolbarButton
               onClick={handleEditEmbed}
               label={__("Edit embed code", "wb_blocks")}
@@ -247,19 +248,34 @@ export default function Edit({
 
             {validationNotice && (
               <Notice status={validationNotice.status} isDismissible={false}>
-                <strong>{__("Preview unavailable.", "wb_blocks")}</strong>{" "}
+                <strong>{__("Validation failed.", "wb_blocks")}</strong>{" "}
                 {validationNotice.message}
               </Notice>
             )}
           </>
         )}
 
-        {mode === MODES.PREVIEW && (
-          <SandBox
-            html={embedCode}
-            title={__("Third-party embed preview", "wb_blocks")}
-            type="embed"
-          />
+        {mode === MODES.VALIDATED && (
+          <Placeholder label={__("Third party Embed", "wb_blocks")}>
+            <Notice status="success" isDismissible={false}>
+              <p>
+                <strong>{__("Embed code validated.", "wb_blocks")}</strong>
+              </p>
+
+              <p>
+                <strong>{__("Provider:", "wb_blocks")}</strong> {provider}
+              </p>
+
+              <p>{validationMessage}</p>
+
+              <p>
+                {__(
+                  "Use the Edit button in the toolbar block to view or change the embed code.",
+                  "wb_blocks",
+                )}
+              </p>
+            </Notice>
+          </Placeholder>
         )}
       </div>
     </>
