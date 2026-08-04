@@ -19,12 +19,12 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
     ?>
 
     <!-- Lefthand column with filters and search -->
-    <div class="col-span-1 p-4">
+    <div class="col-span-1">
     <form action="<?= esc_url(get_permalink()); ?>" method="GET">
     <?php
    
     wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
-
+    
     foreach($listing_settings['filters'] as $filter){
 
         if (taxonomy_exists($filter)) {
@@ -34,26 +34,21 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 
             wb_blocks_filterable_listing_block_date_filter("published_date", "", $active_filters);
 
-        }
-        else {
+        } else {
          
             $field_object = get_field_object($filter);
 
             if(!empty($field_object)){
-
                 if($field_object['type'] == 'date_picker'){
-
                     wb_blocks_filterable_listing_block_date_filter($field_object['name'], $field_object['label'], $active_filters);
-            
                 }
-                
             }
         }
     }
     ?>
 
     <div>
-        <button class="bg-blue-600 text-white mr-1 px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button class="wp-element-button mr-1 px-4 py-2">
             <?php _e('Search', 'wb_blocks'); ?>
         </button>
       
@@ -73,7 +68,7 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
 
         ?>
         <div class="">
-            <label class="block font-medium text-gray-700 mb-1" for="listing-search-field">
+            <label class="block font-medium mb-1" for="listing-search-field">
                 <?php _e('Search', 'wb_blocks'); ?>
             </label>
             <input id="listing-search-field" name="listing_search" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?= esc_attr($listing_search_text); ?>" type="search">
@@ -105,10 +100,10 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 
 <div class="moj-datepicker" data-module="moj-date-picker">
     <div class="">
-        <label class="block font-medium text-gray-700 mb-1" for="<?php echo $from_date_name; ?>">
+        <label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
             <?php echo esc_html($from_date_label); ?>
         </label>
-        <div id="<?php echo $from_date_name; ?>_hint" class="block font-medium text-gray-700 mb-1">
+        <div id="<?php echo $from_date_name; ?>_hint" class="block font-medium mb-1">
             For example, 13/2/2024.
         </div>
         <input 
@@ -125,10 +120,10 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 <br/>
 <div class="moj-datepicker" data-module="moj-date-picker">
     <div class="">
-        <label class="block font-medium text-gray-700 mb-1" for="<?php echo $to_date_name; ?>">
+        <label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
             <?php echo esc_html($to_date_label); ?>
         </label>
-        <div id="<?php echo $to_date_name; ?>_hint" class="block font-medium text-gray-700 mb-1">
+        <div id="<?php echo $to_date_name; ?>_hint" class="block font-medium mb-1">
             For example, 13/2/2024.
         </div>
         <input 
@@ -207,7 +202,7 @@ if($taxonomy_name == "category"){
     $filter_label = "Topic";
 }
 
-echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($parent_class_name) . '">' . esc_html($filter_label) . '</label>';
+echo '<label class="block font-medium mb-1" for="' . esc_attr($parent_class_name) . '">' . esc_html($filter_label) . '</label>';
 wp_dropdown_categories($dropdown_args);
 
 
@@ -259,7 +254,7 @@ if ($has_subtopics) {
     
     echo '<br/><br/>';
     echo '<div id="' . $wrapper_id . '" class="' . $subtopic_wrapper_classes . '">';
-    echo '<label class="block font-medium text-gray-700 mb-1" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
+    echo '<label class="block font-medium mb-1" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
     echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" ' . $disabled_subtopics . '>';
     echo '<option value="0"' . selected($selected_sub_topic, 0, false) . '>Select option</option>';
 

@@ -17,7 +17,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
     $post_type_obj = get_post_type_object( $listing_settings['postType'] );
     $flex_cpt_name = $post_type_obj->labels->singular_name;
     $flex_cpt_name_plural = $post_type_obj->labels->name;
-    
+
     $listing_query = wb_blocks_filterable_listing_block_get_listing_query($listing_settings, $active_filters);
 
     if ($listing_query->have_posts()) { 
@@ -33,7 +33,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
             $item_count_text = '1 ' . strtolower($flex_cpt_name);
         }
         ?>
-        <div class="border-b border-gray-300 mb-4 pb-2">
+        <div class="wb-listing border-b mb-4 pb-2">
             <?php echo esc_html($item_count_text); ?>
         </div>
         
@@ -42,18 +42,31 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
             while ($listing_query->have_posts()) {
                 $listing_query->the_post();
                 
-                $list_item_classes = "";
+                $list_item_classes = "wb-listing ";
 
                 if($listing_settings['styles']['stylesResultsShadedBackground'] == true){
-                    $list_item_classes = "bg-gray-100 p-4";
+                    $list_item_classes .= "wb-shaded p-4";
+                } else {
+                    $list_item_classes .= "border-b pb-2";
                 }
-                else {
-                    $list_item_classes = "border-b border-gray-300 pb-2";
-                }
-                
+
                 ?>
-            <div class="<?php echo $list_item_classes; ?> mb-4">
-                <h2 class="">
+            <div class="<?php echo $list_item_classes; ?> mb-4 flow-root">
+                <?php
+                    if ($listing_settings['displayImage']) {
+                        // if there is a post thumbnail, and the listing page has it set to display, we echo it out here
+                        $thumb_id = get_post_thumbnail_id(get_the_ID());
+                        $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+                        if (!empty($thumb_url)) {
+                            $thumb_url = esc_url($thumb_url);
+                            $thumb_class = "wb-listing-thumbnail float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px] bg-no-repeat bg-center ml-[5px] mb-[2px] border";
+                            $alt_text = esc_attr__(get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ),"hale");
+    
+                            echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url');\"></div>";
+                        }
+                    }
+                ?>
+                <h2 class="font-bold text-2xl">
                         <a href="<?php echo esc_url(get_permalink()); ?>">
                             <?php echo esc_html(get_the_title()); ?>
                         </a>
@@ -71,9 +84,8 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 
     <?php
         wb_blocks_filterable_listing_pagination($listing_query);
-    }
-    else { ?>
-        <h2 class="">
+    } else { ?>
+        <h2 class="font-bold text-2xl">
             <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'hale'); ?>
         </h2>
         <p class="">
@@ -81,9 +93,6 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         </p>
         <?php
     }
-    ?>
-  
-    <?php
 }
 
   
@@ -124,9 +133,9 @@ function wb_blocks_filterable_listing_item_details($display_fields){
      
         if(!empty( $field_value )){ 
     ?>
-        <div class="flex gap-2">
+        <div class="flex gap-2 mt-4">
             <?php if(!empty( $field_label )){ ?>
-                <div class="font-semibold">
+                <div class="font-bold">
                     <?php echo esc_html(__($field_label,'wb_blocks')); ?>:
                 </div>
             <?php }?>

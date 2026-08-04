@@ -5,6 +5,16 @@ Block: Filterable Listing (Frontend styles)
 
 **********************************************************************************************/
 
-.example {
-	background: green;
+.wb-listing,
+.wb-listing-thumbnail {
+	border-color: hsl(from currentColor h 3% 70%);
+}
+
+.wb-listing-thumbnail {
+	border-radius: var(--site-radius);
+}
+
+.wb-shaded {
+	background-color: color-mix(in srgb, currentColor 12%, transparent);
+	border-radius: min(var(--site-radius), 2rem);
 }
