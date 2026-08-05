@@ -98,7 +98,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 
 ?>
 
-<div class="moj-datepicker" data-module="moj-date-picker">
+<div class="wb-datepicker" data-module="wb-date-picker">
     <div class="">
         <label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
             <?php echo esc_html($from_date_label); ?>
@@ -107,7 +107,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
             For example, 13/2/2024.
         </div>
         <input 
-            class="w-full px-3 py-2 moj-js-datepicker-input" 
+            class="w-full px-3 py-2 wb-js-datepicker-input"
             id="<?php echo $from_date_name; ?>" 
             name="<?php echo $from_date_name; ?>" 
             type="text" 
@@ -118,7 +118,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
     </div>
 </div>
 <br/>
-<div class="moj-datepicker" data-module="moj-date-picker">
+<div class="wb-datepicker" data-module="wb-date-picker">
     <div class="">
         <label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
             <?php echo esc_html($to_date_label); ?>
@@ -127,7 +127,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
             For example, 13/2/2024.
         </div>
         <input 
-            class="w-full px-3 py-2 moj-js-datepicker-input" 
+            class="w-full px-3 py-2 wb-js-datepicker-input"
             id="<?php echo $to_date_name; ?>" 
             name="<?php echo $to_date_name; ?>" 
             type="text" 

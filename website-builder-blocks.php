@@ -437,9 +437,6 @@ function wb_blocks_footer_scripts(){
 		if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
 	?>
 
-		<script type="module">
-			window.MOJFrontend.initAll();
-		</script>
 
 <?php 
 		}
