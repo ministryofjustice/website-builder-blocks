@@ -69,7 +69,14 @@
 		}
 	
 		// This is the content with IDs for all h2 elements (or whatever was set in $tags)
-		$changed_content = trim($dom->saveHtml());
+		$body = $dom->getElementsByTagName('body')->item(0);
+
+		$changed_content = "";
+		foreach ($body->childNodes as $child) {
+			$changed_content .= $dom->saveHTML($child);
+		}
+
+		$changed_content = trim($changed_content);
 
 		return array("index"=>$index,"content"=>$changed_content);
 	}
