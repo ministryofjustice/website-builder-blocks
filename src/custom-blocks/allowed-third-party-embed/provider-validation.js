@@ -46,7 +46,7 @@ export const validateScriptTags = (embedCode) => {
   const openingTags = embedCode.match(/<script\b[^<>]*>/gi) || [];
 
   const closingTags = embedCode.match(/<\/script\s*>/gi) || [];
-  //console.log(openingTags, closingTags);
+ 
   return openingTags.length > 0 && openingTags.length === closingTags.length;
 };
 
@@ -65,12 +65,6 @@ export const validateEmbedCode = (embedCode) => {
     });
    * 
    */
-  
-    console.log({
-    scriptTagsValid: validateScriptTags(embedCode),
-    extractedDomains: extractDomains(embedCode),
-    provider: findProvider(embedCode),
-    });
 
   if (!scriptTagsValid) {
     return {

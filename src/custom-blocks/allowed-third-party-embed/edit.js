@@ -34,7 +34,6 @@ export default function Edit({
 }) {
   const [mode, setMode] = useState(embedCode ? MODES.EDIT : MODES.PLACEHOLDER);
   useState(() => {
-    console.log("Initial mode");
     return embedCode ? MODES.EDIT : MODES.PLACEHOLDER;
   });
 
@@ -257,7 +256,7 @@ export default function Edit({
 
         {mode === MODES.VALIDATED && (
           <Placeholder label={__("Third party Embed", "wb_blocks")}>
-            <Notice status="success" isDismissible={false}>
+            <Notice status="success" isDismissible={false} className="wb-allowed-third-party-embed__notice">
               <p>
                 <strong>{__("Embed code validated.", "wb_blocks")}</strong>
               </p>
