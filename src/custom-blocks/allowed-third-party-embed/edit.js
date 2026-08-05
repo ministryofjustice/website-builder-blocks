@@ -47,10 +47,10 @@ export default function Edit({
 
   //Case:block added to page & empty textarea & not in focus ---> display initial placeholder
   useEffect(() => {
-	if (!isSelected && !embedCode) {
-		setMode(MODES.PLACEHOLDER);
-	}
-}, [isSelected, embedCode]);
+    if (!isSelected && !embedCode) {
+      setMode(MODES.PLACEHOLDER);
+    }
+  }, [isSelected, embedCode]);
 
   const handleEmbedCodeChange = (value) => {
     /*
@@ -220,7 +220,7 @@ export default function Edit({
                 disabled={!embedCode.trim()}
                 label={__("Validate embed code", "wb_blocks")}
               >
-                {__("Validate", "wb_blocks")}
+                {__("Validate Code", "wb_blocks")}
               </ToolbarButton>
             </Tooltip>
           )}
@@ -230,7 +230,7 @@ export default function Edit({
               onClick={handleEditEmbed}
               label={__("Edit embed code", "wb_blocks")}
             >
-              {__("Edit", "wb_blocks")}
+              {__("Edit Code", "wb_blocks")}
             </ToolbarButton>
           )}
         </ToolbarGroup>
@@ -243,7 +243,18 @@ export default function Edit({
               label={__("Third-party embed code", "wb_blocks")}
               value={embedCode}
               onChange={handleEmbedCodeChange}
+              placeholder={__(
+                "Paste code from an approved provider.",
+                "wb_blocks",
+              )}
+              
             />
+            <p className="wb-allowed-third-party-embed__helper">
+                {__(
+                  "After pasting or editing the embed code, select Validate Code from the block toolbar.",
+                  "wb_blocks",
+                )}
+              </p>
 
             {validationNotice && (
               <Notice status={validationNotice.status} isDismissible={false}>
@@ -256,7 +267,11 @@ export default function Edit({
 
         {mode === MODES.VALIDATED && (
           <Placeholder label={__("Third party Embed", "wb_blocks")}>
-            <Notice status="success" isDismissible={false} className="wb-allowed-third-party-embed__notice">
+            <Notice
+              status="success"
+              isDismissible={false}
+              className="wb-allowed-third-party-embed__notice"
+            >
               <p>
                 <strong>{__("Embed code validated.", "wb_blocks")}</strong>
               </p>
