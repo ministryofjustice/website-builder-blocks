@@ -428,23 +428,6 @@ function wb_blocks_enqueue_style()
     wp_enqueue_script('wb-blocks-frontend-js');
 }
 
-function wb_blocks_footer_scripts(){ 
-	
-	if ( is_singular() ) {
-		global $post;
-
-		// Check for the block in the post content
-		if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
-	?>
-
-
-<?php 
-		}
-	}
-} 
-
-add_action('wp_footer', 'wb_blocks_footer_scripts'); 
-
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
 add_action('rest_api_init', function () {
