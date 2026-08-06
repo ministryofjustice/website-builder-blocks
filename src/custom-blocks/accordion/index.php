@@ -6,7 +6,7 @@
  * Uses WordPress' dynamic block method
  * https://developer.wordpress.org/block-editor/tutorials/block-tutorial/creating-dynamic-blocks/
  *
- * @package mojblocks
+ * @package wb blocks
  *
  */
 
@@ -85,7 +85,7 @@ function wb_render_callback_accordion_block($attributes, $content)
  * Uses WordPress' dynamic block method
  * https://developer.wordpress.org/block-editor/tutorials/block-tutorial/creating-dynamic-blocks/
  *
- * @package mojblocks
+ * @package wb blocks
  *
  */
 

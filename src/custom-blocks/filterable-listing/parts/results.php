@@ -37,6 +37,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
             <?php echo esc_html($item_count_text); ?>
         </div>
         
+        
         <div class="">
             <?php
             while ($listing_query->have_posts()) {
@@ -60,7 +61,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
                         if (!empty($thumb_url)) {
                             $thumb_url = esc_url($thumb_url);
                             $thumb_class = "wb-listing-thumbnail float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px] bg-no-repeat bg-center ml-[5px] mb-[2px] border";
-                            $alt_text = esc_attr__(get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ),"hale");
+                            $alt_text = esc_attr__(get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ),"wb_blocks");
     
                             echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url');\"></div>";
                         }
@@ -86,10 +87,10 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         wb_blocks_filterable_listing_pagination($listing_query);
     } else { ?>
         <h2 class="font-bold text-2xl">
-            <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'hale'); ?>
+            <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'wb_blocks'); ?>
         </h2>
         <p class="">
-            <?php _e('Try searching again with expanded criteria.', 'hale'); ?>
+            <?php _e('Try searching again with expanded criteria.', 'wb_blocks'); ?>
         </p>
         <?php
     }

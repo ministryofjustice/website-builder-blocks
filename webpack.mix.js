@@ -39,7 +39,6 @@ mix_.webpackConfig({
 .setPublicPath('build/')
 .sass('style.scss', 'style-frontend.min.css', sassOptions)
 .sass('style-gutenburg.scss', 'style-gutenburg.min.css', sassOptions)
-.copy('./node_modules/@ministryofjustice/frontend/moj/all.js', 'build/moj-frontend.js')
 
 const frontendFiles = glob.sync('src/**/frontend.js');
 mix_.js(frontendFiles, 'frontend.min.js');

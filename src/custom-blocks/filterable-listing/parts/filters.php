@@ -71,7 +71,7 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
             <label class="block font-medium mb-1" for="listing-search-field">
                 <?php _e('Search', 'wb_blocks'); ?>
             </label>
-            <input id="listing-search-field" name="listing_search" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?= esc_attr($listing_search_text); ?>" type="search">
+            <input id="listing-search-field" name="listing_search" class="w-full border px-3 py-2" value="<?= esc_attr($listing_search_text); ?>" type="search">
         </div>
         <br/>
     <?php
@@ -86,8 +86,8 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
         $to_date_label = $filter_label . " (to)";
     }
     else {
-        $from_date_label = "Date from";
-        $to_date_label = "Date to";
+        $from_date_label = __("Date from","wb_blocks");
+        $to_date_label = __("Date to","wb_blocks");
     }
 
     $from_date_name = $filter_name . "_from_date";
@@ -98,7 +98,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 
 ?>
 
-<div class="moj-datepicker" data-module="moj-date-picker">
+<div class="wb-datepicker" data-module="wb-date-picker">
     <div class="">
         <label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
             <?php echo esc_html($from_date_label); ?>
@@ -107,7 +107,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
             For example, 13/2/2024.
         </div>
         <input 
-            class="govuk-input moj-js-datepicker-input" 
+            class="w-full px-3 py-2 wb-js-datepicker-input"
             id="<?php echo $from_date_name; ?>" 
             name="<?php echo $from_date_name; ?>" 
             type="text" 
@@ -118,7 +118,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
     </div>
 </div>
 <br/>
-<div class="moj-datepicker" data-module="moj-date-picker">
+<div class="wb-datepicker" data-module="wb-date-picker">
     <div class="">
         <label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
             <?php echo esc_html($to_date_label); ?>
@@ -127,7 +127,7 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
             For example, 13/2/2024.
         </div>
         <input 
-            class="govuk-input moj-js-datepicker-input" 
+            class="w-full px-3 py-2 wb-js-datepicker-input"
             id="<?php echo $to_date_name; ?>" 
             name="<?php echo $to_date_name; ?>" 
             type="text" 
@@ -181,7 +181,7 @@ if(!empty($listing_settings['restrictTaxonomies']) && !empty($listing_settings['
 $dropdown_args = [
     "name" => $taxonomy->query_var,
     "id" => $parent_class_name,
-    "class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+    "class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border px-3 py-2",
     'taxonomy' => $taxonomy_name,
     'show_option_all' => "Select option",
     'depth' => 1,
@@ -255,7 +255,7 @@ if ($has_subtopics) {
     echo '<br/><br/>';
     echo '<div id="' . $wrapper_id . '" class="' . $subtopic_wrapper_classes . '">';
     echo '<label class="block font-medium mb-1" for="' . esc_attr($child_class_name) . '">' . esc_html($subfilter_label) . '</label>';
-    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" ' . $disabled_subtopics . '>';
+    echo '<select name="' . esc_attr($subtopic_query_var) . '" id="' . esc_attr($child_class_name) . '" class="w-full border px-3 py-2" ' . $disabled_subtopics . '>';
     echo '<option value="0"' . selected($selected_sub_topic, 0, false) . '>Select option</option>';
 
     foreach ($sub_topics as $sub_topic) {

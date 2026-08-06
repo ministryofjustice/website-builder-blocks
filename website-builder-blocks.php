@@ -6,7 +6,7 @@
  * Plugin name: Website Builder Blocks
  * Plugin URI:  https://github.com/ministryofjustice/website-builder-blocks
  * Description: Introduces new Wordpress blocks
- * Version:     2.2.0
+ * Version:     2.2.1
  * Author:      Ministry of Justice
  * Text domain: wb_blocks
  * Domain Path: /languages
@@ -453,26 +453,6 @@ function wb_blocks_enqueue_style()
 
     wp_enqueue_script('wb-blocks-frontend-js');
 }
-
-function wb_blocks_footer_scripts(){ 
-	
-	if ( is_singular() ) {
-		global $post;
-
-		// Check for the block in the post content
-		if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
-	?>
-
-		<script type="module">
-			window.MOJFrontend.initAll();
-		</script>
-
-<?php 
-		}
-	}
-} 
-
-add_action('wp_footer', 'wb_blocks_footer_scripts'); 
 
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
