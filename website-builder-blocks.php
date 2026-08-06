@@ -107,51 +107,6 @@ function wb_blocks_register_blocks()
 		true
 	);
 
-	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
-
-	$categories = array_map(function($directory) {
-		return basename($directory);
-	}, $icon_directories);
-	$icons = [];
-	$icon_dir = plugins_url("assets/icons", __FILE__ );
-	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
-
-	foreach($categories as $category) {
-		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
-		foreach ($files as $file) {
-			if (!file_exists($file."/materialicons/24px.svg")) {
-				continue; // Only accept icons where the normal files are used
-			}
-			$icon_styles = [array( "label" => 'Standard', "value" => '' )];
-			foreach ($icon_style_choices as $style_choice) {
-				if (file_exists("{$file}/materialicons{$style_choice[1]}/24px.svg")) {
-					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}" );
-				} else {
-					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
-				}
-			}
-			$name = basename(plugins_url($file, __FILE__));
-			$object = new stdClass();
-			$object->label = ucfirst(str_replace("_"," ",$name));
-			$object->value = $category ."/". $name;
-			$icons[] = [
-				'label' => ucfirst(str_replace("_"," ",$name)),
-				'value' => $category ."/". $name,
-				'styles' => $icon_styles
-			];
-		}	
-	}
-
-	wp_localize_script(
-        'wb-blocks-editor-script',
-        'IconData',
-        [
-            'rootDirectory' => $icon_dir,
-            'categories' => $categories,
-            'options' => $icons,
-        ]
-    );
-
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
 
@@ -332,6 +287,59 @@ foreach($dir_listing as $file) {
 		include $dir_path.$file."/index.php";
 	}
 }
+
+/**
+ * Builds the icon picker data for the editor script.
+ *
+ * On enqueue_block_editor_assets rather than init: the scan walks ~2,200 icon
+ * directories with a file_exists probe per style variant, and only the
+ * editor's icon picker consumes the result.
+ */
+function wb_blocks_localize_icon_data() {
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
+
+	$categories = array_map(function($directory) {
+		return basename($directory);
+	}, $icon_directories);
+	$icons = [];
+	$icon_dir = plugins_url("assets/icons", __FILE__ );
+	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
+
+	foreach($categories as $category) {
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
+		foreach ($files as $file) {
+			if (!file_exists($file."/materialicons/24px.svg")) {
+				continue; // Only accept icons where the normal files are used
+			}
+			$icon_styles = [array( "label" => 'Standard', "value" => '' )];
+			foreach ($icon_style_choices as $style_choice) {
+				if (file_exists("{$file}/materialicons{$style_choice[1]}/24px.svg")) {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}" );
+				} else {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
+				}
+			}
+			$name = basename(plugins_url($file, __FILE__));
+			$icons[] = [
+				'label' => ucfirst(str_replace("_"," ",$name)),
+				'value' => $category ."/". $name,
+				'styles' => $icon_styles
+			];
+		}
+	}
+
+	wp_localize_script(
+		'wb-blocks-editor-script',
+		'IconData',
+		[
+			'rootDirectory' => $icon_dir,
+			'categories' => $categories,
+			'options' => $icons,
+		]
+	);
+}
+
+add_action('enqueue_block_editor_assets', 'wb_blocks_localize_icon_data');
 
 /**
  * Queues up the gutenberg editor style
