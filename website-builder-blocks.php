@@ -291,9 +291,7 @@ foreach($dir_listing as $file) {
 /**
  * Builds the icon picker data for the editor script.
  *
- * On enqueue_block_editor_assets rather than init: the scan walks ~2,200 icon
- * directories with a file_exists probe per style variant, and only the
- * editor's icon picker consumes the result.
+ * On `enqueue_block_editor_assets` so that it's run when needed.
  */
 function wb_blocks_localize_icon_data() {
 	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
