@@ -335,9 +335,19 @@ foreach($dir_listing as $file) {
 
 /**
  * Queues up the gutenberg editor style
+ *
+ * TODO: migrate the blocks to apiVersion 3 before any site running this
+ * plugin upgrades to WordPress 7.1, which always iframes the post editor
+ * with no fallback for apiVersion 1/2 blocks.
+ *
+ * @see https://make.wordpress.org/core/2026/08/03/iframed-editor-changes-in-wordpress-7-1/
  */
 function wb_blocks_gutenberg_editor_styles()
 {
+	if (!is_admin()) {
+		return;
+	}
+
 	wp_enqueue_style(
 		'wb-blocks-block-editor-styles',
 		plugins_url('build/main-gutenberg.min.css', __FILE__),
@@ -347,8 +357,7 @@ function wb_blocks_gutenberg_editor_styles()
 	);
 }
 
-// Pulls the enqueued file in to standard wp process.
-add_action('enqueue_block_editor_assets', 'wb_blocks_gutenberg_editor_styles');
+add_action('enqueue_block_assets', 'wb_blocks_gutenberg_editor_styles');
 
 /**
  * Queues up the blocks styling for frontend
