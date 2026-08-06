@@ -52,6 +52,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "array",
       default: ""
     },
+    stylesLayout: {
+      type: "string",
+      default: "side-by-side"
+    },
     stylesResultsShadedBackground: {
       type: "boolean",
       default: false

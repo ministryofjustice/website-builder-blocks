@@ -4,6 +4,7 @@ import {
 	RangeControl,
 	ToggleControl,
 	NumberControl,
+	RadioControl,
 	BaseControl,
 	Button,
 } from '@wordpress/components';
@@ -36,6 +37,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingSortOrder,
 		listingRestrictTaxonomies,
 		listingRestrictTerms,
+		stylesLayout,
 		stylesResultsShadedBackground,
 		className,
 	} = attributes;
@@ -449,6 +451,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		</InspectorControls>
 	);
 
+	const setStylesLayout = newStylesLayout => {
+		setAttributes({ stylesLayout: newStylesLayout });
+	};
+
 	const setStylesResultsShadedBackground = newStylesResultsShadedBackground => {
 		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
 	};
@@ -461,13 +467,21 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					title={__('Results styles')}
 					initialOpen={true}
 				>
-						<ToggleControl
-							label="Shaded background"
-							help="Item divider line will be hidden"
-							checked={ stylesResultsShadedBackground }
-							onChange={ setStylesResultsShadedBackground }
-						/>
-						    
+					<ToggleControl
+						label="Shaded background"
+						help="Item divider line will be hidden"
+						checked={ stylesResultsShadedBackground }
+						onChange={ setStylesResultsShadedBackground }
+					/>
+					<RadioControl
+						label="Layout"
+						selected={stylesLayout ? stylesLayout : 'side-by-side'}
+						options={[
+							{ label: 'Side-by-side', value: 'side-by-side' },
+							{ label: 'Stacked', value: 'stacked' },
+						]}
+						onChange={ setStylesLayout }
+					/>
 						
 				</PanelBody>
 			</InspectorControls>

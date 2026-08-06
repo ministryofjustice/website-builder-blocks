@@ -328,8 +328,9 @@
 
   DatePicker.prototype.createCalendarHeaders = function () {
     this.dayLabels.forEach((day) => {
-      const dayString = `<span class="sr-only">${this.dayLabelsAbbr[day][0]}</span>${this.dayLabelsAbbr[day][1]}<span class="sr-only">${this.dayLabelsAbbr[day][2]}</span>`;
-      const html = `<th scope="col">${dayString}</th>`;
+      const hiddenDayPartClass = 'sr-only md:[.wb-stacked_&]:not-sr-only'; //For hiding the bit of the day name which is abbreviated out, see the dayLabelsAbbr array.
+      const dayString = `<span class="${hiddenDayPartClass}">${this.dayLabelsAbbr[day][0]}</span>${this.dayLabelsAbbr[day][1]}<span class="${hiddenDayPartClass}">${this.dayLabelsAbbr[day][2]}</span>`;
+      const html = `<th class="w-[calc(100%/7)]" scope="col">${dayString}</th>`;
       const $headerRow = this.$dialog.querySelector('thead > tr');
       $headerRow.insertAdjacentHTML('beforeend', html);
     });
