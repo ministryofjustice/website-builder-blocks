@@ -26,10 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 						childEl.disabled = false;
 					}
 
-					const wrapper = document.querySelector(childClass + "-wrapper");
-					if (wrapper) {
-						wrapper.classList.remove("hidden");
-					}
+					document.querySelector(childClass + "-wrapper")?.classList.remove("hidden");
 				} else {
 					resetSubTopics(childClass);
 				}
@@ -84,10 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			childEl.disabled = true;
 
 			// Add class to wrapper
-			const wrapper = document.querySelector(childClass + "-wrapper");
-			if (wrapper) {
-				wrapper.classList.add("hidden");
-			}
+			document.querySelector(childClass + "-wrapper")?.classList.add("hidden");
 		}
 
 		const blocks = document.querySelectorAll('div.wb-block-filterable-listing');
@@ -113,11 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
 							handleTopicChange(parentClass, childClass, selected_topic);
 						});
 					}
-
 				});
 			}
-
 		});
 	}
-
 });
