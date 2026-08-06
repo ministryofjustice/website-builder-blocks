@@ -9,3 +9,4 @@ import "./hmg-svg";
 import "./reveal";
 import "./table-of-contents";
 import "./print-button";
+import "./allowed-third-party-embed";

@@ -1,115 +1,114 @@
+import { DatePicker } from './date-picker';
+
 document.addEventListener("DOMContentLoaded", function () {
 
-  if (window.filterable_listing_object) {
+	document.querySelectorAll('.wb-datepicker').forEach((element) => {
+		const picker = new DatePicker(element);
 
-    // Get the taxonomies and their terms from the localized script object
-    const taxonomies = filterable_listing_object.taxonomies;
+		picker.init();
+	});
 
-    // Function to handle changes in the parent topic dropdown
-    function handleTopicChange(parentClass, childClass, selected_topic) {
-      if (selected_topic > 0) {
-        const termsWithParents = getTermsWithMatchingParents(selected_topic);
+	if (window.filterable_listing_object) {
 
-        // Update subtopics dropdown based on whether any matching subtopics were found
-        if (termsWithParents.length > 0) {
-          populateSubTopics(childClass, termsWithParents);
-          const childEl = document.querySelector(childClass);
-          if (childEl) {
-            childEl.disabled = false;
-          }
-          
-          const wrapper = document.querySelector(childClass + "-wrapper");
-          if (wrapper) {
-            wrapper.classList.remove("hidden");
-          }
-        } else {
-          resetSubTopics(childClass);
-        }
-      } else {
-        resetSubTopics(childClass);
-      }
-    }
+		// Get the taxonomies and their terms from the localized script object
+		const taxonomies = filterable_listing_object.taxonomies;
 
-    // Function to find terms with parents matching the selected topic
-    function getTermsWithMatchingParents(selected_topic) {
-      const termsWithParents = [];
+		// Function to handle changes in the parent topic dropdown
+		function handleTopicChange(parentClass, childClass, selected_topic) {
+			if (selected_topic > 0) {
+				const termsWithParents = getTermsWithMatchingParents(selected_topic);
 
-      // Loop through each taxonomy and its terms
-      Object.keys(taxonomies).forEach(taxonomy => {
-        if (Array.isArray(taxonomies[taxonomy])) { // Ensure the terms are in array form
-          taxonomies[taxonomy].forEach(termData => {
-            if (termData.parent && termData.parent == selected_topic) {
-              termsWithParents.push(termData);
-            }
-          });
-        }
-      });
+				// Update subtopics dropdown based on whether any matching subtopics were found
+				if (termsWithParents.length > 0) {
+					populateSubTopics(childClass, termsWithParents);
+					const childEl = document.querySelector(childClass);
+					if (childEl) {
+						childEl.disabled = false;
+					}
 
-      return termsWithParents;
-    }
+					document.querySelector(childClass + "-wrapper")?.classList.remove("hidden");
+				} else {
+					resetSubTopics(childClass);
+				}
+			} else {
+				resetSubTopics(childClass);
+			}
+		}
 
-    // Populate subtopics dropdown with matching terms
-    function populateSubTopics(childClass, termsWithParents) {
-      resetSubTopics(childClass);
+		// Function to find terms with parents matching the selected topic
+		function getTermsWithMatchingParents(selected_topic) {
+			const termsWithParents = [];
 
-      termsWithParents.forEach(term => {
-        const childEl = document.querySelector(childClass);
-        if (childEl) {
-          childEl.appendChild(new Option(term.name, term.term_id));
-        }
-      });
-    }
+			// Loop through each taxonomy and its terms
+			Object.keys(taxonomies).forEach(taxonomy => {
+				if (Array.isArray(taxonomies[taxonomy])) { // Ensure the terms are in array form
+					taxonomies[taxonomy].forEach(termData => {
+						if (termData.parent && termData.parent == selected_topic) {
+							termsWithParents.push(termData);
+						}
+					});
+				}
+			});
 
-    // Reset the subtopics dropdown
-    function resetSubTopics(childClass) {
-      const childEl = document.querySelector(childClass);
-      if (!childEl) return;
+			return termsWithParents;
+		}
 
-      // Clear existing options
-      childEl.innerHTML = "";
+		// Populate subtopics dropdown with matching terms
+		function populateSubTopics(childClass, termsWithParents) {
+			resetSubTopics(childClass);
 
-      // Add default option
-      const option = new Option("Select option", "");
-      childEl.appendChild(option);
+			termsWithParents.forEach(term => {
+				const childEl = document.querySelector(childClass);
+				if (childEl) {
+					childEl.appendChild(new Option(term.name, term.term_id));
+				}
+			});
+		}
 
-      // Disable dropdown
-      childEl.disabled = true;
+		// Reset the subtopics dropdown
+		function resetSubTopics(childClass) {
+			const childEl = document.querySelector(childClass);
+			if (!childEl) return;
 
-      // Add class to wrapper
-      const wrapper = document.querySelector(childClass + "-wrapper");
-      if (wrapper) {
-        wrapper.classList.add("hidden");
-      }
-    }
+			// Clear existing options
+			childEl.innerHTML = "";
 
-    const blocks = document.querySelectorAll('div.wb-block-filterable-listing');
+			// Add default option
+			const option = new Option("Select option", "");
+			childEl.appendChild(option);
 
-    blocks.forEach(block => {
-      const blockId = block.getAttribute('data-block-id');
-      const taxFilters = block.getAttribute('data-tax-filters');
+			// Disable dropdown
+			childEl.disabled = true;
 
-      if (taxFilters && taxFilters !== '') {
-        const taxFilterArray = taxFilters.split(',');
-        
-        taxFilterArray.forEach(taxonomy => {
-        
-          const parentClass = `#${taxonomy}-filter-topic-${blockId}`;
-          const childClass = `#${taxonomy}-filter-subtopic-${blockId}`;
+			// Add class to wrapper
+			document.querySelector(childClass + "-wrapper")?.classList.add("hidden");
+		}
 
-          const parentEl = document.querySelector(parentClass);
-          const childEl = document.querySelector(childClass);
+		const blocks = document.querySelectorAll('div.wb-block-filterable-listing');
 
-          if (parentEl && childEl) {
-            parentEl.addEventListener("change", function () {
-              const selected_topic = this.value;
-              handleTopicChange(parentClass, childClass, selected_topic);
-            });
-          }
+		blocks.forEach(block => {
+			const blockId = block.getAttribute('data-block-id');
+			const taxFilters = block.getAttribute('data-tax-filters');
 
-        });
-      }
+			if (taxFilters && taxFilters !== '') {
+				const taxFilterArray = taxFilters.split(',');
 
-    });
-  }
+				taxFilterArray.forEach(taxonomy => {
 
+					const parentClass = `#${taxonomy}-filter-topic-${blockId}`;
+					const childClass = `#${taxonomy}-filter-subtopic-${blockId}`;
+
+					const parentEl = document.querySelector(parentClass);
+					const childEl = document.querySelector(childClass);
+
+					if (parentEl && childEl) {
+						parentEl.addEventListener("change", function () {
+							const selected_topic = this.value;
+							handleTopicChange(parentClass, childClass, selected_topic);
+						});
+					}
+				});
+			}
+		});
+	}
 });

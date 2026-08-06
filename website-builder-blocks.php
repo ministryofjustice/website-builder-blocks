@@ -206,6 +206,32 @@ function wb_blocks_register_blocks()
 	);
 
 	register_block_type(
+        'wb-blocks/allowed-third-party-embed',
+        [
+            'editor_script'   => 'wb-blocks-editor-script',
+            'render_callback' => 'wb_blocks_render_callback_allowed_third_party_embed',
+            'attributes'      => [
+                'embedCode' => [
+                    'type'    => 'string',
+                    'default' => '',
+                ],
+				 'provider' => [
+                'type'    => 'string',
+                'default' => '',
+				],
+				'validationStatus' => [
+					'type'    => 'string',
+					'default' => 'not-validated',
+				],
+				'validationMessage' => [
+					'type'    => 'string',
+					'default' => '',
+				],
+            ],
+        ]
+    );
+
+	register_block_type(
 		'wb-blocks/filterable-listing',
 		[
 			'editor_script' => 'wb-blocks-editor-script',
@@ -442,26 +468,6 @@ function wb_blocks_enqueue_style()
 
     wp_enqueue_script('wb-blocks-frontend-js');
 }
-
-function wb_blocks_footer_scripts(){ 
-	
-	if ( is_singular() ) {
-		global $post;
-
-		// Check for the block in the post content
-		if ( has_block( 'wb-blocks/filterable-listing', $post ) ) {
-	?>
-
-		<script type="module">
-			window.MOJFrontend.initAll();
-		</script>
-
-<?php 
-		}
-	}
-} 
-
-add_action('wp_footer', 'wb_blocks_footer_scripts'); 
 
 add_action('wp_enqueue_scripts', 'wb_blocks_enqueue_style'); 
 
