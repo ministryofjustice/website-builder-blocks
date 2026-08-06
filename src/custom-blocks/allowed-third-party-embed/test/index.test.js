@@ -14,8 +14,8 @@ jest.mock("../edit", () => ({
 }));
 
 describe("Confirms allowed third-party embed block registration", () => {
-  //clear mock history and clear node cache 
-  // Importing modules so need to clear cahce each time the test runs
+  //clear mock history and clear node cache
+  // Importing modules so need to clear cache each time the test runs
   //required in this instance because registerBlockType() happens when the module is loaded
   beforeEach(() => {
     jest.resetModules();
@@ -31,19 +31,28 @@ describe("Confirms allowed third-party embed block registration", () => {
     expect(registerBlockType).toHaveBeenCalledWith(
       "wb-blocks/allowed-third-party-embed",
       expect.objectContaining({
-        title: "allowed third party embed",
+        title: "Allowed third party embed",
         description: "Add code from an allowed third party provider",
         category: "wb-blocks",
         icon: "embed-generic",
-        keywords: ["html", "third party embed", "smart survey"],
+        keywords: [
+          "html",
+          "third party embed",
+          "smart survey",
+          "ticket tailor",
+          "script",
+        ],
+        supports: {
+          html: false,
+        },
         attributes: {
           embedCode: {
             type: "string",
             default: "",
           },
           provider: {
-          type: "string",
-          default: "",
+            type: "string",
+            default: "",
           },
           validationStatus: {
             type: "string",

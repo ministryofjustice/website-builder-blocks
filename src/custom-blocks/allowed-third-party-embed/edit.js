@@ -33,9 +33,6 @@ export default function Edit({
   isSelected,
 }) {
   const [mode, setMode] = useState(embedCode ? MODES.EDIT : MODES.PLACEHOLDER);
-  useState(() => {
-    return embedCode ? MODES.EDIT : MODES.PLACEHOLDER;
-  });
 
   // This is temporary feedback shown while editing.
   const [validationNotice, setValidationNotice] = useState(null);

@@ -1,5 +1,5 @@
 import { findProvider, validateAllowedDomains, validateScriptTags, extractDomains } from "../provider-validation";
-import { Providers } from "../third-party-providers"
+
 
 const testEmbedCode = 
     `<script id="ss-embed-123456">
@@ -24,7 +24,7 @@ const testEmbedCode2 =`
 
 
 describe("findProvider", () => {
-    it("returns the matching proivder when the supplied code contains an approved domain", () => {
+    it("returns the matching provider when the supplied code contains an approved domain", () => {
         
         //smart-survey
         const result = findProvider(testEmbedCode);
@@ -48,7 +48,7 @@ describe("findProvider", () => {
 });
 
 describe("validateAllowedDomains", () => {
-    it("returns true when one domain belongs to the provder", () => {
+    it("returns true when one domain belongs to the provider", () => {
         const provider1 = {
             id:"smart-survey",
             name:"SmartSurvey",
@@ -75,32 +75,21 @@ describe("validateAllowedDomains", () => {
     });
 
     //
-    it("returns true when a domain belongs to the provder", () => {
+    it("returns true when the provider has one allowed domain", () => {
         const provider1 = {
             id:"smart-survey",
             name:"SmartSurvey",
             domains: ["smartsurvey.co.uk"],
         };
 
-         const provider_tt = {
-            id:"ticket-tailor",
-            name: "Ticket Tailor",
-            domains: [
-            "cdn.tickettailor.com",
-            "www.tickettailor.com",
-            ],
-        }
-
         //smart-survey
         const result = validateAllowedDomains(testEmbedCode, provider1);
         expect(result).toBe(true);
-        //ticket-tailor
-        const result_tt = validateAllowedDomains(testEmbedCode2, provider_tt);
-        expect(result_tt).toBe(true);
+    
 
     });
 
-    it("returns true when all domains belong to the provder", () => {
+    it("returns true when all domains belong to the provider", () => {
         const provider1 = {
             id:"smart-survey",
             name:"SmartSurvey",
@@ -156,7 +145,7 @@ describe("validateAllowedDomains", () => {
 
         //ticket-tailor
         const result_tt = validateAllowedDomains(embedSuspect, provider_tt);
-        expect(result).toBe(false);
+        expect(result_tt).toBe(false);
 
 
 
@@ -203,7 +192,7 @@ describe("validateScriptTags", () => {
         </div>
         `;
 
-        expect(validateScriptTags(testEmbedCode2)).toBe(true);
+        expect(validateScriptTags(testEmbedCode)).toBe(true);
     });
 
     it("returns true when there are multiple complete script elements", () => {
@@ -256,7 +245,7 @@ describe("validateScriptTags", () => {
 
     })
 
-    it("returns false when the closing tag is imcomplete", ()=> {
+    it("returns false when the closing tag is incomplete", ()=> {
         //generic
         const testEmbedCode = ` script id="ss-embed-123456">  </script`;
         expect(validateScriptTags(testEmbedCode)).toBe(false );
@@ -283,22 +272,24 @@ describe("validateScriptTags", () => {
         expect(validateScriptTags(embedCode)).toBe(false);
     });
 
-    describe("extractDomains", () =>{
-        it("extracts domains when URLs containing leading whitespace (catch tt)", () =>{
-           //generic
-            const embedCode = `
-                    <script src=" https://cdn.tickettailor.com/js/widgets/min/widget.js"
-                    data-url=" https://www.tickettailor.com/all-tickets/test/" ></script>
-               
-                `;
-                expect(extractDomains(embedCode)).toEqual([
-                    "cdn.tickettailor.com",
-                    "www.tickettailor.com",
-                ])
-        })
-
-    })
 })
+
+describe("extractDomains", () =>{
+    it("extracts domains when URLs containing leading whitespace (catch tt)", () =>{
+        //generic
+        const embedCode = `
+                <script src=" https://cdn.tickettailor.com/js/widgets/min/widget.js"
+                data-url=" https://www.tickettailor.com/all-tickets/test/" ></script>
+            
+            `;
+            expect(extractDomains(embedCode)).toEqual([
+                "cdn.tickettailor.com",
+                "www.tickettailor.com",
+            ])
+    })
+
+})
+
 
 
     

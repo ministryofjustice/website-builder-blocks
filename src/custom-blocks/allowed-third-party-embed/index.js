@@ -13,12 +13,15 @@ registerBlockType("wb-blocks/allowed-third-party-embed", {
   category: "wb-blocks",
   icon: "embed-generic",
   keywords: [
-    __("html", "wb_block"),
-    __("third party embed", "wb_block"),
-    __("smart survey", "wb_block"),
-    __("ticket tailor", "wb_block"),
-    __("script", "wb_block"),
+    __("html", "wb_blocks"),
+    __("third party embed", "wb_blocks"),
+    __("smart survey", "wb_blocks"),
+    __("ticket tailor", "wb_blocks"),
+    __("script", "wb_blocks"),
   ],
+  supports:{
+    html:false
+  },
   attributes: {
     embedCode: {
       type: "string",
