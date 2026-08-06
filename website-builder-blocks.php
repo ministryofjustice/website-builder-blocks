@@ -343,7 +343,7 @@ function wb_blocks_localize_icon_data() {
 					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
 				}
 			}
-			$name = basename(plugins_url($file, __FILE__));
+			$name = basename( $file );
 			$icons[] = [
 				'label' => ucfirst(str_replace("_"," ",$name)),
 				'value' => $category ."/". $name,
