@@ -320,7 +320,11 @@ foreach($dir_listing as $file) {
  * On `enqueue_block_editor_assets` so that it's run when needed.
  */
 function wb_blocks_localize_icon_data() {
-	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
+	if (!wp_script_is('wb-blocks-editor-script', 'registered')) {
+		return;
+	}
+	
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" ) ?: [];
 
 	$categories = array_map(function($directory) {
 		return basename($directory);
@@ -330,7 +334,7 @@ function wb_blocks_localize_icon_data() {
 	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
 
 	foreach($categories as $category) {
-		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" ) ?: [];
 		foreach ($files as $file) {
 			if (!file_exists($file."/materialicons/24px.svg")) {
 				continue; // Only accept icons where the normal files are used
