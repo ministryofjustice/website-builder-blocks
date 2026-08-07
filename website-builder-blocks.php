@@ -6,7 +6,7 @@
  * Plugin name: Website Builder Blocks
  * Plugin URI:  https://github.com/ministryofjustice/website-builder-blocks
  * Description: Introduces new Wordpress blocks
- * Version:     2.2.1
+ * Version:     2.2.2
  * Author:      Ministry of Justice
  * Text domain: wb_blocks
  * Domain Path: /languages
@@ -106,51 +106,6 @@ function wb_blocks_register_blocks()
 		$meta['version'] ?? '20200723',
 		true
 	);
-
-	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" );
-
-	$categories = array_map(function($directory) {
-		return basename($directory);
-	}, $icon_directories);
-	$icons = [];
-	$icon_dir = plugins_url("assets/icons", __FILE__ );
-	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
-
-	foreach($categories as $category) {
-		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" );
-		foreach ($files as $file) {
-			if (!file_exists($file."/materialicons/24px.svg")) {
-				continue; // Only accept icons where the normal files are used
-			}
-			$icon_styles = [array( "label" => 'Standard', "value" => '' )];
-			foreach ($icon_style_choices as $style_choice) {
-				if (file_exists("{$file}/materialicons{$style_choice[1]}/24px.svg")) {
-					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}" );
-				} else {
-					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
-				}
-			}
-			$name = basename(plugins_url($file, __FILE__));
-			$object = new stdClass();
-			$object->label = ucfirst(str_replace("_"," ",$name));
-			$object->value = $category ."/". $name;
-			$icons[] = [
-				'label' => ucfirst(str_replace("_"," ",$name)),
-				'value' => $category ."/". $name,
-				'styles' => $icon_styles
-			];
-		}	
-	}
-
-	wp_localize_script(
-        'wb-blocks-editor-script',
-        'IconData',
-        [
-            'rootDirectory' => $icon_dir,
-            'categories' => $categories,
-            'options' => $icons,
-        ]
-    );
 
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations('wb-blocks-editor-script', 'wb_blocks');
@@ -360,21 +315,85 @@ foreach($dir_listing as $file) {
 }
 
 /**
+ * Builds the icon picker data for the editor script.
+ *
+ * On `enqueue_block_editor_assets` so that it's run when needed.
+ */
+function wb_blocks_localize_icon_data() {
+	if (!wp_script_is('wb-blocks-editor-script', 'registered')) {
+		return;
+	}
+
+	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" ) ?: [];
+
+	$categories = array_map(function($directory) {
+		return basename($directory);
+	}, $icon_directories);
+	$icons = [];
+	$icon_dir = plugins_url("assets/icons", __FILE__ );
+	$icon_style_choices = [["Outlined","outlined"],["Rounded","round"],["Sharp","sharp"],["Two-tone","twotone"]];
+
+	foreach($categories as $category) {
+		$files = glob( plugin_dir_path( __FILE__ ) . "assets/icons/$category/*" ) ?: [];
+		foreach ($files as $file) {
+			if (!file_exists($file."/materialicons/24px.svg")) {
+				continue; // Only accept icons where the normal files are used
+			}
+			$icon_styles = [array( "label" => 'Standard', "value" => '' )];
+			foreach ($icon_style_choices as $style_choice) {
+				if (file_exists("{$file}/materialicons{$style_choice[1]}/24px.svg")) {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}" );
+				} else {
+					$icon_styles[] = array("label" => "{$style_choice[0]}", "value" => "{$style_choice[1]}", "disabled"=>true );
+				}
+			}
+			$name = basename( $file );
+			$icons[] = [
+				'label' => ucfirst(str_replace("_"," ",$name)),
+				'value' => $category ."/". $name,
+				'styles' => $icon_styles
+			];
+		}
+	}
+
+	wp_localize_script(
+		'wb-blocks-editor-script',
+		'IconData',
+		[
+			'rootDirectory' => $icon_dir,
+			'categories' => $categories,
+			'options' => $icons,
+		]
+	);
+}
+
+add_action('enqueue_block_editor_assets', 'wb_blocks_localize_icon_data');
+
+/**
  * Queues up the gutenberg editor style
+ *
+ * TODO: migrate the blocks to apiVersion 3 before any site running this
+ * plugin upgrades to WordPress 7.1, which always iframes the post editor
+ * with no fallback for apiVersion 1/2 blocks.
+ *
+ * @see https://make.wordpress.org/core/2026/08/03/iframed-editor-changes-in-wordpress-7-1/
  */
 function wb_blocks_gutenberg_editor_styles()
 {
+	if (!is_admin()) {
+		return;
+	}
+
 	wp_enqueue_style(
 		'wb-blocks-block-editor-styles',
 		plugins_url('build/main-gutenberg.min.css', __FILE__),
 		false,
-		'1.2',
+		filemtime(plugin_dir_path(__FILE__) . 'build/main-gutenberg.min.css'),
 		'all'
 	);
 }
 
-// Pulls the enqueued file in to standard wp process.
-add_action('enqueue_block_editor_assets', 'wb_blocks_gutenberg_editor_styles');
+add_action('enqueue_block_assets', 'wb_blocks_gutenberg_editor_styles');
 
 /**
  * Queues up the blocks styling for frontend

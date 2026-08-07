@@ -18,17 +18,18 @@
     "@wordpress/element": "^6.26.0",
     "@wordpress/i18n": "^5.26.0",
     "@wordpress/scripts": "^30.19.0",
-    "npm-run-all": "^4.1.5",
     "classnames": "^2.5.1",
     "copy-webpack-plugin": "^13.0.0",
     "glob": "^10.3.10",
     "import-glob-loader": "^1.1.0",
     "laravel-mix": "^6.0.49",
+    "npm-run-all": "^4.1.5",
     "react-select": "^5.10.2",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.89.2",
     "sass-loader": "^16.0.5",
-    "tailwindcss": "^4.0.17"
+    "tailwindcss": "^4.0.17",
+    "webpack": "5.104.0"
   },
   "scripts": {
     "build:tailwind": "npx tailwindcss -i ./assets/scss/tailwind.css -o ./build/main.min.css --minify",
