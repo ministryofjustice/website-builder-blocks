@@ -384,7 +384,7 @@ function wb_blocks_gutenberg_editor_styles()
 		'wb-blocks-block-editor-styles',
 		plugins_url('build/main-gutenberg.min.css', __FILE__),
 		false,
-		'1.2',
+		filemtime(plugin_dir_path(__FILE__) . 'build/main-gutenberg.min.css'),
 		'all'
 	);
 }
