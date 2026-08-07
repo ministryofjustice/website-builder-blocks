@@ -323,7 +323,7 @@ function wb_blocks_localize_icon_data() {
 	if (!wp_script_is('wb-blocks-editor-script', 'registered')) {
 		return;
 	}
-	
+
 	$icon_directories = glob( plugin_dir_path( __FILE__ ) . "assets/icons/*" ) ?: [];
 
 	$categories = array_map(function($directory) {
