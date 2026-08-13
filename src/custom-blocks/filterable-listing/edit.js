@@ -28,6 +28,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 
 	const {
 		listingPostType,
+		listingIncludeFilters,
 		listingSearchTextFilter,
 		listingDisplayImage,
 		listingFilters,
@@ -37,6 +38,9 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		listingSortOrder,
 		listingRestrictTaxonomies,
 		listingRestrictTerms,
+		stylesHideTaxTitles,
+		stylesTaxLinks,
+		stylesFieldLayout,
 		stylesLayout,
 		stylesResultsShadedBackground,
 		className,
@@ -254,6 +258,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
+	const setListingIncludeFilters = newListingIncludeFilters => {
+		setAttributes({ listingIncludeFilters: newListingIncludeFilters });
+	};
+
 	const setListingSearchTextFilter = newSearchTextFilter => {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
@@ -306,7 +314,7 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const inspectorControls = (
 		<InspectorControls>
 			<PanelBody
-				title={__('Filterable Listing settings')}
+				title={__('Main settings')}
 				initialOpen={true}
 			>
 				<SelectControl
@@ -315,40 +323,36 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					options={ itemTypes }
 					onChange={ setListingPostType }
 				/>
-
-				{
-					(listingPostType.length > 0) && (	
-						<ToggleControl
-							label="Search Text Filter"
-							checked={ listingSearchTextFilter }
-							onChange={ setListingSearchTextFilter }
+				{listingPostType.length > 0 && (
+					<ToggleControl
+						label="Show filtering options"
+						help="If disabled, this will just show the latest items"
+						checked={ listingIncludeFilters }
+						onChange={ setListingIncludeFilters }
+					/>
+				)}
+			</PanelBody>
+			{listingPostType.length > 0 && listingIncludeFilters !==false && (<PanelBody
+				title={__('Filterable Listing settings')}
+				initialOpen={true}
+			>
+				<ToggleControl
+					label="Search Text Filter"
+					checked={ listingSearchTextFilter }
+					onChange={ setListingSearchTextFilter }
+				/>
+				{filterOptionList.length > 0 && (
+					<BaseControl label="Listing Filters">
+						<ReactSelect
+						isMulti
+						label="Filters"
+						options={filterOptionList}
+						value={ selectedListingFilters }
+						onChange={ setListingFilters }
 						/>
-					)
-				}
-
-				{
-					(listingPostType.length > 0) && (	
-						<ToggleControl
-							label="Display featured image"
-							checked={ listingDisplayImage }
-							onChange={ setListingDisplayImage }
-						/>
-					)
-				}
-				{
-					(filterOptionList.length > 0) && (
-						<BaseControl label="Listing Filters">
-							<ReactSelect
-							isMulti
-							label="Filters"
-							options={filterOptionList}
-							value={ selectedListingFilters }
-							onChange={ setListingFilters }
-							/>	
-						</BaseControl>
-					)
-            	}
-				</PanelBody>
+					</BaseControl>
+				)}
+			</PanelBody>)}
 
 				{
 					(listingPostType.length > 0) && (
@@ -394,19 +398,17 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			>
 				<RangeControl
 					label="Items per page"
-					min={5}
+					min={3}
 					max={50}
 					value={ listingItemsPerPage }
 					onChange={ setItemsPerPage }
 				/>
 
 				<SelectControl
-						
 					label="Sort by"
 					options={ sortOptions }
 					value={ listingSortOrder }
 					onChange={ setSortOrder }
-					
 				/>	
 			</PanelBody>
 				)
@@ -451,6 +453,18 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		</InspectorControls>
 	);
 
+	const setStylesFieldLayout = newStylesFieldLayout => {
+		setAttributes({ stylesFieldLayout: newStylesFieldLayout });
+	};
+
+	const setStylesTaxLinks = newStylesTaxLinks => {
+		setAttributes({ stylesTaxLinks: newStylesTaxLinks });
+	};
+
+	const setStylesHideTaxTitles = newStylesHideTaxTitles => {
+		setAttributes({ stylesHideTaxTitles: newStylesHideTaxTitles });
+	};
+
 	const setStylesLayout = newStylesLayout => {
 		setAttributes({ stylesLayout: newStylesLayout });
 	};
@@ -468,21 +482,49 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 					initialOpen={true}
 				>
 					<ToggleControl
+						label="Display featured image"
+						checked={ listingDisplayImage }
+						onChange={ setListingDisplayImage }
+					/>
+					<ToggleControl
 						label="Shaded background"
 						help="Item divider line will be hidden"
 						checked={ stylesResultsShadedBackground }
 						onChange={ setStylesResultsShadedBackground }
 					/>
+					{listingIncludeFilters !==false && (
 					<RadioControl
-						label="Layout"
+						label="Layout of filters and results"
 						selected={stylesLayout ? stylesLayout : 'side-by-side'}
 						options={[
 							{ label: 'Side-by-side', value: 'side-by-side' },
 							{ label: 'Stacked', value: 'stacked' },
 						]}
 						onChange={ setStylesLayout }
+					/>)}
+					<RadioControl
+						label="Layout of taxonomies"
+						selected={stylesFieldLayout ? stylesFieldLayout : 'stacked'}
+						options={[
+							{ label: 'Everything stacked', value: 'stacked' },
+							{ label: 'Stacked, with inline values', value: 'stacked-inline' },
+							{ label: 'Inline with stacked values', value: 'inline-stacked' },
+							{ label: 'Everything inline', value: 'inline' },
+						]}
+						onChange={ setStylesFieldLayout }
 					/>
-						
+					<ToggleControl
+						label="Links for taxonomies"
+						help={`Adds links for taxonomy values (` + listingDisplayTerms.map(term => taxOptionList.find(o => o.value === term)?.label).filter(Boolean).join('; ') + `)`}
+						checked={ stylesTaxLinks }
+						onChange={ setStylesTaxLinks }
+					/>
+					<ToggleControl
+						label="Hide titles"
+						help="Turn on if all taxonomies are self-explanatory"
+						checked={ stylesHideTaxTitles }
+						onChange={ setStylesHideTaxTitles }
+					/>
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>

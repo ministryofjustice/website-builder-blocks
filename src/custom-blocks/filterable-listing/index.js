@@ -16,6 +16,10 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "string",
       default: ""
     },
+    listingIncludeFilters: {
+      type: "boolean",
+      default: true
+    },
     listingSearchTextFilter: {
       type: "boolean",
       default: true
@@ -51,6 +55,18 @@ registerBlockType("wb-blocks/filterable-listing", {
     listingRestrictTerms: {
       type: "array",
       default: ""
+    },
+    stylesTaxLinks: {
+      type: "boolean",
+      default: false
+    },
+    stylesHideTaxTitles: {
+      type: "boolean",
+      default: false
+    },
+    stylesFieldLayout: {
+      type: "string",
+      default: "stacked"
     },
     stylesLayout: {
       type: "string",
