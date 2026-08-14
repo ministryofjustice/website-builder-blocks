@@ -5,8 +5,8 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 	let allSectionsOpen = sections.length == openSections.length;
 	setAccordionState(button, allSectionsOpen ? "open" : "closed");
 
-	const observer = new MutationObserver((mutations) => {
-		mutations.forEach((mutation) => {
+	const observer = new MutationObserver(mutations => {
+		mutations.forEach(mutation => {
 			openSections = accordion.querySelectorAll("details[open]");
 			allSectionsOpen = sections.length == openSections.length; // recalculate - it may have changed since page
 			if (mutation.target.closest(".wb-accordion-toggle-all")) return;
@@ -15,11 +15,11 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 	});
 
 	observer.observe(accordion, {
-	  subtree: true,     // watch all children
-	  attributes: true,  // detect attribute changes
+		subtree: true, // watch all children
+		attributes: true, // detect attribute changes
 	});
 
-	button.addEventListener("click", function(e) {
+	button.addEventListener("click", function (e) {
 		e.preventDefault();
 		if (this.dataset.state === "open") {
 			//close all sections
@@ -32,7 +32,7 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 				section.open = true;
 			});
 		}
-		
+
 		e.stopPropagation();
 	});
 });

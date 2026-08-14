@@ -1,10 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
-	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	document.querySelectorAll('.wp-block-cover').forEach((cover) => {
-		const video = cover.querySelector('video');
-		const button = cover.querySelector('.video-pause-button');
+document.addEventListener("DOMContentLoaded", () => {
+	const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	document.querySelectorAll(".wp-block-cover").forEach(cover => {
+		const video = cover.querySelector("video");
+		const button = cover.querySelector(".video-pause-button");
 		if (video) {
-			button.addEventListener('click', (event) => {
+			button.addEventListener("click", event => {
 				event.stopPropagation();
 				togglePause(video, button);
 			});
@@ -20,7 +20,7 @@ function togglePause(video, button) {
 	if (video.paused) {
 		playVid(video, button);
 	} else {
-		pauseVid(video, button)
+		pauseVid(video, button);
 	}
 }
 

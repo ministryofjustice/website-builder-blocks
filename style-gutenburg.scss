@@ -15,15 +15,14 @@ Text Domain: wb_blocks
 // which needs them. Verify the block-styles preview panel still renders styled
 // before removing.
 :is(
-    .edit-post-visual-editor,
-    .block-editor-block-styles,
-    .block-editor-inserter__menu-help-panel,
-    .block-editor-iframe__body.editor-styles-wrapper
+	.edit-post-visual-editor,
+	.block-editor-block-styles,
+	.block-editor-inserter__menu-help-panel,
+	.block-editor-iframe__body.editor-styles-wrapper
 ) {
+	// load variables
+	@import "assets/scss/variables.scss";
 
-    // load variables
-    @import "assets/scss/variables.scss";
-
-    // load editor specific styles
-    @import 'src/**/editor.scss';
+	// load editor specific styles
+	@import "src/**/editor.scss";
 }

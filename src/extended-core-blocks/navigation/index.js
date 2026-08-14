@@ -3,47 +3,46 @@
  *  https://wordpress.org/documentation/article/navigation-block/
  *
  */
-import { registerBlockVariation } from '@wordpress/blocks';
+import { registerBlockVariation } from "@wordpress/blocks";
 const { createHigherOrderComponent } = wp.compose;
 const { useEffect } = wp.element;
 
-registerBlockVariation('core/navigation', {
+registerBlockVariation("core/navigation", {
 	// This is the out-of-the-box WordPress style, no special stuff
-	name: 'original-navigation',
-	title: 'WordPress navigation',
-	description: 'Navigation used as default by WordPress',
+	name: "original-navigation",
+	title: "WordPress navigation",
+	description: "Navigation used as default by WordPress",
 	attributes: {
-		className: 'is-style-wordpress'
+		className: "is-style-wordpress",
 	},
-	scope: ['transform'],
-	isActive: (blockAttributes) =>
-	(!blockAttributes?.className?.includes('is-style-drawer') && !blockAttributes?.className?.includes('is-style-detached')),
+	scope: ["transform"],
+	isActive: blockAttributes =>
+		!blockAttributes?.className?.includes("is-style-drawer") &&
+		!blockAttributes?.className?.includes("is-style-detached"),
 });
-registerBlockVariation('core/navigation', {
-	name: 'drawer-navigation',
-	title: 'Drawer navigation',
-	description: 'Navigation where the submenu opens in a drawer',
+registerBlockVariation("core/navigation", {
+	name: "drawer-navigation",
+	title: "Drawer navigation",
+	description: "Navigation where the submenu opens in a drawer",
 	attributes: {
 		openSubmenusOnClick: true,
-		overlayMenu: 'never',
-		className: 'is-style-drawer'
+		overlayMenu: "never",
+		className: "is-style-drawer",
 	},
-	scope: ['transform'],
-	isActive: (blockAttributes) =>
-		blockAttributes?.className?.includes('is-style-drawer'),
+	scope: ["transform"],
+	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-drawer"),
 });
-registerBlockVariation('core/navigation', {
-	name: 'detached-navigation',
-	title: 'Detached navigation',
-	description: 'Navigation opened and closed by a button',
+registerBlockVariation("core/navigation", {
+	name: "detached-navigation",
+	title: "Detached navigation",
+	description: "Navigation opened and closed by a button",
 	attributes: {
 		openSubmenusOnClick: true,
-		overlayMenu: 'always',
-		className: 'is-style-detached'
+		overlayMenu: "always",
+		className: "is-style-detached",
 	},
-	scope: ['transform'],
-	isActive: (blockAttributes) =>
-		blockAttributes?.className?.includes('is-style-detached'),
+	scope: ["transform"],
+	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-detached"),
 });
 
 /**
@@ -51,17 +50,17 @@ registerBlockVariation('core/navigation', {
  * overlayMenu must be "never" for drawer, and "always" for detached
  * openSubmenusOnClick must be TRUE for both
  */
-const syncOptionsWithClass = createHigherOrderComponent((BlockEdit) => {
-	return (props) => {
-		if (props.name !== 'core/navigation') {
+const syncOptionsWithClass = createHigherOrderComponent(BlockEdit => {
+	return props => {
+		if (props.name !== "core/navigation") {
 			return <BlockEdit {...props} />;
 		}
 
 		const { attributes, setAttributes } = props;
 		const { className, overlayMenu, openSubmenusOnClick } = attributes;
 
-		const hasDrawerStyle = className?.includes('is-style-drawer');
-		const hasDetachedStyle = className?.includes('is-style-detached');
+		const hasDrawerStyle = className?.includes("is-style-drawer");
+		const hasDetachedStyle = className?.includes("is-style-detached");
 		useEffect(() => {
 			// Upon selecting either of these styles, the relevant options are selected
 			if (hasDrawerStyle) {
@@ -73,7 +72,7 @@ const syncOptionsWithClass = createHigherOrderComponent((BlockEdit) => {
 				setAttributes({ openSubmenusOnClick: true });
 				setAttributes({ overlayMenu: "always" });
 			}
-		}, [hasDrawerStyle,hasDetachedStyle]);
+		}, [hasDrawerStyle, hasDetachedStyle]);
 
 		useEffect(() => {
 			//Upon changing the submenu behaviour once one of the styles has been selected
@@ -89,15 +88,10 @@ const syncOptionsWithClass = createHigherOrderComponent((BlockEdit) => {
 			if (hasDetachedStyle && overlayMenu != "always") {
 				setAttributes({ overlayMenu: "always" });
 			}
-
 		}, [overlayMenu, openSubmenusOnClick]);
 
 		return <BlockEdit {...props} />;
 	};
-}, 'syncOptionsWithClass');
+}, "syncOptionsWithClass");
 
-wp.hooks.addFilter(
-	'editor.BlockEdit',
-	'website-builder-blocks/sync-toggle',
-	syncOptionsWithClass
-);
+wp.hooks.addFilter("editor.BlockEdit", "website-builder-blocks/sync-toggle", syncOptionsWithClass);

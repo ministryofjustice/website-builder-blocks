@@ -11,8 +11,8 @@ import { __, sprintf } from "@wordpress/i18n";
  *   -> Page <b>%1$d</b> of <b>%2$d</b>
  */
 registerBlockStyle("core/query-pagination-numbers", {
-  name: "bold-numbers",
-  label: __("Bold numbers", "wb_blocks"),
+	name: "bold-numbers",
+	label: __("Bold numbers", "wb_blocks"),
 });
 
 /**
@@ -25,23 +25,19 @@ registerBlockStyle("core/query-pagination-numbers", {
  *   where the phrase 'Page X of Y' is shown, without any links.
  */
 const addAttributes = (settings, name) => {
-  if (name !== "core/query-pagination-numbers") {
-    return settings;
-  }
+	if (name !== "core/query-pagination-numbers") {
+		return settings;
+	}
 
-  settings.attributes = {
-    ...settings.attributes,
-    displayType: { type: "string", default: "page-links" },
-  };
+	settings.attributes = {
+		...settings.attributes,
+		displayType: { type: "string", default: "page-links" },
+	};
 
-  return settings;
+	return settings;
 };
 
-addFilter(
-  "blocks.registerBlockType",
-  "wb_blocks/query-pagination-numbers-extend-attributes",
-  addAttributes,
-);
+addFilter("blocks.registerBlockType", "wb_blocks/query-pagination-numbers-extend-attributes", addAttributes);
 
 /**
  * Register block variations
@@ -49,74 +45,67 @@ addFilter(
  * Since we don't have any variations, create a default one too.
  */
 registerBlockVariation("core/query-pagination-numbers", {
-  name: "page-links-query-pagination-numbers",
-  title: "WordPress page numbers",
-  description: "Default WordPress page numbers",
-  attributes: { displayType: "page-links" },
-  scope: ["transform"],
-  isDefault: true,
-  isActive: (blockAttributes) =>
-    blockAttributes?.displayType !== "current-of-total",
+	name: "page-links-query-pagination-numbers",
+	title: "WordPress page numbers",
+	description: "Default WordPress page numbers",
+	attributes: { displayType: "page-links" },
+	scope: ["transform"],
+	isDefault: true,
+	isActive: blockAttributes => blockAttributes?.displayType !== "current-of-total",
 });
 
 registerBlockVariation("core/query-pagination-numbers", {
-  name: "current-of-total-query-pagination-numbers",
-  title: "Simple page numbers",
-  description: "Page numbers in the format of: Page x of y",
-  attributes: { displayType: "current-of-total" },
-  scope: ["transform"],
-  isActive: (blockAttributes) =>
-    blockAttributes?.displayType === "current-of-total",
+	name: "current-of-total-query-pagination-numbers",
+	title: "Simple page numbers",
+	description: "Page numbers in the format of: Page x of y",
+	attributes: { displayType: "current-of-total" },
+	scope: ["transform"],
+	isActive: blockAttributes => blockAttributes?.displayType === "current-of-total",
 });
-
 
 /**
  * Handle the custom display type of current-of-total
  */
-const handleDisplayTypes = (BlockEdit) => (props) => {
-  if (props.name !== "core/query-pagination-numbers") {
-    return <BlockEdit {...props} />;
-  }
+const handleDisplayTypes = BlockEdit => props => {
+	if (props.name !== "core/query-pagination-numbers") {
+		return <BlockEdit {...props} />;
+	}
 
-  const attributes = props.attributes || {};
+	const attributes = props.attributes || {};
 
-  // Check the display type
-  if (attributes.displayType !== "current-of-total") {
-    // Do nothing if it is set to anything other than current-of-total
-    return <BlockEdit {...props} />;
-  }
+	// Check the display type
+	if (attributes.displayType !== "current-of-total") {
+		// Do nothing if it is set to anything other than current-of-total
+		return <BlockEdit {...props} />;
+	}
 
-  // Here, the displayType is set to current-of-total
+	// Here, the displayType is set to current-of-total
 
-  // Infer from the className, should the numbers be bold?
-  const classArray = attributes?.className?.split(" ") ?? [];
-  const isStyleBoldNumbers = classArray.includes("is-style-bold-numbers");
+	// Infer from the className, should the numbers be bold?
+	const classArray = attributes?.className?.split(" ") ?? [];
+	const isStyleBoldNumbers = classArray.includes("is-style-bold-numbers");
 
-  // Start to build the string for the preview.
-  let previewTranslation = __("Page %1$d of %2$d");
+	// Start to build the string for the preview.
+	let previewTranslation = __("Page %1$d of %2$d");
 
-  if (isStyleBoldNumbers) {
-    // Lets add some b tags round the number placeholders.
-    previewTranslation = previewTranslation.replace(/(%\d+\$d)/g, "<b>$1</b>");
-  }
+	if (isStyleBoldNumbers) {
+		// Lets add some b tags round the number placeholders.
+		previewTranslation = previewTranslation.replace(/(%\d+\$d)/g, "<b>$1</b>");
+	}
 
-  return (
-    <WbPreviewWrapper
-      blockName={props.name}
-      className={attributes?.className ?? ''}
-      label="Block: Simple page numbers"
-      previewHtml={sprintf(previewTranslation, 1, 2)}
-    >
-      <BlockEdit {...props} ariaHidden={true} />
-    </WbPreviewWrapper>
-  );
+	return (
+		<WbPreviewWrapper
+			blockName={props.name}
+			className={attributes?.className ?? ""}
+			label="Block: Simple page numbers"
+			previewHtml={sprintf(previewTranslation, 1, 2)}
+		>
+			<BlockEdit {...props} ariaHidden={true} />
+		</WbPreviewWrapper>
+	);
 };
 
-addFilter(
-  "editor.BlockEdit",
-  "website-builder-blocks/query-pagination-numbers",
-  handleDisplayTypes,
-);
+addFilter("editor.BlockEdit", "website-builder-blocks/query-pagination-numbers", handleDisplayTypes);
 
 /**
  * The block that is rendered in the editor canvas.
@@ -132,35 +121,26 @@ addFilter(
  * - moving WbPreviewWrapper into it's own file
  * - using it as an abstraction that's compatible with all blocks
  */
-export const WbPreviewWrapper = ({
-  blockName,
-  children,
-  className,
-  label,
-  previewHtml,
-}) => {
-  const variant = blockName.replace(/\//g, "-").replace(/^core-/, "");
+export const WbPreviewWrapper = ({ blockName, children, className, label, previewHtml }) => {
+	const variant = blockName.replace(/\//g, "-").replace(/^core-/, "");
 
-  // Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
-  return (
-    <div
-      className={`wb-preview-wrap wb-preview-wrap--${variant}`}
-      style={{ opacity: 0 }}
-    >
-      {/* Keep original edit output mounted for the block toolbar; hide it visually */}
-      {children}
+	// Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
+	return (
+		<div className={`wb-preview-wrap wb-preview-wrap--${variant}`} style={{ opacity: 0 }}>
+			{/* Keep original edit output mounted for the block toolbar; hide it visually */}
+			{children}
 
-      {/* Custom client-rendered preview, overlayed */}
-      <RawHTML
-        className={`wb-preview-wrap__preview ${getBlockDefaultClassName(blockName)} ${className}`}
-        // Properties from the original block
-        aria-label={label}
-        role="document"
-        // Set initial display to none, to avoid layout shift, when css loads.
-        style={{ display: "none" }}
-      >
-        {previewHtml}
-      </RawHTML>
-    </div>
-  );
+			{/* Custom client-rendered preview, overlayed */}
+			<RawHTML
+				className={`wb-preview-wrap__preview ${getBlockDefaultClassName(blockName)} ${className}`}
+				// Properties from the original block
+				aria-label={label}
+				role="document"
+				// Set initial display to none, to avoid layout shift, when css loads.
+				style={{ display: "none" }}
+			>
+				{previewHtml}
+			</RawHTML>
+		</div>
+	);
 };

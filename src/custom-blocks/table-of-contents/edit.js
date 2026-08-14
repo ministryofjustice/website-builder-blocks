@@ -1,56 +1,38 @@
-import {
-	PanelBody,
-	ToggleControl,
-	TextControl
-} from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
-import {
-	RichText,
-	InspectorControls
-} from '@wordpress/block-editor';
+import { PanelBody, ToggleControl, TextControl } from "@wordpress/components";
+import { useEffect } from "@wordpress/element";
+import { __ } from "@wordpress/i18n";
+import { RichText, InspectorControls } from "@wordpress/block-editor";
 
 const { Fragment } = wp.element;
 
-export default function tocEdit({ attributes, setAttributes} ) {
-
+export default function tocEdit({ attributes, setAttributes }) {
 	useEffect(() => {
-		let contentArea = document.querySelector('.editor-visual-editor');
+		let contentArea = document.querySelector(".editor-visual-editor");
 		if (!contentArea) {
 			return;
 		}
 		let contentsList = document.getElementById("table-of-contents-contents-list");
-		const mutationObserver = new MutationObserver((mutationList) => {
+		const mutationObserver = new MutationObserver(mutationList => {
 			let headingItems = contentArea.querySelectorAll("main h2:not(.wb-toc-ignore), main h3:not(.wb-toc-ignore)");
 			let contentItems = contentsList.querySelectorAll("li");
 			if (headingItems.length != contentItems.length) {
 				contentsList.innerHTML = "";
-				for(let i=0;i<headingItems.length;i++) {
+				for (let i = 0; i < headingItems.length; i++) {
 					if (headingItems[i].innerHTML.includes(tocTitle)) continue;
 					let hasSubMenuButton = false;
-					if (i<(headingItems.length-1) && headingItems[i].tagName == "H2" && headingItems[i+1].tagName == "H3" ) {
+					if (i < headingItems.length - 1 && headingItems[i].tagName == "H2" && headingItems[i + 1].tagName == "H3") {
 						// Not last item, is H2 before an H3
 						hasSubMenuButton = true;
 					}
 					onClassChange(headingItems[i]); // Live updating of contents item if content is changed without re-writing the entire table of contents
-					contentsList.innerHTML += createContentItem(headingItems[i],hasSubMenuButton);
+					contentsList.innerHTML += createContentItem(headingItems[i], hasSubMenuButton);
 				}
 			}
-
 		});
 		mutationObserver.observe(contentArea, { childList: true, subtree: true });
 	}, []);
 
-	const {
-		tocTitle,
-		backToTopText,
-		sticky,
-		scrollSpy,
-		tocClassName,
-		dualLevel,
-		customNesting,
-		className
-	} = attributes;
+	const { tocTitle, backToTopText, sticky, scrollSpy, tocClassName, dualLevel, customNesting, className } = attributes;
 
 	const allowedBullets = [
 		"-", // hyphen
@@ -64,7 +46,6 @@ export default function tocEdit({ attributes, setAttributes} ) {
 		"➤", // slick triangle
 		"|", // pipe (special case - denotes a left border)
 	];
-
 
 	// Set className attribute for PHP frontend to use
 	setAttributes({ tocClassName: className });
@@ -84,77 +65,76 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	const setDualLevel = newDualLevel => {
 		setAttributes({ dualLevel: newDualLevel });
 	};
-	const setCustomNesting = (data) => {
+	const setCustomNesting = data => {
 		setAttributes({
-			customNesting: attributes.customNesting === data ? "" : data //toggle
+			customNesting: attributes.customNesting === data ? "" : data, //toggle
 		});
 	};
 	const inspectorControls = (
 		<InspectorControls>
-			<PanelBody
-				title={__('Table of contents')}
-				initialOpen={true}
-			>
+			<PanelBody title={__("Table of contents")} initialOpen={true}>
 				<ToggleControl
 					label="Contents tracks down the page"
 					help="Designed for the ToC to be in its own column"
-					checked={ sticky }
-					onChange={ setSticky }
+					checked={sticky}
+					onChange={setSticky}
 				/>
 				<ToggleControl
 					label="Highlight the current position"
 					help="Marks the current ToC item as you scroll down the page, designed to be used with the above where the ToC is always visible on Desktop displays."
-					checked={ scrollSpy }
-					onChange={ setScrollSpy }
+					checked={scrollSpy}
+					onChange={setScrollSpy}
 				/>
 				<ToggleControl
 					label="Dual-level table of contents"
 					help="If enabled, H3 headings will included as well as H2 headings"
-					checked={ dualLevel }
-					onChange={ setDualLevel }
+					checked={dualLevel}
+					onChange={setDualLevel}
 				/>
 				<TextControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
 					label="Back to top link text"
 					help="What text should be used for the link to skip back to the table of contents"
-					value={ backToTopText }
-					onChange={ setBackToTopText }
+					value={backToTopText}
+					onChange={setBackToTopText}
 				/>
 			</PanelBody>
 			{dualLevel && (
 				<PanelBody title="Nested style">
-					<div style={{
-						display: 'grid',
-						gridTemplateColumns: 'repeat(4, 1fr)',
-						gap: '10px'
-					}}>
+					<div
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(4, 1fr)",
+							gap: "10px",
+						}}
+					>
 						<button
 							onClick={() => setCustomNesting("")}
 							style={{
-								outline: attributes.customNesting === "" ? '8px solid #0ff' : '1px solid #ccc',
-								filter: attributes.customNesting === "" ? 'invert(1)' : 'none',
-								padding: '10px',
-								background: 'white',
-								cursor: 'pointer',
-								textAlign: 'center',
-								fontWeight: '700',
-								gridColumn: 'span 2'
+								outline: attributes.customNesting === "" ? "8px solid #0ff" : "1px solid #ccc",
+								filter: attributes.customNesting === "" ? "invert(1)" : "none",
+								padding: "10px",
+								background: "white",
+								cursor: "pointer",
+								textAlign: "center",
+								fontWeight: "700",
+								gridColumn: "span 2",
 							}}
 						>
 							None
 						</button>
-						{allowedBullets.map((data) => (
+						{allowedBullets.map(data => (
 							<button
 								key={data}
 								onClick={() => setCustomNesting(data)}
 								style={{
-									outline: attributes.customNesting === data ? '8px solid #0ff' : '1px solid #ccc',
-									filter: attributes.customNesting === data ? 'invert(1)' : 'none',
-									padding: '10px',
-									background: 'white',
-									cursor: 'pointer',
-									textAlign: 'center'
+									outline: attributes.customNesting === data ? "8px solid #0ff" : "1px solid #ccc",
+									filter: attributes.customNesting === data ? "invert(1)" : "none",
+									padding: "10px",
+									background: "white",
+									cursor: "pointer",
+									textAlign: "center",
 								}}
 							>
 								{data}
@@ -167,49 +147,52 @@ export default function tocEdit({ attributes, setAttributes} ) {
 	);
 
 	return (
-		<Fragment >
-			{ inspectorControls }
+		<Fragment>
+			{inspectorControls}
 			<div
-				className={`
-					wb-blocks-toc
-					${tocClassName ? tocClassName : ""}
-					${sticky ? 'toc-sticky' : ''}
-					${customNesting ? "" : 'toc-no-marker'}
-					${customNesting == "|" ? 'toc-border' : ""}
-					${dualLevel ? "dual-level" : ""}
-				`}
-				style={{'--bullet-icon': "'"+customNesting+"'"}}
+				className={`wb-blocks-toc ${tocClassName ? tocClassName : ""} ${sticky ? "toc-sticky" : ""} ${customNesting ? "" : "toc-no-marker"} ${customNesting == "|" ? "toc-border" : ""} ${dualLevel ? "dual-level" : ""} `}
+				style={{ "--bullet-icon": "'" + customNesting + "'" }}
 			>
 				<div id="table-of-contents" class="wb-table-of-contents">
 					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
-						<RichText
-							value={tocTitle}
-							onChange={ setTocTitle }
-						/>
+						<RichText value={tocTitle} onChange={setTocTitle} />
 					</h2>
-					<ol id="table-of-contents-contents-list" class="wb-table-of-contents__list">
-					</ol>
+					<ol id="table-of-contents-contents-list" class="wb-table-of-contents__list"></ol>
 				</div>
 			</div>
 		</Fragment>
 	);
-	
 }
 
-function createContentItem(heading,hasSubMenuButton = false) {
+function createContentItem(heading, hasSubMenuButton = false) {
 	// This function creates the entries for the table of contents.
 	let additionalClass = "";
 	let hintText = "";
 	let subMenuButton = "";
-	if (hasSubMenuButton) subMenuButton = '<button class="toc-sub-menu-control wp-element-button"><span class="toc-sub-menu-control__text"></span></button>';
+	if (hasSubMenuButton)
+		subMenuButton =
+			'<button class="toc-sub-menu-control wp-element-button"><span class="toc-sub-menu-control__text"></span></button>';
 	if (heading.innerText.trim() == "") {
 		additionalClass += "empty ";
 		hintText = "Empty item";
 	}
 	if (heading.tagName == "H3") {
-		additionalClass += "sub-heading "
+		additionalClass += "sub-heading ";
 	}
-	return '<li id="toc-link-for_'+heading.id+'" class="wb-table-of-contents__item '+additionalClass+'"><a href="#'+heading.id+'">'+heading.innerText+hintText+'</a> '+subMenuButton+'</li>';
+	return (
+		'<li id="toc-link-for_' +
+		heading.id +
+		'" class="wb-table-of-contents__item ' +
+		additionalClass +
+		'"><a href="#' +
+		heading.id +
+		'">' +
+		heading.innerText +
+		hintText +
+		"</a> " +
+		subMenuButton +
+		"</li>"
+	);
 }
 
 function onClassChange(node) {
@@ -218,7 +201,7 @@ function onClassChange(node) {
 
 	let lastClassString = node.classList.toString();
 
-	const mutationObserver = new MutationObserver((mutationList) => {
+	const mutationObserver = new MutationObserver(mutationList => {
 		for (const item of mutationList) {
 			if (item.attributeName === "class") {
 				const classString = node.classList.toString();
@@ -238,20 +221,20 @@ function onClassChange(node) {
 }
 function alterHeading(heading) {
 	if (!heading) return;
-	let headingContentItem = document.getElementById("toc-link-for_"+heading.id)
+	let headingContentItem = document.getElementById("toc-link-for_" + heading.id);
 	if (!headingContentItem) return; // The function will run before the contents list has been created so this is important
 
 	// Check: has the text changed
 	if (heading.innerText != headingContentItem.innerText) {
 		if (headingContentItem.innerHTML.includes("<button")) {
-			headingContentItem.outerHTML = createContentItem(heading,true);
+			headingContentItem.outerHTML = createContentItem(heading, true);
 		} else {
-			headingContentItem.outerHTML = createContentItem(heading,false);
+			headingContentItem.outerHTML = createContentItem(heading, false);
 		}
 	}
 }
 
-function applyButtonFunctionality () {
+function applyButtonFunctionality() {
 	// Function to duplicate the open close functionality of the frontend
 	// The backend list is a series of non-nested list-items, for reasons
 	const toc = document.getElementById("table-of-contents-contents-list");
@@ -262,7 +245,7 @@ function applyButtonFunctionality () {
 	controllingListItems.forEach(item => {
 		const button = item.querySelector("button");
 
-		const openCloseSubordinates = (e) => {
+		const openCloseSubordinates = e => {
 			// Scan for subordinates - these are all the "sub-headings" until the next non-sub-heading.
 			// Only difference in the HTML is "sub-heading" class
 			// So we continue scanning until a non-sub-heading class is found or the list ends

@@ -5,7 +5,6 @@ Block: Filterable Listing (Frontend styles)
 
 **********************************************************************************************/
 
-
 // Copied from Hale - needs rework
 .wb-table-of-contents {
 	padding-bottom: 1.1rem;
@@ -16,7 +15,7 @@ Block: Filterable Listing (Frontend styles)
 		border-bottom: none;
 
 		.toc-sub-menu-control {
-			display:none;
+			display: none;
 		}
 
 		&__sub-list {
@@ -75,7 +74,7 @@ Block: Filterable Listing (Frontend styles)
 					}
 				}
 			}
-			&:is(.dual-level [aria-expanded="true"]+*) {
+			&:is(.dual-level [aria-expanded="true"] + *) {
 				display: block;
 			}
 
@@ -100,9 +99,7 @@ Block: Filterable Listing (Frontend styles)
 					a {
 						margin-left: 0;
 					}
-
 				}
-
 			}
 			&:is(.toc-border *) {
 				border-left: 1px solid;
@@ -115,22 +112,17 @@ Block: Filterable Listing (Frontend styles)
 			}
 		}
 		&__item {
-
 			a {
 				&:hover {
-					background-color: color-mix(
-						in srgb,
-						var(--colour-page-background) 92.65%,
-						var(--colour-foreground)
-					);
+					background-color: color-mix(in srgb, var(--colour-page-background) 92.65%, var(--colour-foreground));
 				}
 			}
 			padding-left: 15px;
 			padding-top: 0.2rem;
 			padding-bottom: 0.2rem;
 			margin-top: 0.625rem; // (10px, 10÷16 = 0.625)
-		
-			@media (min-width:782px) {
+
+			@media (min-width: 782px) {
 				&:has(.wb-table-of-contents__item--current),
 				&--current {
 					font-weight: 700;
@@ -160,13 +152,13 @@ Block: Filterable Listing (Frontend styles)
 			}
 			&__text {
 				&:after {
-					content:"+";
+					content: "+";
 					position: relative;
-					top:1px;
+					top: 1px;
 				}
 				&:is([aria-expanded="true"] *):after,
 				&:is(.opened *):after {
-					content:"×";
+					content: "×";
 				}
 			}
 		}
@@ -176,7 +168,7 @@ Block: Filterable Listing (Frontend styles)
 #table-of-contents {
 	top: 2rem;
 	overflow-y: auto;
-	@media (min-width:782px) {
+	@media (min-width: 782px) {
 		&.toc-sticky {
 			position: sticky;
 		}
@@ -187,7 +179,7 @@ Block: Filterable Listing (Frontend styles)
 	display: inline;
 }
 body:has(.toc-sticky) .wb-jump-link {
-	@media (min-width:782px) {
+	@media (min-width: 782px) {
 		display: none;
 	}
 }

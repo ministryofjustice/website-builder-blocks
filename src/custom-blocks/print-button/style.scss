@@ -19,8 +19,8 @@ Block: Print Button (Frontend styles)
 	}
 }
 
-.wb-print-button{
-	&--has-icon{
+.wb-print-button {
+	&--has-icon {
 		&.wb-print-button--icon-left:before {
 			background-color: currentColor;
 			min-width: calc(1.2em * var(--icon-size));
@@ -32,9 +32,9 @@ Block: Print Button (Frontend styles)
 			display: inline-block;
 			mask-size: contain;
 			mask-image: var(--icon);
-			mask-position:center;
-			mask-repeat:no-repeat;
-			content:"";
+			mask-position: center;
+			mask-repeat: no-repeat;
+			content: "";
 			margin-right: 6px;
 		}
 
@@ -54,7 +54,6 @@ Block: Print Button (Frontend styles)
 			mask-repeat: no-repeat;
 			margin-left: 6px;
 		}
-
 	}
 	&--icon-only {
 		display: inline-flex;
@@ -62,20 +61,20 @@ Block: Print Button (Frontend styles)
 		justify-content: center;
 
 		&:before {
-		background-color: currentColor;
+			background-color: currentColor;
 
-		min-width: calc(1.2em * var(--icon-size));
-		min-height: calc(1.2em * var(--icon-size));
-		width: calc(1.2em * var(--icon-size));
-		height: calc(1.2em * var(--icon-size));
+			min-width: calc(1.2em * var(--icon-size));
+			min-height: calc(1.2em * var(--icon-size));
+			width: calc(1.2em * var(--icon-size));
+			height: calc(1.2em * var(--icon-size));
 
-		display: inline-block;
-		content: "";
+			display: inline-block;
+			content: "";
 
-		mask-image: var(--icon);
-		mask-size: contain;
-		mask-repeat: no-repeat;
-		mask-position: center;
+			mask-image: var(--icon);
+			mask-size: contain;
+			mask-repeat: no-repeat;
+			mask-position: center;
 		}
 	}
 }

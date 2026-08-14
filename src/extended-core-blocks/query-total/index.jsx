@@ -1,11 +1,6 @@
 import { InspectorControls } from "@wordpress/block-editor";
 import { registerBlockStyle } from "@wordpress/blocks";
-import {
-  PanelBody,
-  PanelRow,
-  ToggleControl,
-  __experimentalVStack as VStack,
-} from "@wordpress/components";
+import { PanelBody, PanelRow, ToggleControl, __experimentalVStack as VStack } from "@wordpress/components";
 import { RawHTML } from "@wordpress/element";
 import { addFilter } from "@wordpress/hooks";
 import { __, sprintf } from "@wordpress/i18n";
@@ -20,8 +15,8 @@ import QueryRangeFormatPicker from "./FormatPicker";
  *   -> Displaying <b>%1$s</b> - <b>%2$s</b> of <b>%3$s</b>
  */
 registerBlockStyle("core/query-total", {
-  name: "bold-numbers",
-  label: __("Bold numbers", "wb_blocks"),
+	name: "bold-numbers",
+	label: __("Bold numbers", "wb_blocks"),
 });
 
 /**
@@ -33,26 +28,21 @@ registerBlockStyle("core/query-total", {
  *   when there are multiple results e.g. "Displaying %1$s – %2$s of %3$s"
  */
 const addAttributes = (settings, name) => {
-  if (name !== "core/query-total") {
-    return settings;
-  }
+	if (name !== "core/query-total") {
+		return settings;
+	}
 
-  settings.attributes = {
-    ...settings.attributes,
-    showWhenNoResults: { type: "boolean", default: false },
-    rangeFormatSingle: { type: "string", default: null },
-    rangeFormatMulti: { type: "string", default: null },
-  };
+	settings.attributes = {
+		...settings.attributes,
+		showWhenNoResults: { type: "boolean", default: false },
+		rangeFormatSingle: { type: "string", default: null },
+		rangeFormatMulti: { type: "string", default: null },
+	};
 
-  return settings;
+	return settings;
 };
 
-addFilter(
-  "blocks.registerBlockType",
-  "wb_blocks/query-total-extend-attributes",
-  addAttributes,
-);
-
+addFilter("blocks.registerBlockType", "wb_blocks/query-total-extend-attributes", addAttributes);
 
 /**
  * Custom TotalResults component for preview
@@ -61,45 +51,33 @@ addFilter(
  * all we do here is wrap the number in b tags
  * if the bold-numbers style is active.
  */
-const TotalResults = ({
-  showWhenNoResults,
-  isStyleBoldNumbers,
-  setAttributes,
-  children,
-}) => {
-  // Translate the phrase with the number, that's what WP does.
-  let previewHtml = __("12 results found");
+const TotalResults = ({ showWhenNoResults, isStyleBoldNumbers, setAttributes, children }) => {
+	// Translate the phrase with the number, that's what WP does.
+	let previewHtml = __("12 results found");
 
-  if (isStyleBoldNumbers) {
-    // Lets add b tags round the number.
-    previewHtml = previewHtml.replace("12", "<b>12</b>");
-  }
+	if (isStyleBoldNumbers) {
+		// Lets add b tags round the number.
+		previewHtml = previewHtml.replace("12", "<b>12</b>");
+	}
 
-  return (
-    <>
-      <CustomBlockWrapper previewHtml={previewHtml}>
-        {children}
-      </CustomBlockWrapper>
+	return (
+		<>
+			<CustomBlockWrapper previewHtml={previewHtml}>{children}</CustomBlockWrapper>
 
-      <InspectorControls>
-        <PanelBody title={__("Settings")}>
-          <PanelRow>
-            <ToggleControl
-              label={__("Show when no results", "wb_blocks")}
-              help={__(
-                "Display this block when a query returns no results",
-                "wb_blocks",
-              )}
-              checked={showWhenNoResults}
-              onChange={(showWhenNoResults) =>
-                setAttributes({ showWhenNoResults })
-              }
-            />
-          </PanelRow>
-        </PanelBody>
-      </InspectorControls>
-    </>
-  );
+			<InspectorControls>
+				<PanelBody title={__("Settings")}>
+					<PanelRow>
+						<ToggleControl
+							label={__("Show when no results", "wb_blocks")}
+							help={__("Display this block when a query returns no results", "wb_blocks")}
+							checked={showWhenNoResults}
+							onChange={showWhenNoResults => setAttributes({ showWhenNoResults })}
+						/>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
+		</>
+	);
 };
 
 /**
@@ -111,65 +89,56 @@ const TotalResults = ({
  *    preset formats or a custom format.
  */
 const RangeDisplay = ({
-  showWhenNoResults,
-  rangeFormatSingle,
-  rangeFormatMulti,
-  isStyleBoldNumbers,
-  setAttributes,
-  children,
+	showWhenNoResults,
+	rangeFormatSingle,
+	rangeFormatMulti,
+	isStyleBoldNumbers,
+	setAttributes,
+	children,
 }) => {
-  // Generate the string for the editor canvas preview.
-  // Fallback to core's default format strings if attribute from block is empty.
-  const formatRange = rangeFormatMulti
-    ? sanitizeHtml(rangeFormatMulti, ["b"])
-    : "Displaying %1$s – %2$s of %3$s";
-  // Translate the phrase, before number substitution.
-  let previewTranslation = __(formatRange, "wb_blocks");
+	// Generate the string for the editor canvas preview.
+	// Fallback to core's default format strings if attribute from block is empty.
+	const formatRange = rangeFormatMulti ? sanitizeHtml(rangeFormatMulti, ["b"]) : "Displaying %1$s – %2$s of %3$s";
+	// Translate the phrase, before number substitution.
+	let previewTranslation = __(formatRange, "wb_blocks");
 
-  if (isStyleBoldNumbers) {
-    // Lets add some b tags round the number placeholders.
-    previewTranslation = previewTranslation.replace(/(%\d+\$s)/g, "<b>$1</b>");
-  }
+	if (isStyleBoldNumbers) {
+		// Lets add some b tags round the number placeholders.
+		previewTranslation = previewTranslation.replace(/(%\d+\$s)/g, "<b>$1</b>");
+	}
 
-  // Substitute numbers into the string.
-  const previewHtml = sprintf(previewTranslation, 1, 10, 12);
+	// Substitute numbers into the string.
+	const previewHtml = sprintf(previewTranslation, 1, 10, 12);
 
-  return (
-    <>
-      <CustomBlockWrapper previewHtml={previewHtml}>
-        {children}
-      </CustomBlockWrapper>
+	return (
+		<>
+			<CustomBlockWrapper previewHtml={previewHtml}>{children}</CustomBlockWrapper>
 
-      <InspectorControls>
-        <PanelBody title={__("Settings")}>
-          <PanelRow>
-            <VStack spacing="10">
-              <QueryRangeFormatPicker
-                rangeFormatSingle={rangeFormatSingle}
-                rangeFormatMulti={rangeFormatMulti}
-                defaultFormatSingle="Displaying %1$s of %2$s"
-                defaultFormatRange="Displaying %1$s – %2$s of %3$s"
-                onChange={({ rangeFormatSingle, rangeFormatMulti }) =>
-                  setAttributes({ rangeFormatSingle, rangeFormatMulti })
-                }
-              />
-              <ToggleControl
-                label={__("Show when no results", "wb_blocks")}
-                help={__(
-                  "Display this block when a query returns no results",
-                  "wb_blocks",
-                )}
-                checked={showWhenNoResults}
-                onChange={(showWhenNoResults) =>
-                  setAttributes({ showWhenNoResults })
-                }
-              />
-            </VStack>
-          </PanelRow>
-        </PanelBody>
-      </InspectorControls>
-    </>
-  );
+			<InspectorControls>
+				<PanelBody title={__("Settings")}>
+					<PanelRow>
+						<VStack spacing="10">
+							<QueryRangeFormatPicker
+								rangeFormatSingle={rangeFormatSingle}
+								rangeFormatMulti={rangeFormatMulti}
+								defaultFormatSingle="Displaying %1$s of %2$s"
+								defaultFormatRange="Displaying %1$s – %2$s of %3$s"
+								onChange={({ rangeFormatSingle, rangeFormatMulti }) =>
+									setAttributes({ rangeFormatSingle, rangeFormatMulti })
+								}
+							/>
+							<ToggleControl
+								label={__("Show when no results", "wb_blocks")}
+								help={__("Display this block when a query returns no results", "wb_blocks")}
+								checked={showWhenNoResults}
+								onChange={showWhenNoResults => setAttributes({ showWhenNoResults })}
+							/>
+						</VStack>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
+		</>
+	);
 };
 
 /**
@@ -177,54 +146,48 @@ const RangeDisplay = ({
  * - Call the custom component that wraps the original BlockEdit.
  * - Render a toggle in the block sidebar.
  */
-const addFormatControl = (BlockEdit) => (props) => {
-  if (props.name !== "core/query-total") {
-    return <BlockEdit {...props} />;
-  }
+const addFormatControl = BlockEdit => props => {
+	if (props.name !== "core/query-total") {
+		return <BlockEdit {...props} />;
+	}
 
-  // Infer from the className, should the numbers be bold.
-  const isStyleBoldNumbers = props.attributes?.className
-    ?.split(" ")
-    .includes("is-style-bold-numbers");
+	// Infer from the className, should the numbers be bold.
+	const isStyleBoldNumbers = props.attributes?.className?.split(" ").includes("is-style-bold-numbers");
 
-  const showWhenNoResults = !!props.attributes?.showWhenNoResults;
+	const showWhenNoResults = !!props.attributes?.showWhenNoResults;
 
-  if (props.attributes.displayType === "total-results") {
-    return (
-      <TotalResults
-        showWhenNoResults={showWhenNoResults}
-        isStyleBoldNumbers={isStyleBoldNumbers}
-        setAttributes={props.setAttributes}
-      >
-        <BlockEdit {...props} />
-      </TotalResults>
-    );
-  }
+	if (props.attributes.displayType === "total-results") {
+		return (
+			<TotalResults
+				showWhenNoResults={showWhenNoResults}
+				isStyleBoldNumbers={isStyleBoldNumbers}
+				setAttributes={props.setAttributes}
+			>
+				<BlockEdit {...props} />
+			</TotalResults>
+		);
+	}
 
-  // We only want to customize the range-display type.
-  if (props.attributes.displayType === "range-display") {
-    return (
-      <RangeDisplay
-        showWhenNoResults={showWhenNoResults}
-        isStyleBoldNumbers={isStyleBoldNumbers}
-        rangeFormatSingle={props.attributes.rangeFormatSingle ?? null}
-        rangeFormatMulti={props.attributes.rangeFormatMulti ?? null}
-        setAttributes={props.setAttributes}
-      >
-        <BlockEdit {...props} />
-      </RangeDisplay>
-    );
-  }
+	// We only want to customize the range-display type.
+	if (props.attributes.displayType === "range-display") {
+		return (
+			<RangeDisplay
+				showWhenNoResults={showWhenNoResults}
+				isStyleBoldNumbers={isStyleBoldNumbers}
+				rangeFormatSingle={props.attributes.rangeFormatSingle ?? null}
+				rangeFormatMulti={props.attributes.rangeFormatMulti ?? null}
+				setAttributes={props.setAttributes}
+			>
+				<BlockEdit {...props} />
+			</RangeDisplay>
+		);
+	}
 
-  // For some reason, the display type is not total-results or range-display, return BlockEdit, unmodified.
-  return <BlockEdit {...props} />;
+	// For some reason, the display type is not total-results or range-display, return BlockEdit, unmodified.
+	return <BlockEdit {...props} />;
 };
 
-addFilter(
-  "editor.BlockEdit",
-  "wb_blocks/query-total-format-controls",
-  addFormatControl,
-);
+addFilter("editor.BlockEdit", "wb_blocks/query-total-format-controls", addFormatControl);
 
 /**
  * The block that is rendered in the editor canvas.
@@ -241,23 +204,23 @@ addFilter(
  * - using it as an abstraction that's compatible with all blocks
  */
 const CustomBlockWrapper = ({ children, previewHtml }) => {
-  // Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
-  return (
-    <div className="wb-query-total__editor-wrap" style={{ opacity: 0 }}>
-      {/* Keep original edit output mounted for the block toolbar; hide it visually */}
-      {children}
+	// Wrapper element, set initial opacity to 0, to avoid FOUC - the user seeing the original block.
+	return (
+		<div className="wb-query-total__editor-wrap" style={{ opacity: 0 }}>
+			{/* Keep original edit output mounted for the block toolbar; hide it visually */}
+			{children}
 
-      {/* Custom client-rendered preview, overlayed */}
-      <RawHTML
-        className="wb-query-total__preview"
-        // Properties from the original block
-        aria-label="Block: Query Total"
-        role="document"
-      >
-        {previewHtml}
-      </RawHTML>
-    </div>
-  );
+			{/* Custom client-rendered preview, overlayed */}
+			<RawHTML
+				className="wb-query-total__preview"
+				// Properties from the original block
+				aria-label="Block: Query Total"
+				role="document"
+			>
+				{previewHtml}
+			</RawHTML>
+		</div>
+	);
 };
 
 /**
@@ -268,36 +231,34 @@ const CustomBlockWrapper = ({ children, previewHtml }) => {
  * @returns {string|null} The sanitized value
  */
 const sanitizeHtml = (input, allowedTags = []) => {
-  if (typeof input !== "string" && !input instanceof String) {
-    return null;
-  }
+	if (typeof input !== "string" && (!input) instanceof String) {
+		return null;
+	}
 
-  // Normalize allowed tags to lowercase for easy comparison
-  const allowed = new Set(
-    Array.isArray(allowedTags)
-      ? allowedTags.map((t) => t.toLowerCase())
-      : [allowedTags.toLowerCase()],
-  );
+	// Normalize allowed tags to lowercase for easy comparison
+	const allowed = new Set(
+		Array.isArray(allowedTags) ? allowedTags.map(t => t.toLowerCase()) : [allowedTags.toLowerCase()],
+	);
 
-  const doc = new DOMParser().parseFromString(input, "text/html");
+	const doc = new DOMParser().parseFromString(input, "text/html");
 
-  function clean(node) {
-    [...node.childNodes].forEach((child) => {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        const tag = child.tagName.toLowerCase();
+	function clean(node) {
+		[...node.childNodes].forEach(child => {
+			if (child.nodeType === Node.ELEMENT_NODE) {
+				const tag = child.tagName.toLowerCase();
 
-        if (!allowed.has(tag)) {
-          // Replace the disallowed element with its text content
-          const text = document.createTextNode(child.textContent);
-          child.replaceWith(text);
-        } else {
-          // Recurse into allowed elements to clean their children
-          clean(child);
-        }
-      }
-    });
-  }
+				if (!allowed.has(tag)) {
+					// Replace the disallowed element with its text content
+					const text = document.createTextNode(child.textContent);
+					child.replaceWith(text);
+				} else {
+					// Recurse into allowed elements to clean their children
+					clean(child);
+				}
+			}
+		});
+	}
 
-  clean(doc.body);
-  return doc.body.innerHTML;
+	clean(doc.body);
+	return doc.body.innerHTML;
 };

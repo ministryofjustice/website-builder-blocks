@@ -9,8 +9,8 @@ Block: Reveal (Frontend styles)
 	cursor: pointer;
 }
 .wb-details__summary-text {
-	&>* {
-		display:inline;
+	& > * {
+		display: inline;
 	}
 }
 

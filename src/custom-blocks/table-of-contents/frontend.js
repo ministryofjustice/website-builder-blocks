@@ -1,20 +1,23 @@
-
 /**
  *
  * Table of contents "scrollspy", highlight current scroll location
  *
  */
 
-( function() {
+(function () {
 	indicateCurrentLocation();
 	addSubmenuControl();
 })();
 
-document.addEventListener('scroll', function() {
-	indicateCurrentLocation();
-}, false);
+document.addEventListener(
+	"scroll",
+	function () {
+		indicateCurrentLocation();
+	},
+	false,
+);
 
-function indicateCurrentLocation(){
+function indicateCurrentLocation() {
 	if (!document.querySelector("#table-of-contents.toc-scrollspy")) {
 		return;
 	}
@@ -23,8 +26,8 @@ function indicateCurrentLocation(){
 	let contents = toc.querySelectorAll("li"); //list of all items in the ToC
 	if (contents.length === 0 || sectionHeadings.length === 0) return; //guard against empty lists
 	let i;
-	for (i=0; i+1<sectionHeadings.length; i++) {
-		let nextPosition = sectionHeadings[i+1].getBoundingClientRect().top;
+	for (i = 0; i + 1 < sectionHeadings.length; i++) {
+		let nextPosition = sectionHeadings[i + 1].getBoundingClientRect().top;
 		if (nextPosition > 150) break; //we stop counting when the next one is above 150 as we are on the current item
 	}
 	// A small bit of code to ensure the last item is always "current" when at the very bottom of the page.
@@ -33,7 +36,7 @@ function indicateCurrentLocation(){
 		document.body.offsetHeight,
 		document.documentElement.clientHeight,
 		document.documentElement.scrollHeight,
-		document.documentElement.offsetHeight
+		document.documentElement.offsetHeight,
 	);
 	const windowHeight = window.innerHeight;
 	const maxScroll = documentHeight - windowHeight;
@@ -63,31 +66,31 @@ function addSubmenuControl() {
 	let subMenuControl = document.createElement("button");
 	subMenuControl.classList.add("toc-sub-menu-control");
 	subMenuControl.classList.add("wp-element-button");
-	subMenuControl.setAttribute('aria-label', 'Expand submenu');
-	subMenuControl.setAttribute('aria-expanded', 'false');
+	subMenuControl.setAttribute("aria-label", "Expand submenu");
+	subMenuControl.setAttribute("aria-expanded", "false");
 	subMenuControl.innerHTML = "<span class='toc-sub-menu-control__text'></span>";
 	topLevelItems.forEach(e => {
 		e.classList.add("has-sub-toc");
 		const submenuID = e.querySelector("ol").id;
 		if (e.querySelector(".toc-sub-menu-control")) return;
-		const link = e.querySelector('a');
+		const link = e.querySelector("a");
 		const control = subMenuControl.cloneNode(true);
 		if (!link || !control) return;
-		control.setAttribute("aria-controls",submenuID);
+		control.setAttribute("aria-controls", submenuID);
 		link.after(control);
 
-		control.addEventListener('click', function() {
-			if (control.getAttribute('aria-expanded') == "true" ) {
-				control.setAttribute('aria-label', 'Collapse submenu');
-				control.setAttribute('aria-expanded', 'false');
+		control.addEventListener("click", function () {
+			if (control.getAttribute("aria-expanded") == "true") {
+				control.setAttribute("aria-label", "Collapse submenu");
+				control.setAttribute("aria-expanded", "false");
 			} else {
-				document.querySelectorAll('.toc-sub-menu-control').forEach(otherControl => {
-					otherControl.setAttribute('aria-label', 'Collapse submenu');
-					otherControl.setAttribute('aria-expanded', 'false');
+				document.querySelectorAll(".toc-sub-menu-control").forEach(otherControl => {
+					otherControl.setAttribute("aria-label", "Collapse submenu");
+					otherControl.setAttribute("aria-expanded", "false");
 				});
-				control.setAttribute('aria-label', 'Expand submenu');
-				control.setAttribute('aria-expanded', 'true');
+				control.setAttribute("aria-label", "Expand submenu");
+				control.setAttribute("aria-expanded", "true");
 			}
 		});
-	})
+	});
 }
