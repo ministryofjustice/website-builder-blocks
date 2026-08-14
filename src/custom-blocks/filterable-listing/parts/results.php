@@ -196,9 +196,9 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
     ?>
         <div class="<?php echo $outerClass; ?> mt-4 pe-4">
             <?php if(!empty( $field_label ) && $field_name != "post_summary" && !$listing_settings['styles']['stylesHideTaxTitles']){ ?>
-                <div class="<?php echo $innerClass; ?> font-bold">
+                <h3 class="<?php echo $innerClass; ?> font-bold">
                     <?php echo esc_html(__($field_label,'wb_blocks')); ?><span class="colon">:</span>
-                </div>
+                </h3>
             <?php }?>
             <div class="<?php echo $innerClass; ?>">
                 <?php echo wp_kses_post($field_value); ?>
