@@ -11,7 +11,7 @@ Block: Filterable Listing (Frontend styles)
 }
 
 .wb-listing-thumbnail {
-	border-radius: var(--site-radius, 0);
+	border-radius: var(--site-radius,0);
 }
 
 .wb-shaded {
@@ -19,20 +19,22 @@ Block: Filterable Listing (Frontend styles)
 	border-radius: min(var(--site-radius), 2rem);
 }
 .wb-datepicker__dialog {
-	@apply absolute left-0 z-[10] w-auto min-w-[280px] p-5 outline outline-2 outline-offset-[-2px] transition-[background-color,outline-color] duration-200;
+	@apply absolute left-0 w-auto z-[10] outline outline-2 outline-offset-[-2px] min-w-[280px] p-5 transition-[background-color,outline-color] duration-200;
 
-	border-radius: min(var(--site-radius, 0), 25px);
+	border-radius: min(var(--site-radius,0),25px);
 
 	//colours
-	@apply bg-[var(--colour-page-background,#fff)] text-[var(--colour-foreground,#0b0c0c)] dark:bg-[var(--colour-page-background,#111827)] dark:text-[var(--colour-foreground,#ffffff)];
+	@apply text-[var(--colour-foreground,#0b0c0c)] dark:text-[var(--colour-foreground,#ffffff)] bg-[var(--colour-page-background,#fff)] dark:bg-[var(--colour-page-background,#111827)];
 
 	&--open {
 		display: block;
 	}
 }
 
+
 .wb-datepicker__dialog-header {
-	@apply relative mb-[10px] flex w-full items-center justify-center md:w-auto;
+	@apply flex justify-center items-center mb-[10px] relative w-full md:w-auto;
+
 }
 .wb-datepicker__dialog-navbuttons {
 	display: flex;
@@ -43,12 +45,13 @@ Block: Filterable Listing (Frontend styles)
 	border-collapse: collapse;
 }
 .wb-datepicker__button {
-	@apply m-0 h-[40px] w-[44px] border-0 bg-transparent p-0 text-sm leading-[1.14286] font-normal antialiased outline-2 outline-offset-[-2px] outline-transparent;
+	@apply antialiased outline-offset-[-2px] bg-transparent border-0 outline-2 outline-transparent w-[44px] h-[40px] m-0 p-0 text-sm font-normal leading-[1.14286];
 	position: relative;
 }
 .wb-datepicker__wrapper {
 	position: relative;
 }
+
 
 .wb-datepicker__wrapper:has(.wb-js-datepicker-input ~ .wb-datepicker__toggle) {
 	.wb-js-datepicker-input {
