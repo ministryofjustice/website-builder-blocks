@@ -40,6 +40,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
         $listing_settings['restrictTaxonomies'] = $attributes['listingRestrictTaxonomies'] ?? [];
         $listing_settings['restrictTerms'] = $attributes['listingRestrictTerms'] ?? [];  
         $listing_settings['styles']['stylesResultsShadedBackground'] = $attributes['stylesResultsShadedBackground'] ?? false;   
+        $listing_settings['styles']['stylesLayout'] = $attributes['stylesLayout'] ?? "side-by-side";
 
         $block_classes = $attributes['className'] ?? '';  
         
@@ -54,13 +55,18 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
                 $tax_filters[] = $filter;
             }
         }
+
+        $layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4"; //default, side-by-side
+        if ($listing_settings['styles']['stylesLayout'] == "stacked") {
+            $layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4"; //wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
+        }
     ?>
 
     <div class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
         data-block-id="<?php echo esc_attr($block_id); ?>"
         data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(',', $tax_filters) : ''); ?>"
     >
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class='<?php echo esc_attr($layoutClass);?>'>
         <?php
             wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
         ?>

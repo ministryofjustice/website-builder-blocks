@@ -19,7 +19,7 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
     ?>
 
     <!-- Lefthand column with filters and search -->
-    <div class="col-span-1">
+    <div class="col-span-1 pr-[var(--prose-max-width-padding)]">
     <form action="<?= esc_url(get_permalink()); ?>" method="GET">
     <?php
    
