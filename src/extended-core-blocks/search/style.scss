@@ -1,9 +1,7 @@
 header {
-
-	.wb-search-block-wrapper{
-
+	.wb-search-block-wrapper {
 		margin: 10px 0;
-		
+
 		&.desktop-style-button {
 			.wb-search-toggle {
 				@media (min-width: 768px) {
@@ -30,12 +28,12 @@ header {
 				@media (min-width: 768px) {
 					padding: 25px 0;
 				}
-				
+
 				.wp-block-search__label {
 					font-weight: bold;
 				}
-				
-				.wp-block-search__inside-wrapper{
+
+				.wp-block-search__inside-wrapper {
 					width: 100%;
 					padding-left: 0;
 				}
@@ -49,11 +47,9 @@ header {
 					display: block;
 				}
 			}
-
 		}
 
 		.wb-search-toggle {
-		
 			display: block;
 
 			.wp-block-search-toggle-button {
@@ -78,7 +74,6 @@ header {
 		}
 
 		.wb-search-form-wrapper {
-
 			color: black;
 			background: white;
 			display: none;
@@ -91,7 +86,6 @@ header {
 			.wp-block-search__inside-wrapper {
 				border: none;
 			}
-			
 		}
 	}
 }

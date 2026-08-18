@@ -1,39 +1,37 @@
 .wb-query-total__editor-wrap {
-  // Positioning context for the overlay
-  position: relative;
-  // When the CSS has loaded, revert the inline opacity: 0;
-  opacity: 1 !important;
+	// Positioning context for the overlay
+	position: relative;
+	// When the CSS has loaded, revert the inline opacity: 0;
+	opacity: 1 !important;
 
-  > .wp-block-query-total {
-    // Hide the original block text, whilst preserving height.
-    color: transparent !important;
+	> .wp-block-query-total {
+		// Hide the original block text, whilst preserving height.
+		color: transparent !important;
 
-    position: absolute;
-    inset: 0;
+		position: absolute;
+		inset: 0;
 
-    // Styles for when the block is being dragged.
-    &.is-dragging {
-      position: relative;
+		// Styles for when the block is being dragged.
+		&.is-dragging {
+			position: relative;
 
-      // Dragging indicator, otherwise it's just a white box.
-      background-color: var(
-        --wp--preset--color--background-secondary
-      ) !important;
+			// Dragging indicator, otherwise it's just a white box.
+			background-color: var(--wp--preset--color--background-secondary) !important;
 
-      // Let's hide the preview element when dragging
-      // Otherwise the dragging element's height,
-      // plus this element's height results in double height.
-      ~ .wb-query-total__preview {
-        max-height: 0px;
-        height: 0px;
-        overflow: hidden;
-      }
-    }
-  }
+			// Let's hide the preview element when dragging
+			// Otherwise the dragging element's height,
+			// plus this element's height results in double height.
+			~ .wb-query-total__preview {
+				max-height: 0px;
+				height: 0px;
+				overflow: hidden;
+			}
+		}
+	}
 
-  // Overlay the client-rendered text
-  .wb-query-total__preview {
-    // Ensure the overlay doesn't block selecting/dragging the block
-    pointer-events: none;
-  }
+	// Overlay the client-rendered text
+	.wb-query-total__preview {
+		// Ensure the overlay doesn't block selecting/dragging the block
+		pointer-events: none;
+	}
 }

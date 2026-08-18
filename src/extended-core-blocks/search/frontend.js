@@ -1,4 +1,3 @@
-
 /**
  * Functionality for the search drawer
  */
@@ -20,69 +19,73 @@ if (headerSearchToggle && headerSearchBlockWrapper && headerSearchFormWrapper) {
 		toggleSearchDrawer();
 	});
 
-    if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                //close search draw if toggle hidden
-                if (!entry.isIntersecting) {
-                    closeSearchDrawer();
-                } 
-            },
-            {
-                threshold: 0
-            }
-        );
+	if ("IntersectionObserver" in window) {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				//close search draw if toggle hidden
+				if (!entry.isIntersecting) {
+					closeSearchDrawer();
+				}
+			},
+			{
+				threshold: 0,
+			},
+		);
 
-        observer.observe(headerSearchToggle);
-    }
+		observer.observe(headerSearchToggle);
+	}
 }
 
 function toggleSearchDrawer() {
-    const isOpen = headerSearchBlockWrapper.classList.toggle("search-drawer-open");
-        
-    if (isOpen) {
-        openSearchDrawer();
-    } else {
-        closeSearchDrawer();
-    }
+	const isOpen = headerSearchBlockWrapper.classList.toggle("search-drawer-open");
+
+	if (isOpen) {
+		openSearchDrawer();
+	} else {
+		closeSearchDrawer();
+	}
 }
 
 function openSearchDrawer() {
-    // Send an opened event - so that other drawers can close. i.e. navigation.
-    window.dispatchEvent(new CustomEvent('wb-drawer-opened', { detail: { source: 'search' } }));
+	// Send an opened event - so that other drawers can close. i.e. navigation.
+	window.dispatchEvent(new CustomEvent("wb-drawer-opened", { detail: { source: "search" } }));
 
-    headerSearchFormWrapper.classList.add("is-layout-constrained");
-    headerSearchLabel.classList.remove("screen-reader-text");
-    headerSearchForm.classList.remove("wp-block-search__button-inside");
-    headerSearchForm.classList.add("wp-block-search__button-outside");
-    headerSearchInsideWrapper.style.width = "";
-    headerSearchToggleButton.setAttribute("aria-label", "Close search");
+	headerSearchFormWrapper.classList.add("is-layout-constrained");
+	headerSearchLabel.classList.remove("screen-reader-text");
+	headerSearchForm.classList.remove("wp-block-search__button-inside");
+	headerSearchForm.classList.add("wp-block-search__button-outside");
+	headerSearchInsideWrapper.style.width = "";
+	headerSearchToggleButton.setAttribute("aria-label", "Close search");
 
-    const height = headerSearchFormWrapper.offsetHeight;
-    // Set this attribute, as a marker to know that we updated the margin bottom most recently.
-    header.setAttribute('data-margin-bottom-owner', 'search-drawer');
-    header.style.marginBottom = `${height}px`;
+	const height = headerSearchFormWrapper.offsetHeight;
+	// Set this attribute, as a marker to know that we updated the margin bottom most recently.
+	header.setAttribute("data-margin-bottom-owner", "search-drawer");
+	header.style.marginBottom = `${height}px`;
 
-    // Listen for open events - close this drawer if another one opens.
-    window.addEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
+	// Listen for open events - close this drawer if another one opens.
+	window.addEventListener("wb-drawer-opened", closeSearchDrawer, {
+		once: true,
+	});
 }
 
 function closeSearchDrawer() {
-    // Only clear the header margin bottom if we set it most recently.
-    // This prevents a race condition where it's just been set elsewhere.
-    if(header.getAttribute('data-margin-bottom-owner') === 'search-drawer') {
-        header.style.marginBottom = "";
-        header.removeAttribute('data-margin-bottom-owner')
-    }
+	// Only clear the header margin bottom if we set it most recently.
+	// This prevents a race condition where it's just been set elsewhere.
+	if (header.getAttribute("data-margin-bottom-owner") === "search-drawer") {
+		header.style.marginBottom = "";
+		header.removeAttribute("data-margin-bottom-owner");
+	}
 
-    headerSearchFormWrapper.classList.remove("is-layout-constrained");
-    headerSearchLabel.classList.add("screen-reader-text");
-    headerSearchForm.classList.add("wp-block-search__button-inside");
-    headerSearchForm.classList.remove("wp-block-search__button-outside");
-    headerSearchInsideWrapper.style.width = originalSearchWidth;
-    headerSearchToggleButton.setAttribute("aria-label", "Open search");
-    headerSearchBlockWrapper.classList.remove("search-drawer-open");
+	headerSearchFormWrapper.classList.remove("is-layout-constrained");
+	headerSearchLabel.classList.add("screen-reader-text");
+	headerSearchForm.classList.add("wp-block-search__button-inside");
+	headerSearchForm.classList.remove("wp-block-search__button-outside");
+	headerSearchInsideWrapper.style.width = originalSearchWidth;
+	headerSearchToggleButton.setAttribute("aria-label", "Open search");
+	headerSearchBlockWrapper.classList.remove("search-drawer-open");
 
-    // Stop listening for drawer events.
-    window.removeEventListener('wb-drawer-opened', closeSearchDrawer, { once: true });
+	// Stop listening for drawer events.
+	window.removeEventListener("wb-drawer-opened", closeSearchDrawer, {
+		once: true,
+	});
 }

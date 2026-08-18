@@ -9,7 +9,7 @@ Core block: button (Frontend styles)
 	main .wp-block-buttons {
 		> .wp-block-button.has-custom-width,
 		> .wp-block-button {
-			width:100%;
+			width: 100%;
 		}
 	}
 }
@@ -21,9 +21,7 @@ Core block: button (Frontend styles)
 
 // The outline style might not have a background colour, so we create one
 .is-style-outline .wp-element-button:not(.has-background):hover {
-	background-color: color(
-		from currentColor srgb r g b / 0.1
-	);
+	background-color: color(from currentColor srgb r g b / 0.1);
 }
 
 .is-style-custom-arrow-left,
@@ -37,18 +35,17 @@ Core block: button (Frontend styles)
 		top: 5px;
 		display: inline-block;
 		mask-size: contain;
-		mask-position:center;
-		mask-repeat:no-repeat;
+		mask-position: center;
+		mask-repeat: no-repeat;
 	}
-
 }
 .is-style-custom-arrow-left .wp-block-button__link:before {
-	content:"";
+	content: "";
 	margin-right: 6px;
 	mask-image: var(--left-icon);
 }
 .is-style-custom-arrow-right .wp-block-button__link:after {
-	content:"";
+	content: "";
 	margin-left: 6px;
 	mask-image: var(--right-icon);
 }

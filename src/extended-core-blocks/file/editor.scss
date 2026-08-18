@@ -16,7 +16,8 @@ Core block: File (Gutenberg editor styles)
 		text-decoration: underline;
 	}
 
-	.wp-block-file, .wp-block-file__button {
+	.wp-block-file,
+	.wp-block-file__button {
 		background-color: white;
 		color: black;
 		font-size: medium;
@@ -24,7 +25,8 @@ Core block: File (Gutenberg editor styles)
 		text-decoration: none;
 	}
 
-	.wp-block-file, .wp-block-file__button-richtext-wrapper {
+	.wp-block-file,
+	.wp-block-file__button-richtext-wrapper {
 		padding: 0;
 		margin-left: 0;
 	}
@@ -34,4 +36,3 @@ Core block: File (Gutenberg editor styles)
 		display: none;
 	}
 }
-

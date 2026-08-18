@@ -11,29 +11,32 @@
  *
  */
 
-require_once('inc/functions.php');
+require_once "inc/functions.php";
 
 function wb_blocks_render_callback_toc_block($attributes, $content)
 {
-
 	// Parse attributes found in index.js
-	$attribute_title = $attributes['tocTitle'] ?? 'Table of contents';
-	$attribute_backToTopText = $attributes['backToTopText'] ?? 'Back to top';
-	$attribute_className = $attributes['tocClassName'] ?? '';
-	$attribute_sticky = $attributes['sticky'] ?? false;
-	$attribute_scrollSpy = $attributes['scrollSpy'] ?? false;
-	$attribute_both_levels = $attributes['dualLevel'] ?? false;
-	$attribute_nesting = $attributes['customNesting'] ?? "";
+	$attribute_title = $attributes["tocTitle"] ?? "Table of contents";
+	$attribute_backToTopText = $attributes["backToTopText"] ?? "Back to top";
+	$attribute_className = $attributes["tocClassName"] ?? "";
+	$attribute_sticky = $attributes["sticky"] ?? false;
+	$attribute_scrollSpy = $attributes["scrollSpy"] ?? false;
+	$attribute_both_levels = $attributes["dualLevel"] ?? false;
+	$attribute_nesting = $attributes["customNesting"] ?? "";
 
-	if ($attribute_sticky) $attribute_className .= " toc-sticky";
-	if ($attribute_scrollSpy) $attribute_className .= " toc-scrollspy";
+	if ($attribute_sticky) {
+		$attribute_className .= " toc-sticky";
+	}
+	if ($attribute_scrollSpy) {
+		$attribute_className .= " toc-scrollspy";
+	}
 	if (!$attribute_nesting) {
 		$attribute_className .= " toc-no-marker";
 	} elseif ($attribute_nesting == "|") {
 		$attribute_className .= " toc-border";
 	}
 	$attribute_className = trim($attribute_className);
-	
+
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
@@ -42,11 +45,11 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 	// Echo out the table of contents returned by the function
 	echo wb_table_of_contents(
 		get_the_content(),
-		$class=$attribute_className,
-		$title=$attribute_title,
-		$top=esc_html($attribute_backToTopText),
-		$both_levels=$attribute_both_levels,
-		$nesting_icon=$attribute_nesting
+		$class = $attribute_className,
+		$title = $attribute_title,
+		$top = esc_html($attribute_backToTopText),
+		$both_levels = $attribute_both_levels,
+		$nesting_icon = $attribute_nesting,
 	);
 
 	// Get all the html/content that has been captured in the buffer and output via return
@@ -57,15 +60,10 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 	return $output;
 }
 
-function wb_block_enqueue_frontend_assets() {
-	wp_enqueue_script(
-		'table-of-contents-frontend',
-		plugins_url( 'frontend.js', __FILE__ ),
-		array(),
-		'1.0',
-		true
-	);
+function wb_block_enqueue_frontend_assets()
+{
+	wp_enqueue_script("table-of-contents-frontend", plugins_url("frontend.js", __FILE__), [], "1.0", true);
 }
-add_action( 'enqueue_block_assets', 'wb_block_enqueue_frontend_assets' );
+add_action("enqueue_block_assets", "wb_block_enqueue_frontend_assets");
 
 ?>

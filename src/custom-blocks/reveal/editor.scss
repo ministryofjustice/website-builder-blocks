@@ -5,9 +5,9 @@ Block: Reveal (Gutenberg editor styles)
 
 **********************************************************************************************/
 
-@import 'style.scss';
+@import "style.scss";
 
-.wb-details{
+.wb-details {
 	&[open] > .wb-details__summary:before {
 		display: block;
 		width: 0;

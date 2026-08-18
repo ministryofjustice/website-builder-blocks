@@ -1,5 +1,4 @@
 nav.is-style-drawer {
-
 	--drawer-menu-padding: 0.5rem;
 	--drawer-menu-v-gap: 0.5rem;
 	--drawer-menu-h-gap: 1.25rem;
@@ -13,7 +12,7 @@ nav.is-style-drawer {
 		margin-left: calc(-0.9 * var(--drawer-menu-padding));
 		column-gap: var(--drawer-menu-h-gap);
 		row-gap: 0.25rem;
-		.has-child .wp-block-navigation-submenu__toggle[aria-expanded=true]~ul.wp-block-navigation__submenu-container {
+		.has-child .wp-block-navigation-submenu__toggle[aria-expanded="true"] ~ ul.wp-block-navigation__submenu-container {
 			flex-direction: row;
 			flex-wrap: wrap;
 			gap: var(--drawer-menu-v-gap) 0;
@@ -23,14 +22,14 @@ nav.is-style-drawer {
 			width: calc(1px + var(--size-content)); //max width set by JS to exclude scrollbar
 			left: -1px;
 
-			.wp-block-navigation-item  {
+			.wp-block-navigation-item {
 				text-wrap: balance;
 				inline-size: 100%; // 1 per row
 				align-items: baseline;
 
 				&__content {
-					padding-right:calc(1.1 * var(--drawer-menu-padding));
-					padding-left:calc(1.1 * var(--drawer-menu-padding));
+					padding-right: calc(1.1 * var(--drawer-menu-padding));
+					padding-left: calc(1.1 * var(--drawer-menu-padding));
 				}
 
 				@media (width >= 640px) and (width < 782px) {

@@ -1,49 +1,59 @@
 <?php
 
-defined('ABSPATH') || exit;
+defined("ABSPATH") || exit();
 
 /**
  * Update the core query total block to support additional formats.
  *
- * - rangeFormatSingle (string): The format for the page range 
+ * - rangeFormatSingle (string): The format for the page range
  *   when there is a single entry e.g. "Displaying %1$s of %2$s"
- * - rangeFormatMulti  (string): The format for the page range 
+ * - rangeFormatMulti  (string): The format for the page range
  *   when there are multiple results e.g. "Displaying %1$s – %2$s of %3$s"
  */
-add_filter('block_type_metadata_settings', function (array $settings, array $metadata) {
-    if (($metadata['name'] ?? '') !== 'core/query-total') {
-        return $settings;
-    }
+add_filter(
+	"block_type_metadata_settings",
+	function (array $settings, array $metadata) {
+		if (($metadata["name"] ?? "") !== "core/query-total") {
+			return $settings;
+		}
 
-    $settings['attributes'] = array_merge($settings['attributes'] ?? [], [
-        'showWhenNoResults' => ['type' => 'boolean', 'default' => null],
-        'rangeFormatSingle' => ['type' => 'string', 'default' => null],
-        'rangeFormatMulti'  => ['type' => 'string',  'default' => null],
-    ]);
+		$settings["attributes"] = array_merge($settings["attributes"] ?? [], [
+			"showWhenNoResults" => ["type" => "boolean", "default" => null],
+			"rangeFormatSingle" => ["type" => "string", "default" => null],
+			"rangeFormatMulti" => ["type" => "string", "default" => null],
+		]);
 
-    return $settings;
-}, 10, 2);
+		return $settings;
+	},
+	10,
+	2,
+);
 
 /**
  * Swap render_callback for core/query-total with our wrapper.
  *
  * The idea is that we wrap wp_blocks_render_block_core_query_total
- * so that we can add a gettext filter immediately before it runs 
+ * so that we can add a gettext filter immediately before it runs
  * and remove the filter immediately after.
  *
- * The filter allows us to replace the default text of 
+ * The filter allows us to replace the default text of
  * "Displaying x - y of z" with custom phrasing,
  * e.g. "Showing x to y of z results"
  */
-add_filter('block_type_metadata_settings', function (array $settings, array $metadata) {
-    // Only modify the query-total core block.
-    if (($metadata['name'] ?? '') === 'core/query-total') {
-        // Save the original for use inside our wrapper (by name).
-        // WordPress calls this function in core: render_block_core_query_total()
-        $settings['render_callback'] = 'wp_blocks_render_block_core_query_total';
-    }
-    return $settings;
-}, 10, 2);
+add_filter(
+	"block_type_metadata_settings",
+	function (array $settings, array $metadata) {
+		// Only modify the query-total core block.
+		if (($metadata["name"] ?? "") === "core/query-total") {
+			// Save the original for use inside our wrapper (by name).
+			// WordPress calls this function in core: render_block_core_query_total()
+			$settings["render_callback"] = "wp_blocks_render_block_core_query_total";
+		}
+		return $settings;
+	},
+	10,
+	2,
+);
 
 /**
  * Our wrapper around the Core renderer.
@@ -51,118 +61,118 @@ add_filter('block_type_metadata_settings', function (array $settings, array $met
  */
 function wp_blocks_render_block_core_query_total(array $attributes, string $content, WP_Block $block): string
 {
+	$bold_numbers = in_array("is-style-bold-numbers", explode(" ", $attributes["className"] ?? ""), true);
 
+	/**
+	 * Total Results display type.
+	 */
+	if (($attributes["displayType"] ?? "") === "total-results") {
+		// Define the ngettext callback that swaps Core’s own format strings.
+		$ngettext_callback = function (string $translation) use ($bold_numbers): string {
+			// Here, we are using the default formatting, but still may need bold numbers.
+			if ($bold_numbers) {
+				// Wrap %1$s, %2$s and %3$s in b tags.
+				$translation = preg_replace("/(%d)/", '<b>$1</b>', $translation);
+			}
+			return $translation;
+		};
 
-    $bold_numbers = in_array('is-style-bold-numbers', explode(' ', ($attributes['className'] ?? '')), true);
+		// Attach the gettext filter for this render *only*.
+		add_filter("ngettext_default", $ngettext_callback, 10, 1);
+		try {
+			// Call the original Core renderer.
+			// See core's implementation at wordpress/wp-includes/blocks/query-total.php
+			$html = render_block_core_query_total($attributes, $content, $block);
+			// Apply a filter to the HTML before returning.
+			return apply_filters("wb_blocks_filter_core_query_total_html", $html, $attributes);
+		} finally {
+			// Always remove, even if an error occurs.
+			remove_filter("ngettext_default", $ngettext_callback, 10);
+		}
+	}
 
-    /**
-     * Total Results display type.
-     */
-    if (($attributes['displayType'] ?? '') === 'total-results') {
+	/**
+	 * Range Display display type.
+	 */
+	if (($attributes["displayType"] ?? "") === "range-display") {
+		$ctx = [
+			"bold_numbers" => $bold_numbers,
+			"single" => $attributes["rangeFormatSingle"] ?? null,
+			"range" => $attributes["rangeFormatMulti"] ?? null,
+		];
 
-        // Define the ngettext callback that swaps Core’s own format strings.
-        $ngettext_callback = function (string $translation) use ($bold_numbers): string {
-            // Here, we are using the default formatting, but still may need bold numbers.
-            if ($bold_numbers) {
-                // Wrap %1$s, %2$s and %3$s in b tags.
-                $translation = preg_replace('/(%d)/', '<b>$1</b>', $translation);
-            }
-            return $translation;
-        };
+		// Define the gettext callback that swaps Core’s own format strings.
+		$gettext_callback = function (string $translation, string $text) use ($ctx): string {
+			// Exact strings used by Core’s renderer:
+			//  - "Displaying %1$s of %2$s"
+			//  - "Displaying %1$s – %2$s of %3$s"
+			if ($text === 'Displaying %1$s of %2$s' && !empty($ctx["single"])) {
+				// Get the translation, before applying html for bold numbers.
+				$translation = __($ctx["single"], "wb_blocks");
+			}
 
-        // Attach the gettext filter for this render *only*.
-        add_filter('ngettext_default', $ngettext_callback, 10, 1);
-        try {
-            // Call the original Core renderer.
-            // See core's implementation at wordpress/wp-includes/blocks/query-total.php
-            $html = render_block_core_query_total($attributes, $content, $block);
-            // Apply a filter to the HTML before returning.
-            return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
-        } finally {
-            // Always remove, even if an error occurs.
-            remove_filter('ngettext_default', $ngettext_callback, 10);
-        }
-    }
+			if ($text === 'Displaying %1$s – %2$s of %3$s' && !empty($ctx["range"])) {
+				// Get the translation, before applying html for bold numbers.
+				$translation = __($ctx["range"], "wb_blocks");
+			}
 
-    /**
-     * Range Display display type.
-     */
-    if (($attributes['displayType'] ?? '') === 'range-display') {
+			if ($ctx["bold_numbers"]) {
+				// Wrap %1$s, %2$s and %3$s in b tags.
+				$translation = preg_replace('/(%\d+\$s)/', '<b>$1</b>', $translation);
+			}
 
-        $ctx = [
-            'bold_numbers' => $bold_numbers,
-            'single' => $attributes['rangeFormatSingle'] ?? null,
-            'range'  => $attributes['rangeFormatMulti'] ?? null,
-        ];
+			// Ensure the only html tags are b tags.
+			return wp_kses($translation, ["b" => []]);
+		};
 
-        // Define the gettext callback that swaps Core’s own format strings.
-        $gettext_callback = function (string $translation, string $text) use ($ctx): string {
-            // Exact strings used by Core’s renderer:
-            //  - "Displaying %1$s of %2$s"
-            //  - "Displaying %1$s – %2$s of %3$s"
-            if ($text === 'Displaying %1$s of %2$s' && ! empty($ctx['single'])) {
-                // Get the translation, before applying html for bold numbers.
-                $translation = __($ctx['single'], "wb_blocks");
-            }
+		// Attach the gettext filter for this render *only*.
+		add_filter("gettext_default", $gettext_callback, 10, 2);
+		try {
+			// Call the original Core renderer.
+			// See core's implementation at wordpress/wp-includes/blocks/query-total.php
+			$html = render_block_core_query_total($attributes, $content, $block);
+			// Apply a filter to the HTML before returning.
+			return apply_filters("wb_blocks_filter_core_query_total_html", $html, $attributes);
+		} finally {
+			// Always remove, even if an error occurs.
+			remove_filter("gettext_default", $gettext_callback, 10);
+		}
+	}
 
-            if ($text === 'Displaying %1$s – %2$s of %3$s' && ! empty($ctx['range'])) {
-                // Get the translation, before applying html for bold numbers.
-                $translation = __($ctx['range'], "wb_blocks");
-            }
-
-            if ($ctx['bold_numbers']) {
-                // Wrap %1$s, %2$s and %3$s in b tags.
-                $translation = preg_replace('/(%\d+\$s)/', '<b>$1</b>', $translation);
-            }
-
-            // Ensure the only html tags are b tags.
-            return wp_kses($translation, ['b' => []]);
-        };
-
-        // Attach the gettext filter for this render *only*.
-        add_filter('gettext_default', $gettext_callback, 10, 2);
-        try {
-            // Call the original Core renderer.
-            // See core's implementation at wordpress/wp-includes/blocks/query-total.php
-            $html = render_block_core_query_total($attributes, $content, $block);
-            // Apply a filter to the HTML before returning.
-            return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
-        } finally {
-            // Always remove, even if an error occurs.
-            remove_filter('gettext_default', $gettext_callback, 10);
-        }
-    }
-
-    /**
-     * Any other display type
-     *
-     * If WP introduces additional display types in the future,
-     * then return the original renderer un-modified.
-     */
-    $html = render_block_core_query_total($attributes, $content, $block);
-    // Apply a filter to the HTML before returning.
-    return apply_filters('wb_blocks_filter_core_query_total_html', $html, $attributes);
+	/**
+	 * Any other display type
+	 *
+	 * If WP introduces additional display types in the future,
+	 * then return the original renderer un-modified.
+	 */
+	$html = render_block_core_query_total($attributes, $content, $block);
+	// Apply a filter to the HTML before returning.
+	return apply_filters("wb_blocks_filter_core_query_total_html", $html, $attributes);
 }
-
 
 /**
  * Filter the block HTML
  *
  * Conditionally hide the block when there are no results.
  */
-add_filter('wb_blocks_filter_core_query_total_html', function ($html, $attributes) {
-    $show_when_no_results = $attributes['showWhenNoResults'] ?? false;
+add_filter(
+	"wb_blocks_filter_core_query_total_html",
+	function ($html, $attributes) {
+		$show_when_no_results = $attributes["showWhenNoResults"] ?? false;
 
-    if (
-        $show_when_no_results === false &&
-        // Search the text string for the number 0 - match one of the following:
-        // - 0 at the start, followed by a space
-        // - 0 in the middle with spaces on both sides
-        // - 0 at the end, preceded by a space
-        preg_match('/(^0\s|\s0\s|\s0$)/', wp_strip_all_tags($html))
-    ) {
-        return '<!-- core/query-total hidden because of empty results -->';
-    }
+		if (
+			$show_when_no_results === false &&
+			// Search the text string for the number 0 - match one of the following:
+			// - 0 at the start, followed by a space
+			// - 0 in the middle with spaces on both sides
+			// - 0 at the end, preceded by a space
+			preg_match('/(^0\s|\s0\s|\s0$)/', wp_strip_all_tags($html))
+		) {
+			return "<!-- core/query-total hidden because of empty results -->";
+		}
 
-    return $html;
-}, 10, 2);
+		return $html;
+	},
+	10,
+	2,
+);

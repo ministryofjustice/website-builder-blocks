@@ -5,7 +5,7 @@ Core block: list (Frontend styles)
 
 **********************************************************************************************/
 
-@use '../../../assets/scss/fallback-colours';
+@use "../../../assets/scss/fallback-colours";
 
 :root,
 .editor-styles-wrapper {
@@ -14,7 +14,8 @@ Core block: list (Frontend styles)
 	}
 }
 
-ul, ol {
+ul,
+ol {
 	&:not(.edit-screen-container *) {
 		// This just sets the bullet colour to the current colour by default.
 		// Important for lists within lists, as they would otherwise pick up the parent list's colour
@@ -28,11 +29,11 @@ li::marker {
 
 ol.is-style-horizontal,
 ul.is-style-horizontal {
-    display: flex;
-    flex-wrap: wrap;
+	display: flex;
+	flex-wrap: wrap;
 
 	> li {
-		max-width: var(--max-prose-width,768px);
+		max-width: var(--max-prose-width, 768px);
 		position: relative;
 		margin-right: 4rem;
 
@@ -82,7 +83,7 @@ ul.is-style-horizontal {
 .is-style-icon-list > ul,
 ul.is-style-icon-list {
 	--bullet-width: 24px;
-	
+
 	list-style: none;
 	padding-left: 0;
 
@@ -92,7 +93,7 @@ ul.is-style-icon-list {
 
 		&:before {
 			background-color: var(--bullet-colour, currentColor);
-			content:"";
+			content: "";
 			width: var(--bullet-width);
 			height: 24px; // might not be square, but probably is
 			position: absolute;

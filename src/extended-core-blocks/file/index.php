@@ -5,7 +5,7 @@
  * This hooks into and modifies the frontend of core
  */
 
-add_filter('render_block', 'wb_filter_file_block', 10, 2);
+add_filter("render_block", "wb_filter_file_block", 10, 2);
 
 /**
  * Filter the file block through our own method.
@@ -17,13 +17,11 @@ add_filter('render_block', 'wb_filter_file_block', 10, 2);
  */
 function wb_filter_file_block($block_content, $block)
 {
+	if ("core/file" !== $block["blockName"]) {
+		return $block_content;
+	}
 
-    if ('core/file' !== $block['blockName']) {
-        return $block_content;
-    }
-
-   return wb_file_block_renderer($block['blockName'], $block['attrs'], $block_content);
-
+	return wb_file_block_renderer($block["blockName"], $block["attrs"], $block_content);
 }
 
 /**
@@ -36,38 +34,30 @@ function wb_filter_file_block($block_content, $block)
  */
 function wb_file_block_renderer($name, $attributes, $block_content)
 {
+	// Add class to the first wrapper div
+	$block_content = preg_replace('/class="([^"]*wp-block-file[^"]*)"/', 'class="$1 wb-file"', $block_content, 1);
 
-      // Add class to the first wrapper div
-    $block_content = preg_replace(
-        '/class="([^"]*wp-block-file[^"]*)"/',
-        'class="$1 wb-file"',
-        $block_content,
-        1
-    );
-    
-    $file = get_attached_file($attributes["id"]);
-    $filesize = file_exists($file) ? "&#44; " . size_format(filesize($file)) : null;
+	$file = get_attached_file($attributes["id"]);
+	$filesize = file_exists($file) ? "&#44; " . size_format(filesize($file)) : null;
 
-    $filetype = wp_check_filetype($attributes["href"]);
-    $extension = strtoupper($filetype["ext"]);
+	$filetype = wp_check_filetype($attributes["href"]);
+	$extension = strtoupper($filetype["ext"]);
 
-    $metadata = '<span>&#40;</span>'.esc_attr($extension).esc_attr($filesize).'<span>&#41;</span>';
+	$metadata = "<span>&#40;</span>" . esc_attr($extension) . esc_attr($filesize) . "<span>&#41;</span>";
 
-    // Inject metadata inside the <a> before </a>
-    $block_content = preg_replace(
-        '/<\/a>/',
-        '<span class="screen-reader-text">' . $metadata . '</span></a> ',
-        $block_content,
-        1
-    );
+	// Inject metadata inside the <a> before </a>
+	$block_content = preg_replace(
+		"/<\/a>/",
+		'<span class="screen-reader-text">' . $metadata . "</span></a> ",
+		$block_content,
+		1,
+	);
 
-    $block_content = preg_replace(
-    '/<\/div>\s*$/',
-    ' <div class="wb-file__extension" aria-hidden="true">' . $metadata . '</div></div>',
-    $block_content
-    );
+	$block_content = preg_replace(
+		'/<\/div>\s*$/',
+		' <div class="wb-file__extension" aria-hidden="true">' . $metadata . "</div></div>",
+		$block_content,
+	);
 
-    return $block_content;
+	return $block_content;
 }
-
-

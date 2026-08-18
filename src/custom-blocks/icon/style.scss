@@ -5,7 +5,7 @@ Block: Government SVGs
 
 **********************************************************************************************/
 
-@use '../../../assets/scss/fallback-colours';
+@use "../../../assets/scss/fallback-colours";
 
 .wb-icon {
 	min-width: calc(1.2em * var(--icon-size));
@@ -19,4 +19,3 @@ Block: Government SVGs
 	mask-position: center;
 	mask-image: var(--icon-path);
 }
-
