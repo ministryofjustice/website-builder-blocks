@@ -144,7 +144,9 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
                     foreach ($term_names as $name) {
                         $tax_url = "";
                         $tax_url_index = array_search($name, array_column($tax_url_array, 'tax_name'));
-                        $tax_url = $tax_url_index !== false ? $tax_url_array[$tax_url_index]["tax_url"] : ""; 
+                        $tax_url = $tax_url_index !== false ? $tax_url_array[$tax_url_index]["tax_url"] : "";
+                        $tax_url = esc_attr($tax_url);
+                        $name = esc_html($name);
 
                         if ($tax_url && $listing_settings['styles']['stylesTaxLinks']) {
                             $tax_array[] = "<a href='$tax_url'>$name</a>";
@@ -214,7 +216,7 @@ function  wb_blocks_filterable_listing_item_terms($listing_settings) {
     $taxonomies = $listing_settings['displayTerms'];
     $taxTermsArray = [];
     if(empty($taxonomies)){
-        return;     
+        return [];
     }
 
     foreach($taxonomies as $tax){
@@ -237,8 +239,8 @@ function  wb_blocks_filterable_listing_item_terms($listing_settings) {
     $taxonomy_links = [];
     foreach($taxTermsArray as $tax){
         foreach ($tax['terms'] as $term) {
-            $tax_name = esc_html($term->name);
-            $tax_url = esc_url(get_term_link($term));
+            $tax_name = $term->name;
+            $tax_url = get_term_link($term);
 
             $taxonomy_links[] = [
                 'tax_name' => $tax_name,
