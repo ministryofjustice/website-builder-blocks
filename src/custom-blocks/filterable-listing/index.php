@@ -58,7 +58,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 
         $layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4"; //default, side-by-side
         if ($listing_settings['styles']['stylesLayout'] == "stacked") {
-            $layoutClass = "wb-stacked grid grid-cols-1 sm:grid-cols-1 gap-4"; //wb-stacked used to shew full day names if wide - see date-picker.js
+            $layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4"; //wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
         }
     ?>
 
