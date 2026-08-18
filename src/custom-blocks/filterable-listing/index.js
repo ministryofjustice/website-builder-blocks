@@ -38,7 +38,7 @@ registerBlockType("wb-blocks/filterable-listing", {
     },
     listingDisplayTerms: {
       type: "array",
-      default: ""
+      default: []
     },
     listingItemsPerPage: {
       type: "number",
