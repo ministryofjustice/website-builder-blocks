@@ -309,7 +309,7 @@ function wb_blocks_filterable_listing_block_get_display_fields($display_fields){
             $tax_name = $display_field;
             $tax = get_taxonomy($tax_name);
             
-            $field = ["name" =>  $display_field, "label" =>  $tax->labels->singular_name, "type" => "taxonomy"];
+            $field = ["name" =>  $display_field, "label" =>  $tax->labels->singular_name, "label_plural" =>  $tax->labels->name, "type" => "taxonomy"];
 
             $display_fields_arry[] = $field;
 

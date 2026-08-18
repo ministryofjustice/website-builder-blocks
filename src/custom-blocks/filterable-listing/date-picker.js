@@ -436,7 +436,6 @@
 
   DatePicker.prototype.setLanguage = function () {
     if (this.config.language) {
-      console.log("lang",this.config.language)
       // lowercase and arrange dayLabels to put indexOf sunday == 0 for comparison
       // with getDay() function
       const weekDays = this.dayLabels.map((item) => item.toLowerCase());
