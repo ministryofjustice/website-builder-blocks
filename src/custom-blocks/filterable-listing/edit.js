@@ -32,7 +32,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		listingSortOrder,
 		listingRestrictTaxonomies,
 		listingRestrictTerms,
-		stylesHideTaxTitles,
+		stylesHideLabels,
 		stylesTaxLinks,
 		stylesFieldLayout,
 		stylesLayout,
@@ -400,8 +400,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesTaxLinks: newStylesTaxLinks });
 	};
 
-	const setStylesHideTaxTitles = newStylesHideTaxTitles => {
-		setAttributes({ stylesHideTaxTitles: newStylesHideTaxTitles });
+	const setStylesHideLabels = newStylesHideLabels => {
+		setAttributes({ stylesHideLabels: newStylesHideLabels });
 	};
 
 	const setStylesLayout = newStylesLayout => {
@@ -466,8 +466,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					<ToggleControl
 						label="Hide titles"
 						help="Turn on if all taxonomies are self-explanatory"
-						checked={stylesHideTaxTitles}
-						onChange={setStylesHideTaxTitles}
+						checked={stylesHideLabels}
+						onChange={setStylesHideLabels}
 					/>
 				</PanelBody>
 			</InspectorControls>
