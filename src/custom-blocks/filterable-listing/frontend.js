@@ -1,15 +1,13 @@
-import { DatePicker } from './date-picker';
+import { DatePicker } from "./date-picker";
 
 document.addEventListener("DOMContentLoaded", function () {
-
-	document.querySelectorAll('.wb-datepicker').forEach((element) => {
+	document.querySelectorAll(".wb-datepicker").forEach(element => {
 		const picker = new DatePicker(element);
 
 		picker.init();
 	});
 
 	if (window.filterable_listing_object) {
-
 		// Get the taxonomies and their terms from the localized script object
 		const taxonomies = filterable_listing_object.taxonomies;
 
@@ -41,7 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Loop through each taxonomy and its terms
 			Object.keys(taxonomies).forEach(taxonomy => {
-				if (Array.isArray(taxonomies[taxonomy])) { // Ensure the terms are in array form
+				if (Array.isArray(taxonomies[taxonomy])) {
+					// Ensure the terms are in array form
 					taxonomies[taxonomy].forEach(termData => {
 						if (termData.parent && termData.parent == selected_topic) {
 							termsWithParents.push(termData);
@@ -84,17 +83,16 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.querySelector(childClass + "-wrapper")?.classList.add("hidden");
 		}
 
-		const blocks = document.querySelectorAll('div.wb-block-filterable-listing');
+		const blocks = document.querySelectorAll("div.wb-block-filterable-listing");
 
 		blocks.forEach(block => {
-			const blockId = block.getAttribute('data-block-id');
-			const taxFilters = block.getAttribute('data-tax-filters');
+			const blockId = block.getAttribute("data-block-id");
+			const taxFilters = block.getAttribute("data-tax-filters");
 
-			if (taxFilters && taxFilters !== '') {
-				const taxFilterArray = taxFilters.split(',');
+			if (taxFilters && taxFilters !== "") {
+				const taxFilterArray = taxFilters.split(",");
 
 				taxFilterArray.forEach(taxonomy => {
-
 					const parentClass = `#${taxonomy}-filter-topic-${blockId}`;
 					const childClass = `#${taxonomy}-filter-subtopic-${blockId}`;
 

@@ -7,25 +7,19 @@ import {
 	RadioControl,
 	BaseControl,
 	Button,
-} from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-import {
-	InnerBlocks,
-	MediaUpload,
-	InspectorControls,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-import { useSelect } from '@wordpress/data';
-import { store as coreStore } from '@wordpress/core-data';
-import ReactSelect from 'react-select';
+} from "@wordpress/components";
+import { __ } from "@wordpress/i18n";
+import { InnerBlocks, MediaUpload, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
+import { useSelect } from "@wordpress/data";
+import { store as coreStore } from "@wordpress/core-data";
+import ReactSelect from "react-select";
 
 const { Fragment } = wp.element;
 const d = new Date();
 
 const noItemSelectedText = "No item selected"; // Text in editor to shew that no item will be displayed
 
-export default function filterableListingEdit({ attributes, setAttributes} ) {
-
+export default function filterableListingEdit({ attributes, setAttributes }) {
 	const {
 		listingPostType,
 		listingIncludeFilters,
@@ -46,75 +40,60 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		className,
 	} = attributes;
 
-	
-	const {
-		allPostTypes,
-	} = useSelect(
-		( select ) => {
-
-			const { getPostTypes } = select(
-				coreStore
-			);
-			const allPostTypeList = getPostTypes(
-				{ per_page: -1 }
-			);
-			return {
-				allPostTypes: allPostTypeList
-			};
-		}
-	);
+	const { allPostTypes } = useSelect(select => {
+		const { getPostTypes } = select(coreStore);
+		const allPostTypeList = getPostTypes({ per_page: -1 });
+		return {
+			allPostTypes: allPostTypeList,
+		};
+	});
 
 	// Sort Options used to sort the results
 	let sortOptions = [
 		{
 			label: "Published Date (Newest to Oldest)",
-			value: "published_date"
+			value: "published_date",
 		},
 		{
 			label: "Title (Alphabetical)",
-			value: "title"
+			value: "title",
 		},
-	]
+	];
 
-	const allTaxonomies = useSelect((select) => 
-		select(coreStore).getTaxonomies()
-	);
+	const allTaxonomies = useSelect(select => select(coreStore).getTaxonomies());
 
 	const termsByTaxonomy = useSelect(
-		( select ) => {
-			if ( ! allTaxonomies ) return {};
+		select => {
+			if (!allTaxonomies) return {};
 
 			const map = {};
-			allTaxonomies.forEach( ( tax ) => {
-				map[ tax.slug ] = select( coreStore ).getEntityRecords(
-					'taxonomy',
-					tax.slug,
-					{ per_page: -1 }
-				);
-			} );
+			allTaxonomies.forEach(tax => {
+				map[tax.slug] = select(coreStore).getEntityRecords("taxonomy", tax.slug, { per_page: -1 });
+			});
 			return map;
 		},
-		[ allTaxonomies ]
+		[allTaxonomies],
 	);
 
-
-	let itemTypes = [{
-		label: "-",
-		value: ""
-	}]
+	let itemTypes = [
+		{
+			label: "-",
+			value: "",
+		},
+	];
 
 	const displayFieldsList = [
 		{
 			label: "Published date",
-			value: "published_date"
-		}
+			value: "published_date",
+		},
 	];
 
 	const filterOptionList = [
 		{
 			label: "Published date",
-			value: "published_date"
-		}
+			value: "published_date",
+		},
 	];
 
 	const taxOptionList = [];
@@ -126,44 +105,46 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	const selectedRestrictTerms = [];
 
 	if (allPostTypes) {
-
 		allPostTypes.forEach(thisPostType => {
-			if (thisPostType.name != "Posts" && thisPostType.name != "Pages" && thisPostType.name != "Media" && thisPostType.viewable) {
+			if (
+				thisPostType.name != "Posts" &&
+				thisPostType.name != "Pages" &&
+				thisPostType.name != "Media" &&
+				thisPostType.viewable
+			) {
 				itemTypes.push({
 					label: thisPostType.name,
-					value: thisPostType.slug
+					value: thisPostType.slug,
 				});
 			}
 
 			if (thisPostType.slug == listingPostType && thisPostType.taxonomies.length && allTaxonomies) {
-
 				//console.log(thisPostType);
 				thisPostType.taxonomies.forEach(postTypeTaxKey => {
 					allTaxonomies.forEach(taxonomy => {
-						if(taxonomy.slug == postTypeTaxKey){
+						if (taxonomy.slug == postTypeTaxKey) {
 							taxOptionList.push({
 								label: taxonomy.name,
-								value: taxonomy.slug
-							})
+								value: taxonomy.slug,
+							});
 
 							filterOptionList.push({
 								label: taxonomy.name,
-								value: taxonomy.slug
-							})
+								value: taxonomy.slug,
+							});
 
 							displayFieldsList.push({
 								label: taxonomy.name,
-								value: taxonomy.slug
-							})
+								value: taxonomy.slug,
+							});
 
 							if (listingRestrictTaxonomies?.includes(taxonomy.slug) && termsByTaxonomy) {
 								if (termsByTaxonomy[taxonomy.slug]) {
-									
 									termsByTaxonomy[taxonomy.slug].forEach(term => {
 										restrictTermOptionList.push({
 											label: term.name,
-											value: term.id
-										})			
+											value: term.id,
+										});
 									});
 								}
 							}
@@ -174,27 +155,25 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			//Add ACF Meta Fields
 			if (thisPostType.slug == listingPostType && thisPostType.acfFields.length) {
 				thisPostType.acfFields.forEach(acfField => {
-					
 					filterOptionList.push({
 						label: acfField.label,
-						value: acfField.key
-					})
+						value: acfField.key,
+					});
 
 					displayFieldsList.push({
 						label: acfField.label,
-						value: acfField.key
-					})
-
+						value: acfField.key,
+					});
 				});
 			}
 		});
 
 		//Seperate loops to keep the selection order
 
-		if(listingFilters.length > 0){
-			listingFilters.forEach((field) => {
+		if (listingFilters.length > 0) {
+			listingFilters.forEach(field => {
 				for (const opt of filterOptionList) {
-					if(field == opt.value){
+					if (field == opt.value) {
 						selectedListingFilters.push(opt);
 						break;
 					}
@@ -202,10 +181,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			});
 		}
 
-		if(listingDisplayTerms.length > 0){
-			listingDisplayTerms.forEach((field) => {
+		if (listingDisplayTerms.length > 0) {
+			listingDisplayTerms.forEach(field => {
 				for (const opt of taxOptionList) {
-					if(field == opt.value){
+					if (field == opt.value) {
 						selectedDisplayTerms.push(opt);
 						break;
 					}
@@ -213,10 +192,10 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			});
 		}
 
-		if(listingRestrictTaxonomies.length > 0){
-			listingRestrictTaxonomies.forEach((field) => {
+		if (listingRestrictTaxonomies.length > 0) {
+			listingRestrictTaxonomies.forEach(field => {
 				for (const opt of taxOptionList) {
-					if(field == opt.value){
+					if (field == opt.value) {
 						selectedRestrictTaxonomies.push(opt);
 						break;
 					}
@@ -224,30 +203,27 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 			});
 		}
 
-		if(listingDisplayFields.length > 0){
-
-			listingDisplayFields.forEach((field) => {
+		if (listingDisplayFields.length > 0) {
+			listingDisplayFields.forEach(field => {
 				for (const opt of displayFieldsList) {
-					if(field == opt.value){
+					if (field == opt.value) {
 						selectedDisplayFields.push(opt);
 						break;
 					}
 				}
 			});
-
 		}
 
-		if(listingRestrictTerms.length > 0){
-			listingRestrictTerms.forEach((field) => {
+		if (listingRestrictTerms.length > 0) {
+			listingRestrictTerms.forEach(field => {
 				for (const opt of restrictTermOptionList) {
-					if(field == opt.value){
+					if (field == opt.value) {
 						selectedRestrictTerms.push(opt);
 						break;
 					}
 				}
 			});
 		}
-		
 	}
 
 	const setListingPostType = newPostType => {
@@ -270,24 +246,24 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingDisplayImage: setDisplayImage });
 	};
 
-	const setListingFilters = (selectedItems) => {
-		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+	const setListingFilters = selectedItems => {
+		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingFilters: values });
 	};
 
-	const setListingDisplayFields = (selectedItems) => {
-		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+	const setListingDisplayFields = selectedItems => {
+		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingDisplayFields: values });
 	};
 
-	const setListingDisplayTerms = (selectedItems) => {
-		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+	const setListingDisplayTerms = selectedItems => {
+		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingDisplayTerms: values });
 	};
 
-	const setItemsPerPage = (newItemsPerPage) => {
+	const setItemsPerPage = newItemsPerPage => {
 		const parsedValue = parseInt(newItemsPerPage, 10);
-	
+
 		if (!isNaN(parsedValue)) {
 			setAttributes({ listingItemsPerPage: parsedValue });
 		} else {
@@ -300,156 +276,119 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ listingSortOrder: newSortOrder });
 	};
 
-	const setRestrictTaxonomies = (selectedItems) => {
-		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+	const setRestrictTaxonomies = selectedItems => {
+		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingRestrictTaxonomies: values });
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
-	const setRestrictTerms = (selectedItems) => {
-		const values = selectedItems ? selectedItems.map((item) => item.value) : [];
+	const setRestrictTerms = selectedItems => {
+		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingRestrictTerms: values });
 	};
 
 	const inspectorControls = (
 		<InspectorControls>
-			<PanelBody
-				title={__('Main settings')}
-				initialOpen={true}
-			>
+			<PanelBody title={__("Main settings")} initialOpen={true}>
 				<SelectControl
 					label="Select item type"
-					value={ listingPostType }
-					options={ itemTypes }
-					onChange={ setListingPostType }
+					value={listingPostType}
+					options={itemTypes}
+					onChange={setListingPostType}
 				/>
 				{listingPostType.length > 0 && (
 					<ToggleControl
 						label="Show filtering options"
 						help="If disabled, this will just show the latest items"
-						checked={ listingIncludeFilters }
-						onChange={ setListingIncludeFilters }
+						checked={listingIncludeFilters}
+						onChange={setListingIncludeFilters}
 					/>
 				)}
 			</PanelBody>
-			{listingPostType.length > 0 && listingIncludeFilters !==false && (<PanelBody
-				title={__('Filterable Listing settings')}
-				initialOpen={true}
-			>
-				<ToggleControl
-					label="Search Text Filter"
-					checked={ listingSearchTextFilter }
-					onChange={ setListingSearchTextFilter }
-				/>
-				{filterOptionList.length > 0 && (
-					<BaseControl label="Listing Filters">
-						<ReactSelect
-						isMulti
-						label="Filters"
-						options={filterOptionList}
-						value={ selectedListingFilters }
-						onChange={ setListingFilters }
-						/>
-					</BaseControl>
-				)}
-			</PanelBody>)}
+			{listingPostType.length > 0 && listingIncludeFilters !== false && (
+				<PanelBody title={__("Filterable Listing settings")} initialOpen={true}>
+					<ToggleControl
+						label="Search Text Filter"
+						checked={listingSearchTextFilter}
+						onChange={setListingSearchTextFilter}
+					/>
+					{filterOptionList.length > 0 && (
+						<BaseControl label="Listing Filters">
+							<ReactSelect
+								isMulti
+								label="Filters"
+								options={filterOptionList}
+								value={selectedListingFilters}
+								onChange={setListingFilters}
+							/>
+						</BaseControl>
+					)}
+				</PanelBody>
+			)}
 
-				{
-					(listingPostType.length > 0) && (
-						<PanelBody
-						title={__('Results display settings')}
-						initialOpen={true}
-						>
-						{
-							(displayFieldsList.length > 0) && (
-								<BaseControl label="Display Fields">
-									<ReactSelect
-									isMulti
-									value={ selectedDisplayFields }
-									options={ displayFieldsList }
-									onChange={ setListingDisplayFields }
-									/>
-								</BaseControl>
-							)
-						}
+			{listingPostType.length > 0 && (
+				<PanelBody title={__("Results display settings")} initialOpen={true}>
+					{displayFieldsList.length > 0 && (
+						<BaseControl label="Display Fields">
+							<ReactSelect
+								isMulti
+								value={selectedDisplayFields}
+								options={displayFieldsList}
+								onChange={setListingDisplayFields}
+							/>
+						</BaseControl>
+					)}
 
-						{
-							(taxOptionList.length > 0) && (
-								<BaseControl label="Display Terms">
-									<ReactSelect
-									isMulti
-									value={ selectedDisplayTerms }
-									options={ taxOptionList }
-									onChange={ setListingDisplayTerms }
-									/>
-								</BaseControl>
-							)
-						}
-							
-							
-					</PanelBody>
-				)
-			}
-			{
-					(listingPostType.length > 0) && (
-			<PanelBody
-				title={__('Results settings')}
-				initialOpen={true}
-			>
-				<RangeControl
-					label="Items per page"
-					min={3}
-					max={50}
-					value={ listingItemsPerPage }
-					onChange={ setItemsPerPage }
-				/>
+					{taxOptionList.length > 0 && (
+						<BaseControl label="Display Terms">
+							<ReactSelect
+								isMulti
+								value={selectedDisplayTerms}
+								options={taxOptionList}
+								onChange={setListingDisplayTerms}
+							/>
+						</BaseControl>
+					)}
+				</PanelBody>
+			)}
+			{listingPostType.length > 0 && (
+				<PanelBody title={__("Results settings")} initialOpen={true}>
+					<RangeControl
+						label="Items per page"
+						min={3}
+						max={50}
+						value={listingItemsPerPage}
+						onChange={setItemsPerPage}
+					/>
 
-				<SelectControl
-					label="Sort by"
-					options={ sortOptions }
-					value={ listingSortOrder }
-					onChange={ setSortOrder }
-				/>	
-			</PanelBody>
-				)
-			}
-			{
-					(listingPostType.length > 0) && (
-			<PanelBody
-				title={__('Restrict results settings')}
-				initialOpen={true}
-			>
+					<SelectControl label="Sort by" options={sortOptions} value={listingSortOrder} onChange={setSortOrder} />
+				</PanelBody>
+			)}
+			{listingPostType.length > 0 && (
+				<PanelBody title={__("Restrict results settings")} initialOpen={true}>
+					{taxOptionList.length > 0 && (
+						<BaseControl label="Restrict by">
+							<ReactSelect
+								isMulti
+								options={taxOptionList}
+								value={selectedRestrictTaxonomies}
+								onChange={setRestrictTaxonomies}
+							/>
+						</BaseControl>
+					)}
 
-			{
-				(taxOptionList.length > 0) && (
-					<BaseControl label="Restrict by">
-						<ReactSelect
-						isMulti
-						options={taxOptionList}
-						value={ selectedRestrictTaxonomies }
-						onChange={ setRestrictTaxonomies }
-						/>	
-					</BaseControl>
-				)
-            }
-
-			{
-				(restrictTermOptionList.length > 0) && (
-					<BaseControl label="Restrict terms">
-						<ReactSelect
-						isMulti
-						options={restrictTermOptionList}
-						value={ selectedRestrictTerms }
-						onChange={ setRestrictTerms }
-						/>	
-					</BaseControl>
-				)
-            }
-
-
-			</PanelBody>
-				)
-			}
+					{restrictTermOptionList.length > 0 && (
+						<BaseControl label="Restrict terms">
+							<ReactSelect
+								isMulti
+								options={restrictTermOptionList}
+								value={selectedRestrictTerms}
+								onChange={setRestrictTerms}
+							/>
+						</BaseControl>
+					)}
+				</PanelBody>
+			)}
 		</InspectorControls>
 	);
 
@@ -461,8 +400,8 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 		setAttributes({ stylesTaxLinks: newStylesTaxLinks });
 	};
 
-	const setstylesHideLabels = newstylesHideLabels => {
-		setAttributes({ stylesHideLabels: newstylesHideLabels });
+	const setStylesHideLabels = newStylesHideLabels => {
+		setAttributes({ stylesHideLabels: newStylesHideLabels });
 	};
 
 	const setStylesLayout = newStylesLayout => {
@@ -474,65 +413,67 @@ export default function filterableListingEdit({ attributes, setAttributes} ) {
 	};
 
 	return (
-		<Fragment >
-			{ inspectorControls }
+		<Fragment>
+			{inspectorControls}
 			<InspectorControls group="styles">
-				<PanelBody
-					title={__('Results styles')}
-					initialOpen={true}
-				>
+				<PanelBody title={__("Results styles")} initialOpen={true}>
 					<ToggleControl
 						label="Display featured image"
-						checked={ listingDisplayImage }
-						onChange={ setListingDisplayImage }
+						checked={listingDisplayImage}
+						onChange={setListingDisplayImage}
 					/>
 					<ToggleControl
 						label="Shaded background"
 						help="Item divider line will be hidden"
-						checked={ stylesResultsShadedBackground }
-						onChange={ setStylesResultsShadedBackground }
+						checked={stylesResultsShadedBackground}
+						onChange={setStylesResultsShadedBackground}
 					/>
-					{listingIncludeFilters !==false && (
-					<RadioControl
-						label="Layout of filters and results"
-						selected={stylesLayout ? stylesLayout : 'side-by-side'}
-						options={[
-							{ label: 'Side-by-side', value: 'side-by-side' },
-							{ label: 'Stacked', value: 'stacked' },
-						]}
-						onChange={ setStylesLayout }
-					/>)}
+					{listingIncludeFilters !== false && (
+						<RadioControl
+							label="Layout of filters and results"
+							selected={stylesLayout ? stylesLayout : "side-by-side"}
+							options={[
+								{ label: "Side-by-side", value: "side-by-side" },
+								{ label: "Stacked", value: "stacked" },
+							]}
+							onChange={setStylesLayout}
+						/>
+					)}
 					<RadioControl
 						label="Layout of taxonomies"
-						selected={stylesFieldLayout ? stylesFieldLayout : 'stacked'}
+						selected={stylesFieldLayout ? stylesFieldLayout : "stacked"}
 						options={[
-							{ label: 'Everything stacked', value: 'stacked' },
-							{ label: 'Stacked, with inline values', value: 'stacked-inline' },
-							{ label: 'Inline with stacked values', value: 'inline-stacked' },
-							{ label: 'Everything inline', value: 'inline' },
+							{ label: "Everything stacked", value: "stacked" },
+							{ label: "Stacked, with inline values", value: "stacked-inline" },
+							{ label: "Inline with stacked values", value: "inline-stacked" },
+							{ label: "Everything inline", value: "inline" },
 						]}
-						onChange={ setStylesFieldLayout }
+						onChange={setStylesFieldLayout}
 					/>
 					<ToggleControl
 						label="Links for taxonomies"
-						help={`Adds links for taxonomy values (` + listingDisplayTerms.map(term => taxOptionList.find(o => o.value === term)?.label).filter(Boolean).join('; ') + `)`}
-						checked={ stylesTaxLinks }
-						onChange={ setStylesTaxLinks }
+						help={
+							`Adds links for taxonomy values (` +
+							listingDisplayTerms
+								.map(term => taxOptionList.find(o => o.value === term)?.label)
+								.filter(Boolean)
+								.join("; ") +
+							`)`
+						}
+						checked={stylesTaxLinks}
+						onChange={setStylesTaxLinks}
 					/>
 					<ToggleControl
 						label="Hide titles"
 						help="Turn on if all taxonomies are self-explanatory"
-						checked={ stylesHideLabels }
-						onChange={ setstylesHideLabels }
+						checked={stylesHideLabels}
+						onChange={setStylesHideLabels}
 					/>
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">
-					Filterable Listing 
-				</div>
+				<div className="">Filterable Listing</div>
 			</div>
 		</Fragment>
 	);
-	
 }
