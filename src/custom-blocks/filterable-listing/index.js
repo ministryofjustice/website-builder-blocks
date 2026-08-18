@@ -60,7 +60,7 @@ registerBlockType("wb-blocks/filterable-listing", {
       type: "boolean",
       default: false
     },
-    stylesHideTaxTitles: {
+    stylesHideLabels: {
       type: "boolean",
       default: false
     },

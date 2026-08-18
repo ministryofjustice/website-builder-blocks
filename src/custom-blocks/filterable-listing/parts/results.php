@@ -97,7 +97,12 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
         }
     } elseif ($filters) { ?>
         <h2 class="font-bold text-2xl">
-            <?php _e('Your search matched no ' . strtolower($flex_cpt_name_plural), 'wb_blocks'); ?>
+            <?php
+            printf(
+                esc_html__( 'Your search matched no %s.', 'wb_blocks' ),
+                strtolower($flex_cpt_name_plural)
+            );
+            ?>
         </h2>
         <p class="">
             <?php _e('Try searching again with expanded criteria.', 'wb_blocks'); ?>
@@ -197,7 +202,7 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
             }
     ?>
         <div class="<?php echo $outerClass; ?> mt-4 pe-4">
-            <?php if(!empty( $field_label ) && $field_name != "post_summary" && !$listing_settings['styles']['stylesHideTaxTitles']){ ?>
+            <?php if(!empty( $field_label ) && $field_name != "post_summary" && !$listing_settings['styles']['stylesHideLabels']){ ?>
                 <h3 class="<?php echo $innerClass; ?> font-bold">
                     <?php echo esc_html(__($field_label,'wb_blocks')); ?><span class="colon">:</span>
                 </h3>
