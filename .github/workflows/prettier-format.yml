@@ -1,0 +1,44 @@
+name: Prettier Check
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check-prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install Prettier and Plugins
+        run: npm install --no-save prettier prettier-plugin-tailwindcss
+
+      - name: Run Prettier check
+        id: prettier
+        continue-on-error: true
+        run: npx prettier --check "**/*.{js,ts,jsx,tsx,html,css,scss,json}"
+
+      - name: Comment on PR if Prettier fails
+        if: steps.prettier.outcome == 'failure'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Prettier check failed 🌩. Run `npm run format`. \
+                     Check all is good `npm run check` and \
+                     re-commit the code."
+            })
+
+      - name: Fail the job if Prettier failed
+        if: steps.prettier.outcome == 'failure'
+        run: exit 1
