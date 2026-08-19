@@ -7,9 +7,10 @@ import {
 	RadioControl,
 	BaseControl,
 	Button,
+	ToolbarGroup, ToolbarButton
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InnerBlocks, MediaUpload, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
+import { InnerBlocks, MediaUpload,BlockControls, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
@@ -37,6 +38,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesFieldLayout,
 		stylesLayout,
 		stylesResultsShadedBackground,
+		variant,
 		className,
 	} = attributes;
 
@@ -412,8 +414,25 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
 	};
 
+	const isAutoItemList = variant === "auto-item-list";
+
 	return (
 		<Fragment>
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarButton
+						onClick={() =>
+							setAttributes({
+								variant: isAutoItemList ? "default" : "auto-item-list",
+							})
+						}
+					>
+						{isAutoItemList
+							? "Use Default Listing"
+							: "Use Item Listing"}
+					</ToolbarButton>
+				</ToolbarGroup>
+			</BlockControls>
 			{inspectorControls}
 			<InspectorControls group="styles">
 				<PanelBody title={__("Results styles")} initialOpen={true}>
@@ -472,7 +491,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">Filterable Listing</div>
+				<div className="">{variant === 'auto-item-list'?`Auto item`:`Filterable type`} listing</div>
 			</div>
 		</Fragment>
 	);

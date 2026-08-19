@@ -20,6 +20,8 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 	// Parse attributes found in index.js
 	$postType = esc_html($attributes["listingPostType"] ?? "");
 
+	$variant = $attributes['variant'] ?? 'default';
+
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
@@ -35,7 +37,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["filters"] = $attributes["listingFilters"] ?? [];
 		$listing_settings["displayFields"] = $attributes["listingDisplayFields"] ?? [];
 		$listing_settings["displayTerms"] = $attributes["listingDisplayTerms"] ?? [];
-		$listing_settings["itemsPerPage"] = $attributes["listingItemsPerPage"] ?? 10;
+		$listing_settings["itemsPerPage"] = $attributes["listingItemsPerPage"] ?? ($variant === "auto-item-list" ? 3 : 10);
 		$listing_settings["sortOrder"] = $attributes["listingSortOrder"] ?? "published_date";
 		$listing_settings["restrictTaxonomies"] = $attributes["listingRestrictTaxonomies"] ?? [];
 		$listing_settings["restrictTerms"] = $attributes["listingRestrictTerms"] ?? [];

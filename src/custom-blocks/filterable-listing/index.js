@@ -1,4 +1,4 @@
-const { registerBlockType, registerBlockStyle } = wp.blocks;
+const { registerBlockType, registerBlockVariation } = wp.blocks;
 const { __ } = wp.i18n;
 
 import { InnerBlocks } from "@wordpress/block-editor";
@@ -76,6 +76,10 @@ registerBlockType("wb-blocks/filterable-listing", {
 			type: "boolean",
 			default: false,
 		},
+		variant: {
+			type: 'string',
+			default: 'default',
+		},
 		className: {
 			type: "string",
 		},
@@ -85,3 +89,19 @@ registerBlockType("wb-blocks/filterable-listing", {
 		return <InnerBlocks.Content />;
 	},
 });
+console.log("BEFORE VARIATION");
+
+registerBlockVariation("wb-blocks/filterable-listing", {
+	name: "item-listing",
+	title: "Item Listing",
+	description: "Automatically pull through items",
+	icon: "list-view",
+	attributes: {
+		variant: "auto-item-list",
+	},
+	isActive: (attributes) =>
+		attributes.variant === "auto-item-list",
+	scope: ["inserter", "transform"],
+});
+
+console.log("AFTER VARIATION");
