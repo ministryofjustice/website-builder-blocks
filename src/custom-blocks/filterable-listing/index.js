@@ -5,20 +5,16 @@ import { InnerBlocks } from "@wordpress/block-editor";
 import edit from "./edit";
 
 registerBlockType("wb-blocks/filterable-listing", {
-	title: __("Filterable Listing", "wb_block"),
-	description: __("Listing block"),
+	title: "Filterable Listing",
+	description: "Listing block",
 	category: "wb-blocks",
 	icon: "id-alt",
-	keywords: [__("listing")],
+	keywords: ["listing", "latest", "items"],
 
 	attributes: {
 		listingPostType: {
 			type: "string",
 			default: "",
-		},
-		listingIncludeFilters: {
-			type: "boolean",
-			default: true,
 		},
 		listingSearchTextFilter: {
 			type: "boolean",
@@ -77,8 +73,8 @@ registerBlockType("wb-blocks/filterable-listing", {
 			default: false,
 		},
 		variant: {
-			type: 'string',
-			default: 'default',
+			type: "string",
+			default: "default",
 		},
 		className: {
 			type: "string",
@@ -89,19 +85,27 @@ registerBlockType("wb-blocks/filterable-listing", {
 		return <InnerBlocks.Content />;
 	},
 });
-console.log("BEFORE VARIATION");
 
 registerBlockVariation("wb-blocks/filterable-listing", {
-	name: "item-listing",
+	name: "default",
+	title: "Filterable Listing",
+	attributes: {
+		variant: "default",
+	},
+	icon: "id-alt",
+	isActive: attributes => attributes.variant === "default",
+
+	scope: ["transform"],
+});
+
+registerBlockVariation("wb-blocks/filterable-listing", {
+	name: "auto-item-list",
 	title: "Item Listing",
 	description: "Automatically pull through items",
 	icon: "list-view",
 	attributes: {
 		variant: "auto-item-list",
 	},
-	isActive: (attributes) =>
-		attributes.variant === "auto-item-list",
+	isActive: attributes => attributes.variant === "auto-item-list",
 	scope: ["inserter", "transform"],
 });
-
-console.log("AFTER VARIATION");

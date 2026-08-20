@@ -7,10 +7,17 @@ import {
 	RadioControl,
 	BaseControl,
 	Button,
-	ToolbarGroup, ToolbarButton
+	ToolbarGroup,
+	ToolbarButton,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InnerBlocks, MediaUpload,BlockControls, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
+import {
+	InnerBlocks,
+	MediaUpload,
+	BlockControls,
+	InspectorControls,
+	store as blockEditorStore,
+} from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
@@ -23,7 +30,6 @@ const noItemSelectedText = "No item selected"; // Text in editor to shew that no
 export default function filterableListingEdit({ attributes, setAttributes }) {
 	const {
 		listingPostType,
-		listingIncludeFilters,
 		listingSearchTextFilter,
 		listingDisplayImage,
 		listingFilters,
@@ -236,10 +242,6 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
-	const setListingIncludeFilters = newListingIncludeFilters => {
-		setAttributes({ listingIncludeFilters: newListingIncludeFilters });
-	};
-
 	const setListingSearchTextFilter = newSearchTextFilter => {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
@@ -298,16 +300,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					options={itemTypes}
 					onChange={setListingPostType}
 				/>
-				{listingPostType.length > 0 && (
-					<ToggleControl
-						label="Show filtering options"
-						help="If disabled, this will just show the latest items"
-						checked={listingIncludeFilters}
-						onChange={setListingIncludeFilters}
-					/>
-				)}
 			</PanelBody>
-			{listingPostType.length > 0 && listingIncludeFilters !== false && (
+			{listingPostType.length > 0 && variant !== "auto-item-list" && (
 				<PanelBody title={__("Filterable Listing settings")} initialOpen={true}>
 					<ToggleControl
 						label="Search Text Filter"
@@ -359,6 +353,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						label="Items per page"
 						min={3}
 						max={50}
+						step={1}
 						value={listingItemsPerPage}
 						onChange={setItemsPerPage}
 					/>
@@ -414,25 +409,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
 	};
 
-	const isAutoItemList = variant === "auto-item-list";
-
 	return (
 		<Fragment>
-			<BlockControls>
-				<ToolbarGroup>
-					<ToolbarButton
-						onClick={() =>
-							setAttributes({
-								variant: isAutoItemList ? "default" : "auto-item-list",
-							})
-						}
-					>
-						{isAutoItemList
-							? "Use Default Listing"
-							: "Use Item Listing"}
-					</ToolbarButton>
-				</ToolbarGroup>
-			</BlockControls>
 			{inspectorControls}
 			<InspectorControls group="styles">
 				<PanelBody title={__("Results styles")} initialOpen={true}>
@@ -447,7 +425,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={stylesResultsShadedBackground}
 						onChange={setStylesResultsShadedBackground}
 					/>
-					{listingIncludeFilters !== false && (
+					{variant !== "auto-item-list" && (
 						<RadioControl
 							label="Layout of filters and results"
 							selected={stylesLayout ? stylesLayout : "side-by-side"}
@@ -458,8 +436,23 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							onChange={setStylesLayout}
 						/>
 					)}
+					{variant === "auto-item-list" && (
+						<RadioControl
+							label="Layout of items"
+							help="Layouts will stack on narrow displays such as mobile phones"
+							selected={stylesLayout ? stylesLayout : "side-by-side"}
+							options={[
+								{ label: "4 wide (2 on large mobiles)", value: "side-by-side-4-2" },
+								{ label: "4 wide", value: "side-by-side-4-1" },
+								{ label: "3 wide", value: "side-by-side" },
+								{ label: "2 wide", value: "side-by-side-2-1" },
+								{ label: "Stacked", value: "stacked" },
+							]}
+							onChange={setStylesLayout}
+						/>
+					)}
 					<RadioControl
-						label="Layout of taxonomies"
+						label="Layout of fields"
 						selected={stylesFieldLayout ? stylesFieldLayout : "stacked"}
 						options={[
 							{ label: "Everything stacked", value: "stacked" },
@@ -491,7 +484,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">{variant === 'auto-item-list'?`Auto item`:`Filterable type`} listing</div>
+				<div className="">{variant === "auto-item-list" ? `Auto item` : `Filterable type`} listing</div>
 			</div>
 		</Fragment>
 	);
