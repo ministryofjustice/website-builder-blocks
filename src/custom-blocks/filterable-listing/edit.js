@@ -3,16 +3,16 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
-	NumberControl,
 	RadioControl,
 	BaseControl,
-	Button,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InnerBlocks, MediaUpload, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
+import { InspectorControls } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
+import PreviewAuto from "./preview-auto.js";
+import PreviewFilter from "./preview-filter.js";
 
 const { Fragment } = wp.element;
 const d = new Date();
@@ -22,7 +22,6 @@ const noItemSelectedText = "No item selected"; // Text in editor to shew that no
 export default function filterableListingEdit({ attributes, setAttributes }) {
 	const {
 		listingPostType,
-		listingIncludeFilters,
 		listingSearchTextFilter,
 		listingDisplayImage,
 		listingFilters,
@@ -37,6 +36,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesFieldLayout,
 		stylesLayout,
 		stylesResultsShadedBackground,
+		variant,
 		className,
 	} = attributes;
 
@@ -234,10 +234,6 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
-	const setListingIncludeFilters = newListingIncludeFilters => {
-		setAttributes({ listingIncludeFilters: newListingIncludeFilters });
-	};
-
 	const setListingSearchTextFilter = newSearchTextFilter => {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
@@ -296,16 +292,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					options={itemTypes}
 					onChange={setListingPostType}
 				/>
-				{listingPostType.length > 0 && (
-					<ToggleControl
-						label="Show filtering options"
-						help="If disabled, this will just show the latest items"
-						checked={listingIncludeFilters}
-						onChange={setListingIncludeFilters}
-					/>
-				)}
 			</PanelBody>
-			{listingPostType.length > 0 && listingIncludeFilters !== false && (
+			{listingPostType.length > 0 && variant !== "auto-item-list" && (
 				<PanelBody title={__("Filterable Listing settings")} initialOpen={true}>
 					<ToggleControl
 						label="Search Text Filter"
@@ -357,6 +345,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						label="Items per page"
 						min={3}
 						max={50}
+						step={1}
 						value={listingItemsPerPage}
 						onChange={setItemsPerPage}
 					/>
@@ -428,7 +417,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={stylesResultsShadedBackground}
 						onChange={setStylesResultsShadedBackground}
 					/>
-					{listingIncludeFilters !== false && (
+					{variant !== "auto-item-list" && (
 						<RadioControl
 							label="Layout of filters and results"
 							selected={stylesLayout ? stylesLayout : "side-by-side"}
@@ -439,8 +428,23 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							onChange={setStylesLayout}
 						/>
 					)}
+					{variant === "auto-item-list" && (
+						<RadioControl
+							label="Layout of items"
+							help="Layouts will stack on narrow displays such as mobile phones"
+							selected={stylesLayout ? stylesLayout : "side-by-side"}
+							options={[
+								{ label: "4 wide (2 on large mobiles)", value: "side-by-side-4-2" },
+								{ label: "4 wide", value: "side-by-side-4-1" },
+								{ label: "3 wide", value: "side-by-side" },
+								{ label: "2 wide", value: "side-by-side-2-1" },
+								{ label: "Stacked", value: "stacked" },
+							]}
+							onChange={setStylesLayout}
+						/>
+					)}
 					<RadioControl
-						label="Layout of taxonomies"
+						label="Layout of fields"
 						selected={stylesFieldLayout ? stylesFieldLayout : "stacked"}
 						options={[
 							{ label: "Everything stacked", value: "stacked" },
@@ -472,7 +476,18 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">Filterable Listing</div>
+				<div className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
+					<PreviewAuto
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+					<PreviewFilter
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+				</div>
 			</div>
 		</Fragment>
 	);
