@@ -476,9 +476,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div
-					className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "wb-listing border-t pt-4"}`}
-				>
+				<div className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
 					<PreviewAuto
 						attributes={attributes}
 						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}

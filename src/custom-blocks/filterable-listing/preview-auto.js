@@ -93,7 +93,6 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 
 	var outerClass = "";
 	var innerClass = "";
-	console.log("X", attributes.stylesFieldLayout);
 	switch (attributes.stylesFieldLayout) {
 		case "inline":
 			outerClass = "md:inline-flex gap-2 text-base";
@@ -126,7 +125,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 					const isSummary = field?.name === "post_summary";
 					return (
 						<div key={item} className={isSummary ? "mt-4 flex gap-2 pe-4 text-xl" : outerClass}>
-							{isSummary && !attributes.stylesHideLabels && (
+							{!isSummary && !attributes.stylesHideLabels && (
 								<h3 className={`${innerClass} !my-0 text-base font-bold`}>
 									{field?.label || item.replaceAll("_", " ")}
 									<span className="colon">:</span>
