@@ -125,31 +125,29 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 					const field = fieldLabels[item];
 					const isSummary = field?.name === "post_summary";
 					return (
-					<div
-						key={item}
-						className={isSummary ? "mt-4 flex gap-2 pe-4 text-xl" : outerClass}
-					>
-						{isSummary && !attributes.stylesHideLabels && (
-							<h3 className={`${innerClass} !my-0 text-base font-bold`}>
-								{field?.label || item.replaceAll("_", " ")}
-								<span className="colon">:</span>
-							</h3>
-						)}
-						<div
-							className={
-								field?.name == "post_summary"
-									? "inline"
-									: `${innerClass} !my-0 before:content-['<'] after:content-['>']`
-							}
-						>
-							{field?.type == "taxonomy" && attributes.stylesTaxLinks ? (
-								<a href="#">{field?.label || item.replaceAll("_", " ")}</a>
-							) : (
-								field?.label || item.replaceAll("_", " ")
+						<div key={item} className={isSummary ? "mt-4 flex gap-2 pe-4 text-xl" : outerClass}>
+							{isSummary && !attributes.stylesHideLabels && (
+								<h3 className={`${innerClass} !my-0 text-base font-bold`}>
+									{field?.label || item.replaceAll("_", " ")}
+									<span className="colon">:</span>
+								</h3>
 							)}
+							<div
+								className={
+									field?.name == "post_summary"
+										? "inline"
+										: `${innerClass} !my-0 before:content-['<'] after:content-['>']`
+								}
+							>
+								{field?.type == "taxonomy" && attributes.stylesTaxLinks ? (
+									<a href="#">{field?.label || item.replaceAll("_", " ")}</a>
+								) : (
+									field?.label || item.replaceAll("_", " ")
+								)}
+							</div>
 						</div>
-					</div>
-				)})}
+					);
+				})}
 			</div>,
 		);
 	}
