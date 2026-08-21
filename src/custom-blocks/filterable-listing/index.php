@@ -45,7 +45,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["styles"]["stylesResultsShadedBackground"] =
 			$attributes["stylesResultsShadedBackground"] ?? false;
 		$listing_settings["styles"]["stylesLayout"] = $attributes["stylesLayout"] ?? "side-by-side";
-		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked";
+		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked-inline";
 		$listing_settings["styles"]["stylesTaxLinks"] = $attributes["stylesTaxLinks"] ?? false;
 		$listing_settings["styles"]["stylesHideLabels"] = $attributes["stylesHideLabels"] ?? false;
 

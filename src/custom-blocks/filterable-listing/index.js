@@ -62,7 +62,7 @@ registerBlockType("wb-blocks/filterable-listing", {
 		},
 		stylesFieldLayout: {
 			type: "string",
-			default: "stacked",
+			default: "stacked-inline",
 		},
 		stylesLayout: {
 			type: "string",

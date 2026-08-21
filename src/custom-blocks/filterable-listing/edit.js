@@ -11,6 +11,8 @@ import { InspectorControls } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
+import PreviewAuto from "./preview-auto.js";
+import PreviewFilter from "./preview-filter.js";
 
 const { Fragment } = wp.element;
 const d = new Date();
@@ -474,7 +476,20 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">{variant === "auto-item-list" ? `Auto item` : `Filterable type`} listing</div>
+				<div
+					className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "wb-listing border-t pt-4"}`}
+				>
+					<PreviewAuto
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+					<PreviewFilter
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+				</div>
 			</div>
 		</Fragment>
 	);
