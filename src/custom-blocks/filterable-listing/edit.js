@@ -3,21 +3,11 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
-	NumberControl,
 	RadioControl,
 	BaseControl,
-	Button,
-	ToolbarGroup,
-	ToolbarButton,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import {
-	InnerBlocks,
-	MediaUpload,
-	BlockControls,
-	InspectorControls,
-	store as blockEditorStore,
-} from "@wordpress/block-editor";
+import { InspectorControls } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
