@@ -61,18 +61,23 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 
 function wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings)
 {
+	$block_id = $listing_settings["blockID"];
 	if ($listing_settings["searchTextFilter"]) {
 		$listing_search_text = wb_blocks_filterable_listing_block_get_active_filter_value(
 			$active_filters,
 			"listing_search",
 		); ?>
         <div class="">
-            <label class="block font-medium mb-1" for="listing-search-field">
+            <label class="block font-medium mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
                 <?php _e("Search", "wb_blocks"); ?>
             </label>
-            <input id="listing-search-field" name="listing_search" class="w-full border px-3 py-2" value="<?= esc_attr(
-            	$listing_search_text,
-            ) ?>" type="search">
+            <input
+				id="listing-search-field-<?= esc_attr($block_id) ?>"
+				name="<?= esc_attr($block_id) ?>_listing_search"
+				class="w-full border px-3 py-2"
+				value="<?= esc_attr($listing_search_text) ?>"
+				type="search"
+			/>
         </div>
         <br/>
     <?php
@@ -253,19 +258,19 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 			$subfilter_label = "Sub-topic";
 		}
 
-		$wrapper_id = $child_class_name . "-wrapper";
+		$wrapper_id = $child_class_name . "-wrapper-" . $block_id;
 
 		echo "<br/><br/>";
-		echo '<div id="' . $wrapper_id . '" class="' . $subtopic_wrapper_classes . '">';
+		echo '<div id="' . esc_attr($wrapper_id) . '" class="' . $subtopic_wrapper_classes . '">';
 		echo '<label class="block font-medium mb-1" for="' .
-			esc_attr($child_class_name) .
+			esc_attr($child_class_name . $block_id) .
 			'">' .
 			esc_html($subfilter_label) .
 			"</label>";
 		echo '<select name="' .
 			esc_attr($subtopic_query_var) .
 			'" id="' .
-			esc_attr($child_class_name) .
+			esc_attr($child_class_name . $block_id) .
 			'" class="w-full border px-3 py-2" ' .
 			$disabled_subtopics .
 			">";
