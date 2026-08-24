@@ -24,6 +24,10 @@ registerBlockType("wb-blocks/filterable-listing", {
 			type: "boolean",
 			default: true,
 		},
+		listingImagePosition: {
+			type: "string",
+			default: "default",
+		},
 		listingFilters: {
 			type: "array",
 			default: "",
@@ -72,9 +76,18 @@ registerBlockType("wb-blocks/filterable-listing", {
 			type: "boolean",
 			default: false,
 		},
+		stylesResultsShadedColour: {
+			type: "string",
+		},
+		stylesResultsBorderColour: {
+			type: "string",
+		},
 		variant: {
 			type: "string",
 			default: "default",
+		},
+		blockID: {
+			type: "string",
 		},
 		className: {
 			type: "string",

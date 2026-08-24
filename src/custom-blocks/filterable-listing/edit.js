@@ -7,7 +7,7 @@ import {
 	BaseControl,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InspectorControls } from "@wordpress/block-editor";
+import { InspectorControls, useSettings, PanelColorSettings } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
@@ -24,6 +24,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		listingPostType,
 		listingSearchTextFilter,
 		listingDisplayImage,
+		listingImagePosition,
 		listingFilters,
 		listingDisplayFields,
 		listingDisplayTerms,
@@ -36,9 +37,18 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesFieldLayout,
 		stylesLayout,
 		stylesResultsShadedBackground,
+		stylesResultsShadedColour,
+		stylesResultsBorderColour,
+		blockID,
 		variant,
 		className,
 	} = attributes;
+
+	if (!blockID) {
+		setAttributes({
+			blockID: crypto.randomUUID(),
+		});
+	}
 
 	const { allPostTypes } = useSelect(select => {
 		const { getPostTypes } = select(coreStore);
@@ -242,6 +252,10 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ listingDisplayImage: setDisplayImage });
 	};
 
+	const setListingImagePosition = setImagePosition => {
+		setAttributes({ listingImagePosition: setImagePosition });
+	};
+
 	const setListingFilters = selectedItems => {
 		const values = selectedItems ? selectedItems.map(item => item.value) : [];
 		setAttributes({ listingFilters: values });
@@ -401,6 +415,16 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
 	};
 
+	const setStylesResultsShadedColour = newStylesResultsShadedColour => {
+		setAttributes({ stylesResultsShadedColour: newStylesResultsShadedColour });
+	};
+
+	const setStylesResultsBorderColour = newStylesResultsBorderColour => {
+		setAttributes({ stylesResultsBorderColour: newStylesResultsBorderColour });
+	};
+
+	const [colours] = useSettings("color.palette");
+
 	return (
 		<Fragment>
 			{inspectorControls}
@@ -411,6 +435,18 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={listingDisplayImage}
 						onChange={setListingDisplayImage}
 					/>
+					{listingDisplayImage && (
+						<RadioControl
+							label="Layout of filters and results"
+							selected={listingImagePosition ? listingImagePosition : "default"}
+							options={[
+								{ label: "Right", value: "default" },
+								{ label: "Top", value: "top" },
+								{ label: "Left", value: "Left" },
+							]}
+							onChange={setListingImagePosition}
+						/>
+					)}
 					<ToggleControl
 						label="Shaded background"
 						help="Item divider line will be hidden"
@@ -473,6 +509,40 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={stylesHideLabels}
 						onChange={setStylesHideLabels}
 					/>
+				</PanelBody>
+				<PanelBody title={"Colour options"} initialOpen={false}>
+					{stylesResultsShadedBackground && (
+						<>
+							<PanelColorSettings
+								title="Shading colour"
+								help="leave blank for a semi-transparent shading to match the background"
+								colorSettings={[
+									{
+										value: stylesResultsShadedColour,
+										onChange: setStylesResultsShadedColour,
+										label: "Colour",
+										colors: colours,
+									},
+								]}
+							/>
+							<p className="components-base-control__help">
+								Leave blank for a semi-transparent shading to match the background.
+							</p>
+						</>
+					)}
+					{(!stylesResultsShadedBackground || listingDisplayImage) && (
+						<PanelColorSettings
+							title="Border colour"
+							colorSettings={[
+								{
+									value: stylesResultsBorderColour,
+									onChange: setStylesResultsBorderColour,
+									label: "Colour",
+									colors: colours,
+								},
+							]}
+						/>
+					)}
 				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>

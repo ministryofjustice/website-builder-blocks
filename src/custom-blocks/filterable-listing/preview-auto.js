@@ -17,7 +17,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 			label: "Published date",
 			name: "date",
 			key: "published_date",
-			type: "field",
+			type: "date_field",
 		},
 
 		...Object.fromEntries(
@@ -74,7 +74,10 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 	if (attributes.stylesResultsShadedBackground) overarchingClass += " gap-x-4";
 
 	const image = attributes.listingDisplayImage ? (
-		<div className={`${featuredImageClass} flex items-center justify-center`} style={{ background: "#8888" }}>
+		<div
+			className={`${featuredImageClass} flex items-center justify-center`}
+			style={{ background: "#8888", borderColor: attributes.stylesResultsBorderColour }}
+		>
 			<svg
 				className="h-[50%] w-[50%] text-gray-400"
 				fill="none"
@@ -99,7 +102,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 			innerClass = "inline";
 			break;
 		case "inline-stacked":
-			outerClass = "sm:inline-flex flex-col py-1 mr-4 sm:text-lg text-base";
+			outerClass = "sm:inline-flex flex-col py-1 mr-4 text-base";
 			innerClass = "sm:text-base [&_span.colon]:hidden";
 			break;
 		case "stacked-inline":
@@ -117,6 +120,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 			<div
 				key={i}
 				className={`wb-listing mb-4 flow-root ${attributes.stylesResultsShadedBackground ? "wb-shaded p-4" : "border-b pb-2"}`}
+				style={{
+					...(attributes.stylesResultsShadedBackground && attributes.stylesResultsShadedColour
+						? { backgroundColor: attributes.stylesResultsShadedColour }
+						: {}),
+					...(attributes.stylesResultsBorderColour ? { borderColor: attributes.stylesResultsBorderColour } : {}),
+				}}
 			>
 				{image}
 				<h2 className="text-2xl font-bold">Title {i + 1}</h2>

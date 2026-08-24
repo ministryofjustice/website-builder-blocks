@@ -32,6 +32,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings = [];
 		$listing_settings["postType"] = $postType;
 		$listing_settings["variant"] = $variant;
+		$listing_settings["blockID"] = $attributes["blockID"] ?? wp_unique_id();
 		$listing_settings["searchTextFilter"] = $attributes["listingSearchTextFilter"] ?? true;
 		$listing_settings["displayImage"] = $attributes["listingDisplayImage"] ?? true;
 		$listing_settings["filters"] = $attributes["listingFilters"] ?? [];
@@ -44,6 +45,8 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["restrictTerms"] = $attributes["listingRestrictTerms"] ?? [];
 		$listing_settings["styles"]["stylesResultsShadedBackground"] =
 			$attributes["stylesResultsShadedBackground"] ?? false;
+		$listing_settings["styles"]["stylesResultsShadedColour"] = $attributes["stylesResultsShadedColour"] ?? false;
+		$listing_settings["styles"]["stylesResultsBorderColour"] = $attributes["stylesResultsBorderColour"] ?? false;
 		$listing_settings["styles"]["stylesLayout"] = $attributes["stylesLayout"] ?? "side-by-side";
 		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked-inline";
 		$listing_settings["styles"]["stylesTaxLinks"] = $attributes["stylesTaxLinks"] ?? false;
@@ -54,7 +57,8 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$active_filters = [];
 		$active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
 
-		$block_id = rand();
+		$block_id = $listing_settings["blockID"]; // We save this in the database to ensure consistency - required for pagination
+
 		$tax_filters = [];
 		foreach ($listing_settings["filters"] as $filter) {
 			if (taxonomy_exists($filter)) {
@@ -71,7 +75,9 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		}
 		?>
 
-    <div class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
+    <div
+		id="<?php echo esc_attr($block_id); ?>"
+		class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
         data-block-id="<?php echo esc_attr($block_id); ?>"
         data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(",", $tax_filters) : ""); ?>"
     >
@@ -80,7 +86,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
    	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
    } ?>
 			<div class="col-span-2"> 
-				<?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters); ?> 
+				<?php wb_blocks_filterable_listing_block_results($block_id, $listing_settings, $active_filters); ?> 
 			</div>
         </div>
     </div>

@@ -161,9 +161,11 @@ function wb_blocks_filterable_listing_block_get_active_filter_value($listing_act
 	return $filter_value;
 }
 
-function wb_blocks_filterable_listing_block_get_listing_query($listing_settings, $active_filters)
+function wb_blocks_filterable_listing_block_get_listing_query($block_id, $listing_settings, $active_filters)
 {
-	$paged = get_query_var("paged") ? get_query_var("paged") : 1;
+	$page = isset($_GET["listing_" . $block_id . "_page"]) ? absint($_GET["listing_" . $block_id . "_page"]) : 1;
+
+	$page = max(1, $page);
 
 	$tax_qry_ary = [];
 	$published_date_qry = [];
@@ -171,10 +173,11 @@ function wb_blocks_filterable_listing_block_get_listing_query($listing_settings,
 	$meta_date_filters = [];
 
 	$listing_args = [
+		"block_id" => $block_id,
 		"post_type" => $listing_settings["postType"],
 		"posts_per_page" => $listing_settings["itemsPerPage"],
 		"relevanssi" => true,
-		"paged" => $paged,
+		"paged" => $page,
 	];
 
 	if (!empty($listing_settings["restrictTaxonomies"]) && !empty($listing_settings["restrictTerms"])) {

@@ -11,14 +11,18 @@
  *
  */
 
-function wb_blocks_filterable_listing_block_results($listing_settings, $active_filters)
+function wb_blocks_filterable_listing_block_results($block_id, $listing_settings, $active_filters)
 {
 	$filters = $listing_settings["variant"] !== "auto-item-list";
 	$post_type_obj = get_post_type_object($listing_settings["postType"]);
 	$flex_cpt_name = $post_type_obj->labels->singular_name;
 	$flex_cpt_name_plural = $post_type_obj->labels->name;
-
-	$listing_query = wb_blocks_filterable_listing_block_get_listing_query($listing_settings, $active_filters);
+	$set_border_style = "";
+	$listing_query = wb_blocks_filterable_listing_block_get_listing_query(
+		$block_id,
+		$listing_settings,
+		$active_filters,
+	);
 
 	if ($listing_query->have_posts()) {
 
@@ -31,10 +35,19 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 		} elseif ($listing_query->found_posts == 1 && $filters) {
 			$item_count_text = "1 " . strtolower($flex_cpt_name);
 		}
+
+		if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
+			$set_border_style =
+				"border-color:" . esc_attr($listing_settings["styles"]["stylesResultsBorderColour"]) . ";";
+		}
 		?>
-		<div class="wb-listing mb-4 pb-2
+		<div
+			style="<?php echo $set_border_style; ?>";
+			class="wb-listing mb-4 pb-2
 			<?php if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
    	echo "border-b";
+   } else {
+   	echo "wb-force-dark";
    } ?>
 		">
 			<?php echo esc_html($item_count_text); ?>
@@ -83,14 +96,23 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$listing_query->the_post();
 
    	$list_item_classes = "wb-listing mb-4 flow-root ";
+   	$set_border_style = $set_bg_colour_style = "";
+   	$set_image_border_style =
+   		"border-color:" . esc_attr($listing_settings["styles"]["stylesResultsBorderColour"]) . ";";
 
    	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
    		$list_item_classes .= "wb-shaded p-4";
+   		if ($listing_settings["styles"]["stylesResultsShadedColour"] !== false) {
+   			$set_bg_colour_style =
+   				"background-color:" . esc_attr($listing_settings["styles"]["stylesResultsShadedColour"]) . ";";
+   		}
    	} else {
    		$list_item_classes .= "border-b pb-2";
+   		$set_border_style =
+   			"border-color:" . esc_attr($listing_settings["styles"]["stylesResultsBorderColour"]) . ";";
    	}
    	?>
-			<div class="<?php echo $list_item_classes; ?>">
+			<div class="<?php echo $list_item_classes; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php if ($listing_settings["displayImage"]) {
     	// if there is a post thumbnail, and the listing page has it set to display, we echo it out here
     	$thumb_id = get_post_thumbnail_id(get_the_ID());
@@ -100,17 +122,18 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
     		$thumb_class =
     			$featured_image_class . " wb-listing-thumbnail bg-no-repeat bg-center ml-[5px] mb-[2px] border";
     		$alt_text = esc_attr__(get_post_meta($thumb_id, "_wp_attachment_image_alt", true), "wb_blocks");
-
-    		echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url');\"></div>";
+    		echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url');$set_image_border_style\"></div>";
     	}
     } ?>
-				<h2 class="font-bold text-2xl">
-					<a href="<?php echo esc_url(get_permalink()); ?>">
-						<?php echo esc_html(get_the_title()); ?>
-					</a>
-				</h2>
-				<?php $tax_url_array = wb_blocks_filterable_listing_item_terms($listing_settings); ?>
-				<?php wb_blocks_filterable_listing_item_details($display_fields, $listing_settings, $tax_url_array); ?>
+				<div>
+					<h2 class="font-bold text-2xl">
+						<a href="<?php echo esc_url(get_permalink()); ?>">
+							<?php echo esc_html(get_the_title()); ?>
+						</a>
+					</h2>
+					<?php $tax_url_array = wb_blocks_filterable_listing_item_terms($listing_settings); ?>
+					<?php wb_blocks_filterable_listing_item_details($display_fields, $listing_settings, $tax_url_array); ?>
+				</div>
 			</div>
 			<?php
    } ?>
@@ -198,7 +221,7 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 					$innerClass = "inline";
 					break;
 				case "inline-stacked":
-					$outerClass = "sm:inline-flex flex-col py-1 mr-4 sm:text-lg";
+					$outerClass = "sm:inline-flex flex-col py-1 mr-4";
 					$innerClass = "sm:text-base [&_span.colon]:hidden";
 					break;
 				case "stacked-inline":
@@ -274,44 +297,50 @@ function wb_blocks_filterable_listing_item_terms($listing_settings)
 
 function wb_blocks_filterable_listing_pagination($custom_query)
 {
+	$block_id = $custom_query->query["block_id"];
+
+	$param_name = "listing_{$block_id}_page";
+
+	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
+	$current_page_number = max(1, $current_page_number);
+
+	$next_page_number = $current_page_number + 1;
+	$prev_page_number = $current_page_number - 1;
+
+	$next_page_text = __('Next<span class="hidden sm:inline"> page</span>', "wb_blocks");
+	$prev_page_text = __('Previous<span class="hidden sm:inline"> page</span>', "wb_blocks");
+
+	$next_url = add_query_arg($param_name, $next_page_number);
+	$prev_url = add_query_arg($param_name, $prev_page_number);
+
 	$query_to_paginate = $custom_query;
 
 	$max_pages = $query_to_paginate->max_num_pages;
 
-	$current_page_number = get_query_var("paged") ? get_query_var("paged") : 1;
-
 	if ($max_pages > 1) { ?>
 		<nav class="" aria-label="pagination">
-			<ul class="flex gap-4 list-none p-0 m-0">
-				<?php if ($current_page_number > "1") {
-    	echo "<li class='inline-flex items-center gap-1 font-medium px-3 py-1.5'>";
-    	previous_posts_link(
-    		'
-						<span class="">' .
-    			__('Previous<span class="hidden sm:inline"> page</span>', "wb_blocks") .
-    			'
+			<ul class="flex gap-4 list-none py-1.5 px-0 m-0">
+			<?php if ($current_page_number > "1") { ?>
+    			<li>
+    				<a href='<?php echo esc_url($prev_url); ?>'>
+						<span class='inline-flex items-center gap-1 font-medium px-3 py-1.5'>
+							<?php echo $prev_page_text; ?>
 						</span>
-						',
-    		$max_pages,
-    	);
-    	echo "</li>";
-    } ?>
-				<li class="">
-					<?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
-
+					</a>
 				</li>
-				<?php if ($current_page_number < $max_pages) {
-    	echo "<li class='archive-pagination-next-btn'>";
-    	next_posts_link(
-    		'
-						<span class="inline-flex items-center gap-1 font-medium px-3 py-1.5">' .
-    			__('Next<span class="hidden sm:inline"> page</span>', "wb_blocks") .
-    			'</span>
-						',
-    		$max_pages,
-    	);
-    	echo "</li>";
-    } ?>
+			<?php } ?>
+				<li class="px-3 py-1.5">
+						<?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
+				</li>
+			<?php if ($current_page_number < $max_pages) { ?>
+				<li>
+					<a href='<?php echo esc_url($next_url); ?>'>
+						<span class='inline-flex items-center gap-1 font-medium px-3 py-1.5'>
+							<?php echo $next_page_text; ?>
+						</span>
+					</a>
+				</li>
+			<?php } ?>
 			</ul>
 		</nav>
 		<?php }
