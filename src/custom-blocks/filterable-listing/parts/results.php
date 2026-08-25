@@ -44,11 +44,11 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
 		<div
 			style="<?php echo $set_border_style; ?>";
 			class="wb-listing mb-4 pb-2
-			<?php if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
-   	echo "border-b";
-   } else {
-   	echo "wb-force-dark";
-   } ?>
+<?php if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
+	echo "border-b";
+} else {
+	echo "wb-force-dark";
+} ?>
 		">
 			<?php echo esc_html($item_count_text); ?>
 		</div>
@@ -57,7 +57,7 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
   // There are a number of layout settings, the overarching class deals with the layout.
   // The featured image class deals with the image size and positioning, which might change when the layout adapts to breakpoints
   $overarching_class = "";
-  $featured_image_class = "float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+  $featured_image_class = "sm:float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
   if (!$filters) {
   	$layout = $listing_settings["styles"]["stylesLayout"];
 
@@ -75,7 +75,7 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
   			break;
   		case "side-by-side-4-1":
   			$overarching_class .= "grid-cols-1 lg:grid-cols-4";
-  			$featured_image_class = "float-right lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
+  			$featured_image_class = "sm:float-right lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
   			break;
   		case "side-by-side-4-2":
   			$overarching_class .= "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
@@ -83,7 +83,7 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
   				"sm:float-right lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]";
   			break;
   		default:
-  			$overarching_class .= "grid-cols-1 md:grid-cols-3 ";
+  			$overarching_class .= "grid-cols-1 md:grid-cols-3";
   	}
   }
   if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
@@ -233,7 +233,7 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 					$innerClass = "";
 			}
 			if ($field_name == "post_summary") {
-				$outerClass = "flex gap-2 text-xl";
+				$outerClass = "flex gap-2";
 				$innerClass = "inline";
 			} else {
 				$outerClass .= " text-base";
