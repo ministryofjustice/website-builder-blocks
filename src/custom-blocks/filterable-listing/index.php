@@ -35,7 +35,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["blockID"] = $attributes["blockID"] ?? wp_unique_id();
 		$listing_settings["searchTextFilter"] = $attributes["listingSearchTextFilter"] ?? true;
 		$listing_settings["displayImage"] = $attributes["listingDisplayImage"] ?? true;
-		$listing_settings["imagePosition"] = $attributes["listingImagePosition"] ?? "left";
+		$listing_settings["styles"]["imagePosition"] = $attributes["listingImagePosition"] ?? "right";
 		$listing_settings["filters"] = $attributes["listingFilters"] ?? [];
 		$listing_settings["displayFields"] = $attributes["listingDisplayFields"] ?? [];
 		$listing_settings["displayTerms"] = $attributes["listingDisplayTerms"] ?? [];

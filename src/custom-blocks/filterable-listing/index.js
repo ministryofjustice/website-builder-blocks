@@ -26,7 +26,7 @@ registerBlockType("wb-blocks/filterable-listing", {
 		},
 		listingImagePosition: {
 			type: "string",
-			default: "default",
+			default: "right",
 		},
 		listingFilters: {
 			type: "array",

@@ -440,9 +440,9 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							label="Layout of filters and results"
 							selected={listingImagePosition ? listingImagePosition : "default"}
 							options={[
-								{ label: "Right", value: "default" },
+								{ label: "Right", value: "right" },
 								{ label: "Top", value: "top" },
-								{ label: "Left", value: "Left" },
+								{ label: "Left", value: "left" },
 							]}
 							onChange={setListingImagePosition}
 						/>

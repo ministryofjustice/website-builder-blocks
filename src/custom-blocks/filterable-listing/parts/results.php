@@ -26,6 +26,7 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
 
 	$class_array = wb_blocks_filterable_listing_overarching_classes($listing_settings);
 
+	$details_wrapper_class = $class_array["details_wrapper"];
 	$border_class = $class_array["border"];
 	$list_item_class = $class_array["list_item_class"];
 	$set_border_style = $class_array["border_style"];
@@ -65,7 +66,7 @@ function wb_blocks_filterable_listing_block_results($block_id, $listing_settings
    	?>
 			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php echo $image_html; ?>
-				<div>
+				<div class="<?= $details_wrapper_class ?>">
 					<h2 class="font-bold text-2xl">
 						<a href="<?php echo esc_url(get_permalink()); ?>">
 							<?php echo esc_html(get_the_title()); ?>
@@ -125,10 +126,23 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	// There are a number of layout settings, the overarching class deals with the layout.
 	// The featured image class deals with the image size and positioning, which might change when the layout adapts to breakpoints
 
+	$image_position = $listing_settings["styles"]["imagePosition"];
+	$list_item_image_layout_class = $details_position_class = $image_position_class = "";
+	switch ($image_position) {
+		case "right":
+			$image_position_class = "sm:float-right sm:ml-[5px]"; // The image is floated right
+			$list_item_image_layout_class = "flow-root ";
+			break;
+		case "left":
+			$details_position_class = "flex-1 ml-3";
+			$list_item_image_layout_class = "flex ";
+			break;
+	}
+
 	// Overarching top class (layout of results and filters)
 	// Featured image class (the sizes and the float of the image)
 	$overarching_class = "";
-	$featured_image_class = "sm:float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+	$featured_image_class = "$image_position_class w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
 	if (!$filters) {
 		$layout = $listing_settings["styles"]["stylesLayout"];
 
@@ -142,23 +156,25 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 				break;
 			case "side-by-side": // 3-1
 				$overarching_class .= "grid-cols-1 md:grid-cols-3";
-				$featured_image_class .= " md:float-none";
+				$featured_image_class .= " md:block md:float-none";
+				$list_item_image_layout_class .= "md:block ";
 				break;
 			case "side-by-side-4-1":
 				$overarching_class .= "grid-cols-1 lg:grid-cols-4";
-				$featured_image_class = "sm:float-right lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
+				$featured_image_class = "$image_position_class lg:block lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
+				$list_item_image_layout_class .= "lg:block ";
 				break;
 			case "side-by-side-4-2":
 				$overarching_class .= "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
-				$featured_image_class =
-					"sm:float-right lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]";
+				$featured_image_class = "$image_position_class lg:block lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]";
+				$list_item_image_layout_class .= "lg:block ";
 				break;
 			default:
 				$overarching_class .= "grid-cols-1 md:grid-cols-3";
 		}
 	}
 	// Adds common Tailwind to the featured image.
-	$featured_image_class .= " wb-listing-thumbnail bg-no-repeat bg-center ml-[5px] mb-[2px] border";
+	$featured_image_class .= " wb-listing-thumbnail bg-no-repeat bg-center mb-[2px] border";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
 		$overarching_class .= " gap-x-4";
 	}
@@ -186,7 +202,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	}
 
 	// List item classes - classes for each individual item in the list
-	$list_item_class = "wb-listing mb-4 flow-root ";
+	$list_item_class = "wb-listing mb-4 " . $list_item_image_layout_class;
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] === true) {
 		$list_item_class .= "wb-shaded p-4";
 	} else {
@@ -194,6 +210,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	}
 
 	$class_array = [
+		"details_wrapper" => $details_position_class,
 		"top" => $overarching_class,
 		"image" => $featured_image_class,
 		"border_style" => $set_border_style,
