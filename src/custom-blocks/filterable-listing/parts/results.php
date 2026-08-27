@@ -123,29 +123,14 @@ function wb_blocks_filterable_listing_image_html($listing_settings, $class_array
 function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 {
 	$filters = $listing_settings["variant"] !== "auto-item-list";
+	$layout = $listing_settings["styles"]["stylesLayout"];
 	// There are a number of layout settings, the overarching class deals with the layout.
-	// The featured image class deals with the image size and positioning, which might change when the layout adapts to breakpoints
-
-	$image_position = $listing_settings["styles"]["imagePosition"];
-	$list_item_image_layout_class = $details_position_class = $image_position_class = "";
-	switch ($image_position) {
-		case "right":
-			$image_position_class = "sm:float-right sm:ml-[5px]"; // The image is floated right
-			$list_item_image_layout_class = "flow-root ";
-			break;
-		case "left":
-			$details_position_class = "flex-1 ml-3";
-			$list_item_image_layout_class = "flex ";
-			break;
-	}
 
 	// Overarching top class (layout of results and filters)
-	// Featured image class (the sizes and the float of the image)
+	// Image size class - how the image resizes to different screen widths in each layout
 	$overarching_class = "";
-	$featured_image_class = "$image_position_class w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+	$image_size_class = "w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
 	if (!$filters) {
-		$layout = $listing_settings["styles"]["stylesLayout"];
-
 		$overarching_class .= "grid ";
 		switch ($layout) {
 			case "stacked":
@@ -156,25 +141,78 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 				break;
 			case "side-by-side": // 3-1
 				$overarching_class .= "grid-cols-1 md:grid-cols-3";
-				$featured_image_class .= " md:block md:float-none";
-				$list_item_image_layout_class .= "md:block ";
 				break;
 			case "side-by-side-4-1":
 				$overarching_class .= "grid-cols-1 lg:grid-cols-4";
-				$featured_image_class = "$image_position_class lg:block lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
-				$list_item_image_layout_class .= "lg:block ";
 				break;
 			case "side-by-side-4-2":
+				$image_size_class = "w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
 				$overarching_class .= "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
-				$featured_image_class = "$image_position_class lg:block lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]";
-				$list_item_image_layout_class .= "lg:block ";
 				break;
 			default:
+				// 3-1
 				$overarching_class .= "grid-cols-1 md:grid-cols-3";
 		}
 	}
+
+	// This section sets different left and right classes for each layout
+	// Which one to use is set below
+	$image_left_class = "sm:mr-3"; // The image is to the left
+	$image_left_wrap_class = "sm:grid-cols-2 sm:grid-rows-1 sm:grid-cols-[auto_1fr] ";
+	$image_right_class = "sm:float-right sm:ml-[5px] "; // The image is floated right
+	$image_right_wrap_class = "sm:flow-root";
+	if (!$filters) {
+		switch ($layout) {
+			case "stacked":
+				// no change
+				break;
+			case "side-by-side-2-1":
+				// use bigger breakpoint as there is less space
+				$image_left_class = "md:mr-3"; // The image is to the left
+				$image_left_wrap_class = "md:grid-cols-2 md:grid-rows-1 md:grid-cols-[auto_1fr] ";
+				$image_right_class = "md:float-right md:ml-[5px] "; // The image is floated right
+				$image_right_wrap_class = "md:flow-root";
+				break;
+			case "side-by-side": // 3-1
+				// only float between sm and md - add additional classes to string
+				$image_left_class .= " md:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " md:block ";
+				$image_right_class .= " md:float-none md:ml-0 "; // The image is floated right
+				break;
+			case "side-by-side-4-1":
+				// only float between sm and lg - add additional classes to string
+				$image_left_class .= " lg:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " lg:block ";
+				$image_right_class .= " lg:float-none lg:ml-0 "; // The image is floated right
+				break;
+			case "side-by-side-4-2":
+				// never float
+				$image_left_class = $image_left_wrap_class = $image_right_class = $image_right_wrap_class = "";
+				break;
+			default:
+			// no change
+		}
+	}
+
+	// We read the image position and select which of the above classes should be
+	// used for the image_position_class and image_layout_class
+	$image_position = $listing_settings["styles"]["imagePosition"];
+	$list_item_image_layout_class = "grid "; // default - mobile and image position = top
+	switch ($image_position) {
+		case "left":
+			$image_position_class = $image_left_class;
+			$list_item_image_layout_class .= $image_left_wrap_class;
+			break;
+		case "right":
+			$image_position_class = $image_right_class;
+			$list_item_image_layout_class .= $image_right_wrap_class;
+			break;
+		default:
+			$image_position_class = "";
+	}
+
 	// Adds common Tailwind to the featured image.
-	$featured_image_class .= " wb-listing-thumbnail bg-no-repeat bg-center mb-[2px] border";
+	$featured_image_class = "wb-listing-thumbnail bg-no-repeat bg-center mb-[2px] border $image_position_class $image_size_class";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
 		$overarching_class .= " gap-x-4";
 	}
@@ -202,13 +240,13 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	}
 
 	// List item classes - classes for each individual item in the list
-	$list_item_class = "wb-listing mb-4 " . $list_item_image_layout_class;
+	$list_item_class = "wb-listing mb-4 $list_item_image_layout_class ";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] === true) {
 		$list_item_class .= "wb-shaded p-4";
 	} else {
 		$list_item_class .= $border_class . " pb-2";
 	}
-
+	$details_position_class = "";
 	$class_array = [
 		"details_wrapper" => $details_position_class,
 		"top" => $overarching_class,

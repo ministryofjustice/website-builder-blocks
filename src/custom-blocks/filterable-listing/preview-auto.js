@@ -47,8 +47,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 		),
 	};
 
+	// Image position - using float left and float right here for simpler code (the php file has more comprehensive positioning)
+	const float = attributes.listingImagePosition;
+	let imagePosition = float == "left" ? "sm:float-left mr-[5px]" : float == "right" ? "sm:float-right ml-3" : "";
+	imagePosition += " mb-2";
 	var overarchingClass = "grid ";
-	var featuredImagePreviewClass = "float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+	var featuredImagePreviewClass = `${imagePosition} w-[125px] h-[125px] md:w-[152px] md:h-[152px]`;
 	switch (attributes.stylesLayout) {
 		case "stacked":
 			overarchingClass += "grid-cols-1";
@@ -62,12 +66,11 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 			break;
 		case "side-by-side-4-1":
 			overarchingClass += "grid-cols-1 lg:grid-cols-4";
-			featuredImagePreviewClass = "float-right lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
+			featuredImagePreviewClass = `${imagePosition} lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]`;
 			break;
 		case "side-by-side-4-2":
 			overarchingClass += "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
-			featuredImagePreviewClass =
-				"sm:float-right lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]";
+			featuredImagePreviewClass = `${imagePosition} lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]`;
 			break;
 		default:
 			overarchingClass += "grid-cols-1 md:grid-cols-3 ";

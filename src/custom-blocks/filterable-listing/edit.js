@@ -437,7 +437,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					/>
 					{listingDisplayImage && (
 						<RadioControl
-							label="Layout of filters and results"
+							label="Image position"
 							selected={listingImagePosition ? listingImagePosition : "default"}
 							options={[
 								{ label: "Right", value: "right" },

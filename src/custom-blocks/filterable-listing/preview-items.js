@@ -1,4 +1,5 @@
 export default function PreviewItems({ index, attributes, fieldLabels, featuredImagePreviewClass }) {
+	// Create a placeholder image
 	const image = attributes.listingDisplayImage ? (
 		<div
 			className={`${featuredImagePreviewClass} wb-listing-thumbnail flex items-center justify-center border`}
@@ -19,6 +20,7 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 	) : (
 		""
 	);
+
 	var outerClass = "";
 	var innerClass = "";
 	switch (attributes.stylesFieldLayout) {
@@ -54,7 +56,7 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 		>
 			{image}
 
-			<h2 className="text-2xl font-bold">Title {index + 1}</h2>
+			<h2 className="!mt-0 text-2xl font-bold">Title {index + 1}</h2>
 
 			{attributes.listingDisplayFields.map(item => {
 				const field = fieldLabels[item];
