@@ -15,47 +15,48 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 {
 	if (empty($listing_settings["filters"])) {
 		return;
-	} ?>
+	}
+	$url = add_query_arg($_GET, get_permalink());
+	?>
 
-    <!-- Lefthand column with filters and search -->
-    <div class="col-span-1 pr-[var(--prose-max-width-padding)]">
-    <form action="<?= esc_url(get_permalink()) ?>" method="GET">
-    <?php
-    wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
+	<!-- Lefthand column with filters and search -->
+	<div class="col-span-1 pr-[var(--prose-max-width-padding)]">
+	<form action="<?= esc_url($url) ?>" method="GET">
+<?php
+	wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
 
-    foreach ($listing_settings["filters"] as $filter) {
-    	if (taxonomy_exists($filter)) {
-    		wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
-    	} elseif ($filter == "published_date") {
-    		wb_blocks_filterable_listing_block_date_filter("published_date", "", $active_filters);
-    	} else {
-    		$field_object = get_field_object($filter);
+	foreach ($listing_settings["filters"] as $filter) {
+		if (taxonomy_exists($filter)) {
+			wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
+		} elseif ($filter == "published_date") {
+			wb_blocks_filterable_listing_block_date_filter($block_id, "published_date", "", $active_filters);
+		} else {
+			$field_object = get_field_object($filter);
 
-    		if (!empty($field_object)) {
-    			if ($field_object["type"] == "date_picker") {
-    				wb_blocks_filterable_listing_block_date_filter(
-    					$field_object["name"],
-    					$field_object["label"],
-    					$active_filters,
-    				);
-    			}
-    		}
-    	}
-    }
-    ?>
+			if (!empty($field_object)) {
+				if ($field_object["type"] == "date_picker") {
+					wb_blocks_filterable_listing_block_date_filter(
+						$block_id,
+						$field_object["name"],
+						$field_object["label"],
+						$active_filters,
+					);
+				}
+			}
+		}
+	}
+?>
 
-    <div>
-        <button class="wp-element-button mr-1 px-4 py-2">
-            <?php _e("Search", "wb_blocks"); ?>
-        </button>
-      
-            <a href="<?= esc_url(get_permalink()) ?>" class="">
-                <?php _e("Clear", "wb_blocks"); ?>
-            </a>
-      
-    </div>
-    </form>
-    </div>
+		<div>
+			<button class="wp-element-button mr-1 px-4 py-2">
+				<?php _e("Search", "wb_blocks"); ?>
+			</button>
+			<a href="<?= esc_url(get_permalink()) ?>" class="">
+				<?php _e("Clear", "wb_blocks"); ?>
+			</a>
+		</div>
+	</form>
+	</div>
 <?php
 }
 
@@ -65,26 +66,26 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
 	if ($listing_settings["searchTextFilter"]) {
 		$listing_search_text = wb_blocks_filterable_listing_block_get_active_filter_value(
 			$active_filters,
-			"listing_search",
+			$block_id . "_listing_search",
 		); ?>
-        <div class="">
-            <label class="block font-medium mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
-                <?php _e("Search", "wb_blocks"); ?>
-            </label>
-            <input
+		<div class="">
+			<label class="block font-medium mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
+				<?php _e("Search", "wb_blocks"); ?>
+			</label>
+			<input
 				id="listing-search-field-<?= esc_attr($block_id) ?>"
 				name="<?= esc_attr($block_id) ?>_listing_search"
 				class="w-full border px-3 py-2"
 				value="<?= esc_attr($listing_search_text) ?>"
 				type="search"
 			/>
-        </div>
-        <br/>
-    <?php
+		</div>
+		<br/>
+	<?php
 	}
 }
 
-function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_label, $active_filters)
+function wb_blocks_filterable_listing_block_date_filter($block_id, $filter_name, $filter_label, $active_filters)
 {
 	if (!empty($filter_label)) {
 		$from_date_label = $filter_label . " (from)";
@@ -102,43 +103,43 @@ function wb_blocks_filterable_listing_block_date_filter($filter_name, $filter_la
 	?>
 
 <div class="wb-datepicker" data-module="wb-date-picker">
-    <div class="">
-        <label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
-            <?php echo esc_html($from_date_label); ?>
-        </label>
-        <div id="<?php echo $from_date_name; ?>_hint" class="block font-medium mb-1">
-            For example, 13/2/2024.
-        </div>
-        <input 
-            class="w-full px-3 py-2 wb-js-datepicker-input"
-            id="<?php echo $from_date_name; ?>" 
-            name="<?php echo $from_date_name; ?>" 
-            type="text" 
-            aria-describedby="<?php echo $from_date_name; ?>_hint" 
-            autocomplete="off" 
-            value="<?php echo esc_attr($from_date); ?>"
-        >
-    </div>
+	<div class="">
+		<label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
+			<?php echo esc_html($from_date_label); ?>
+		</label>
+		<div id="<?php echo $from_date_name; ?>_hint" class="block font-medium mb-1">
+			For example, 13/2/2024.
+		</div>
+		<input 
+			class="w-full px-3 py-2 wb-js-datepicker-input"
+			id="<?php echo $from_date_name; ?>" 
+			name="<?php echo esc_attr($block_id) . "_" . $from_date_name; ?>" 
+			type="text" 
+			aria-describedby="<?php echo $from_date_name; ?>_hint" 
+			autocomplete="off" 
+			value="<?php echo esc_attr($from_date); ?>"
+		>
+	</div>
 </div>
 <br/>
 <div class="wb-datepicker" data-module="wb-date-picker">
-    <div class="">
-        <label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
-            <?php echo esc_html($to_date_label); ?>
-        </label>
-        <div id="<?php echo $to_date_name; ?>_hint" class="block font-medium mb-1">
-            For example, 13/2/2024.
-        </div>
-        <input 
-            class="w-full px-3 py-2 wb-js-datepicker-input"
-            id="<?php echo $to_date_name; ?>" 
-            name="<?php echo $to_date_name; ?>" 
-            type="text" 
-            aria-describedby="<?php echo $to_date_name; ?>_hint" 
-            autocomplete="true" 
-            value="<?php echo esc_attr($to_date); ?>"
-        >
-    </div>
+	<div class="">
+		<label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
+			<?php echo esc_html($to_date_label); ?>
+		</label>
+		<div id="<?php echo $to_date_name; ?>_hint" class="block font-medium mb-1">
+			For example, 29/2/2024.
+		</div>
+		<input 
+			class="w-full px-3 py-2 wb-js-datepicker-input"
+			id="<?php echo $to_date_name; ?>" 
+			name="<?php echo esc_attr($block_id) . "_" . $to_date_name; ?>" 
+			type="text" 
+			aria-describedby="<?php echo $to_date_name; ?>_hint" 
+			autocomplete="true" 
+			value="<?php echo esc_attr($to_date); ?>"
+		>
+	</div>
 </div>
 <br/>
 <?php
@@ -186,7 +187,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 	}
 
 	$dropdown_args = [
-		"name" => $taxonomy->query_var,
+		"name" => $block_id . "_" . $taxonomy->query_var,
 		"id" => $parent_class_name,
 		"class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border px-3 py-2",
 		"taxonomy" => $taxonomy_name,
@@ -260,28 +261,40 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 
 		$wrapper_id = $child_class_name . "-wrapper-" . $block_id;
 
-		echo "<br/><br/>";
-		echo '<div id="' . esc_attr($wrapper_id) . '" class="' . $subtopic_wrapper_classes . '">';
-		echo '<label class="block font-medium mb-1" for="' .
-			esc_attr($child_class_name . $block_id) .
-			'">' .
-			esc_html($subfilter_label) .
-			"</label>";
-		echo '<select name="' .
-			esc_attr($subtopic_query_var) .
-			'" id="' .
-			esc_attr($child_class_name . $block_id) .
-			'" class="w-full border px-3 py-2" ' .
-			$disabled_subtopics .
-			">";
-		echo '<option value="0"' . selected($selected_sub_topic, 0, false) . ">Select option</option>";
+		$wrapper_id = esc_attr($wrapper_id);
+		$select_id = esc_attr($child_class_name . $block_id);
+		$subfilter_label = esc_html($subfilter_label);
+		$select_name = esc_attr($block_id) . "_" . esc_attr($subtopic_query_var);
+		$selected = selected($selected_sub_topic, 0, false);
+
+		echo "
+			<br/><br/>
+			<div id='$wrapper_id' class='$subtopic_wrapper_classes'>
+				<label
+					class='block font-medium mb-1'
+					for='$select_id'
+				>
+					$subfilter_label
+				</label>
+				<select
+					name='$select_name'
+					id='$select_id'
+					class='w-full border px-3 py-2'
+					$disabled_subtopics
+				>
+					<option
+						value='0'
+						$selected
+					>
+						Select option
+					</option>";
 
 		foreach ($sub_topics as $sub_topic) {
-			echo '<option value="' .
-				esc_attr($sub_topic->term_id) .
-				'"' .
+			$sub_topic_value = esc_attr($sub_topic->term_id);
+			echo "<option
+				value='$sub_topic_value'" .
 				selected($selected_sub_topic, $sub_topic->term_id, false) .
-				">";
+			">";
 			echo esc_html($sub_topic->name);
 			echo "</option>";
 		}

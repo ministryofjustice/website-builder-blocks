@@ -87,7 +87,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
    	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
    } ?>
 			<div class="col-span-2"> 
-				<?php wb_blocks_filterable_listing_block_results($block_id, $listing_settings, $active_filters); ?> 
+				<?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters); ?> 
 			</div>
         </div>
     </div>

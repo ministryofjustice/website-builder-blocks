@@ -11,8 +11,9 @@
  *
  */
 
-function wb_blocks_filterable_listing_block_results($block_id, $listing_settings, $active_filters)
+function wb_blocks_filterable_listing_block_results($listing_settings, $active_filters)
 {
+	$block_id = $listing_settings["blockID"];
 	$filters = $listing_settings["variant"] !== "auto-item-list";
 	$post_type_obj = get_post_type_object($listing_settings["postType"]);
 	$flex_cpt_name = $post_type_obj->labels->singular_name;
