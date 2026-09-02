@@ -23,28 +23,28 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 	<div class="col-span-1 pr-[var(--prose-max-width-padding)]">
 	<form action="<?= esc_url($url) ?>" method="GET">
 <?php
-	wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
+wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
 
-	foreach ($listing_settings["filters"] as $filter) {
-		if (taxonomy_exists($filter)) {
-			wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
-		} elseif ($filter == "published_date") {
-			wb_blocks_filterable_listing_block_date_filter($block_id, "published_date", "", $active_filters);
-		} else {
-			$field_object = get_field_object($filter);
+foreach ($listing_settings["filters"] as $filter) {
+	if (taxonomy_exists($filter)) {
+		wb_blocks_filterable_listing_block_taxonomy_filter($block_id, $filter, $active_filters, $listing_settings);
+	} elseif ($filter == "published_date") {
+		wb_blocks_filterable_listing_block_date_filter($block_id, "published_date", "", $active_filters);
+	} else {
+		$field_object = get_field_object($filter);
 
-			if (!empty($field_object)) {
-				if ($field_object["type"] == "date_picker") {
-					wb_blocks_filterable_listing_block_date_filter(
-						$block_id,
-						$field_object["name"],
-						$field_object["label"],
-						$active_filters,
-					);
-				}
+		if (!empty($field_object)) {
+			if ($field_object["type"] == "date_picker") {
+				wb_blocks_filterable_listing_block_date_filter(
+					$block_id,
+					$field_object["name"],
+					$field_object["label"],
+					$active_filters,
+				);
 			}
 		}
 	}
+}
 ?>
 
 		<div>
@@ -294,7 +294,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 			echo "<option
 				value='$sub_topic_value'" .
 				selected($selected_sub_topic, $sub_topic->term_id, false) .
-			">";
+				">";
 			echo esc_html($sub_topic->name);
 			echo "</option>";
 		}
