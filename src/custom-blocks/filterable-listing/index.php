@@ -20,6 +20,8 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 	// Parse attributes found in index.js
 	$postType = esc_html($attributes["listingPostType"] ?? "");
 
+	$variant = $attributes["variant"] ?? "default";
+
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
@@ -29,20 +31,25 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 
 		$listing_settings = [];
 		$listing_settings["postType"] = $postType;
-		$listing_settings["listingIncludeFilters"] = $attributes["listingIncludeFilters"] ?? true;
+		$listing_settings["variant"] = $variant;
+		$listing_settings["blockID"] = $attributes["blockID"] ?? wp_unique_id();
 		$listing_settings["searchTextFilter"] = $attributes["listingSearchTextFilter"] ?? true;
 		$listing_settings["displayImage"] = $attributes["listingDisplayImage"] ?? true;
+		$listing_settings["styles"]["imagePosition"] = $attributes["listingImagePosition"] ?? "right";
 		$listing_settings["filters"] = $attributes["listingFilters"] ?? [];
 		$listing_settings["displayFields"] = $attributes["listingDisplayFields"] ?? [];
 		$listing_settings["displayTerms"] = $attributes["listingDisplayTerms"] ?? [];
-		$listing_settings["itemsPerPage"] = $attributes["listingItemsPerPage"] ?? 10;
+		$listing_settings["itemsPerPage"] =
+			$attributes["listingItemsPerPage"] ?? ($variant === "auto-item-list" ? 3 : 10);
 		$listing_settings["sortOrder"] = $attributes["listingSortOrder"] ?? "published_date";
 		$listing_settings["restrictTaxonomies"] = $attributes["listingRestrictTaxonomies"] ?? [];
 		$listing_settings["restrictTerms"] = $attributes["listingRestrictTerms"] ?? [];
 		$listing_settings["styles"]["stylesResultsShadedBackground"] =
 			$attributes["stylesResultsShadedBackground"] ?? false;
+		$listing_settings["styles"]["stylesResultsShadedColour"] = $attributes["stylesResultsShadedColour"] ?? false;
+		$listing_settings["styles"]["stylesResultsBorderColour"] = $attributes["stylesResultsBorderColour"] ?? false;
 		$listing_settings["styles"]["stylesLayout"] = $attributes["stylesLayout"] ?? "side-by-side";
-		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked";
+		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked-inline";
 		$listing_settings["styles"]["stylesTaxLinks"] = $attributes["stylesTaxLinks"] ?? false;
 		$listing_settings["styles"]["stylesHideLabels"] = $attributes["stylesHideLabels"] ?? false;
 
@@ -51,7 +58,8 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$active_filters = [];
 		$active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
 
-		$block_id = rand();
+		$block_id = $listing_settings["blockID"]; // We save this in the database to ensure consistency - required for pagination
+
 		$tax_filters = [];
 		foreach ($listing_settings["filters"] as $filter) {
 			if (taxonomy_exists($filter)) {
@@ -59,26 +67,28 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 			}
 		}
 
-		$layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4"; //default, side-by-side
+		$layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4"; //default, side-by-side - if converted from an auto-list, other values might be here
 		if ($listing_settings["styles"]["stylesLayout"] == "stacked") {
 			$layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4"; //wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
 		}
-		if ($listing_settings["listingIncludeFilters"] === false) {
+		if ($variant === "auto-item-list") {
 			$layoutClass = "";
 		}
 		?>
 
-    <div class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
+    <div
+		id="<?php echo esc_attr($block_id); ?>"
+		class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
         data-block-id="<?php echo esc_attr($block_id); ?>"
         data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(",", $tax_filters) : ""); ?>"
     >
         <div class='<?php echo esc_attr($layoutClass); ?>'>
-        <?php if ($listing_settings["listingIncludeFilters"] !== false) {
-        	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
-        } ?>
-        <div class="col-span-2"> 
-            <?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters); ?> 
-        </div>
+			<?php if ($variant !== "auto-item-list") {
+   	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
+   } ?>
+			<div class="col-span-2"> 
+				<?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters); ?> 
+			</div>
         </div>
     </div>
     <?php

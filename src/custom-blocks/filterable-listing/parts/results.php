@@ -13,92 +13,295 @@
 
 function wb_blocks_filterable_listing_block_results($listing_settings, $active_filters)
 {
-	$filters = $listing_settings["listingIncludeFilters"] !== false;
+	$block_id = $listing_settings["blockID"];
+	$filters = $listing_settings["variant"] !== "auto-item-list";
 	$post_type_obj = get_post_type_object($listing_settings["postType"]);
 	$flex_cpt_name = $post_type_obj->labels->singular_name;
 	$flex_cpt_name_plural = $post_type_obj->labels->name;
 
-	$listing_query = wb_blocks_filterable_listing_block_get_listing_query($listing_settings, $active_filters);
+	$listing_query = wb_blocks_filterable_listing_block_get_listing_query(
+		$block_id,
+		$listing_settings,
+		$active_filters,
+	);
+
+	$class_array = wb_blocks_filterable_listing_overarching_classes($listing_settings);
+
+	$details_wrapper_class = $class_array["details_wrapper"];
+	$border_class = $class_array["border"];
+	$list_item_class = $class_array["list_item_class"];
+	$set_border_style = $class_array["border_style"];
+	$set_bg_colour_style = $class_array["bg_colour_style"];
 
 	if ($listing_query->have_posts()) {
 
 		$display_fields = wb_blocks_filterable_listing_block_get_display_fields($listing_settings["displayFields"]);
 
 		$item_count_text = "";
-
 		if ($listing_query->found_posts > 1 && $filters) {
 			$item_count_text = $listing_query->found_posts . " " . strtolower($flex_cpt_name_plural);
 		} elseif ($listing_query->found_posts == 1 && $filters) {
 			$item_count_text = "1 " . strtolower($flex_cpt_name);
 		}
+
+		$item_count_text = esc_html($item_count_text);
+		echo "
+			<div
+				style='$set_border_style'
+				class='wb-listing mb-4 pb-2 $border_class'>
+				$item_count_text
+			</div>
+		";
+
+		$overarching_class = esc_attr($class_array["top"]);
 		?>
-        <div class="wb-listing border-b mb-4 pb-2">
-            <?php echo esc_html($item_count_text); ?>
-        </div>
-        
-        <?php
-        $overarching_class = "";
-        $featured_image_class = "float-right";
-        if (!$filters) {
-        	$overarching_class = "grid grid-cols-1 md:grid-cols-3 gap-x-4";
-        	$featured_image_class = "";
-        }
-        ?>
-        <div class="<?php echo esc_attr($overarching_class); ?>">
-            <?php while ($listing_query->have_posts()) {
 
-            	$listing_query->the_post();
+		<div class="<?php echo esc_attr($overarching_class); ?>">
+			<?php while ($listing_query->have_posts()) {
 
-            	$list_item_classes = "wb-listing ";
+   	$listing_query->the_post();
 
-            	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
-            		$list_item_classes .= "wb-shaded p-4";
-            	} else {
-            		$list_item_classes .= "border-b pb-2";
-            	}
-            	?>
-            <div class="<?php echo $list_item_classes; ?> mb-4 flow-root">
-                <?php if ($listing_settings["displayImage"]) {
-                	// if there is a post thumbnail, and the listing page has it set to display, we echo it out here
-                	$thumb_id = get_post_thumbnail_id(get_the_ID());
-                	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
-                	if (!empty($thumb_url)) {
-                		$thumb_url = esc_url($thumb_url);
-                		$thumb_class =
-                			$featured_image_class .
-                			" wb-listing-thumbnail w-[125px] h-[125px] md:w-[152px] md:h-[152px] bg-no-repeat bg-center ml-[5px] mb-[2px] border";
-                		$alt_text = esc_attr__(get_post_meta($thumb_id, "_wp_attachment_image_alt", true), "wb_blocks");
+   	$thumb_id = get_post_thumbnail_id(get_the_ID());
+   	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
+   	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
+   	?>
+			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
+				<?php echo $image_html; ?>
+				<div class="<?= $details_wrapper_class ?>">
+					<h2 class="font-bold text-2xl">
+						<a href="<?php echo esc_url(get_permalink()); ?>">
+							<?php echo esc_html(get_the_title()); ?>
+						</a>
+					</h2>
+					<?php $tax_url_array = wb_blocks_filterable_listing_item_terms($listing_settings); ?>
+					<?php wb_blocks_filterable_listing_item_details($display_fields, $listing_settings, $tax_url_array); ?>
+				</div>
+			</div>
+			<?php
+   } ?>
+		</div>
 
-                		echo "<div class='$thumb_class' style=\"background-image:url('$thumb_url');\"></div>";
-                	}
-                } ?>
-                <h2 class="font-bold text-2xl">
-                    <a href="<?php echo esc_url(get_permalink()); ?>">
-                        <?php echo esc_html(get_the_title()); ?>
-                    </a>
-                </h2>
-                <?php $tax_url_array = wb_blocks_filterable_listing_item_terms($listing_settings); ?>
-                <?php wb_blocks_filterable_listing_item_details($display_fields, $listing_settings, $tax_url_array); ?>
-            </div>
-            <?php
-            } ?>
-        </div>
+	<?php if ($filters) {
+ 	wb_blocks_filterable_listing_pagination($listing_query);
+ }
 
-    <?php if ($filters) {
-    	wb_blocks_filterable_listing_pagination($listing_query);
-    }
+ // If there are no results, we add a placeholder to say so
+ // The placeholder changes depending on the variant of the block
 	} elseif ($filters) { ?>
-        <h2 class="font-bold text-2xl">
-            <?php printf(esc_html__("Your search matched no %s.", "wb_blocks"), strtolower($flex_cpt_name_plural)); ?>
-        </h2>
-        <p class="">
-            <?php _e("Try searching again with expanded criteria.", "wb_blocks"); ?>
-        </p>
-        <?php } else { ?>
-        <p class="font-bold text-2xl">
-            <?php _e($flex_cpt_name_plural . " shall appear here.", "wb_blocks"); ?>
-        </p>
-        <?php }
+		<h2 class="font-bold text-2xl">
+			<?php printf(esc_html__("Your search matched no %s.", "wb_blocks"), strtolower($flex_cpt_name_plural)); ?>
+		</h2>
+		<p class="">
+			<?php _e("Try searching again with expanded criteria.", "wb_blocks"); ?>
+		</p>
+		<?php } else { ?>
+		<p class="font-bold text-2xl">
+			<?php _e($flex_cpt_name_plural . " shall appear here.", "wb_blocks"); ?>
+		</p>
+<?php }
+}
+
+function wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url)
+{
+	if (!$listing_settings["displayImage"] || empty($thumb_url)) {
+		return;
+	}
+
+	$set_border_style = $class_array["border_style"];
+	$thumb_class = esc_attr($class_array["image"]);
+	if (!empty($thumb_url)) {
+		$thumb_url = esc_url($thumb_url);
+		$alt_text = "";
+		if (!empty(get_post_meta($thumb_id, "_wp_attachment_image_alt", true))) {
+			$alt_text = __("Thumbnail image", "wb_blocks");
+			$alt_text .= esc_attr__(get_post_meta($thumb_id, "_wp_attachment_image_alt", true), "wb_blocks");
+			$alt_text = "aria-label='$alt_text' ";
+		}
+		return "<div $alt_text class='$thumb_class' style=\"background-image:url('$thumb_url');$set_border_style\"></div>";
+	}
+}
+
+function wb_blocks_filterable_listing_overarching_classes($listing_settings)
+{
+	$filters = $listing_settings["variant"] !== "auto-item-list";
+	$layout = $listing_settings["styles"]["stylesLayout"];
+	// There are a number of layout settings, the overarching class deals with the layout.
+
+	// Overarching top class (layout of results and filters)
+	// Image size class - how the image resizes to different screen widths in each layout
+	$overarching_class = "";
+	$image_size_class = "w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+	if (!$filters) {
+		$overarching_class .= "grid ";
+		switch ($layout) {
+			case "stacked":
+				$overarching_class .= "grid-cols-1";
+				break;
+			case "side-by-side-2-1":
+				$overarching_class .= "grid-cols-1 md:grid-cols-2";
+				break;
+			case "side-by-side": // 3-1
+				$overarching_class .= "grid-cols-1 md:grid-cols-3";
+				break;
+			case "side-by-side-4-1":
+				$overarching_class .= "grid-cols-1 lg:grid-cols-4";
+				break;
+			case "side-by-side-4-2":
+				$image_size_class = "w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
+				$overarching_class .= "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+				break;
+			default:
+				// 3-1
+				$overarching_class .= "grid-cols-1 md:grid-cols-3";
+		}
+	}
+
+	// This section sets different left and right classes for each layout
+	// Which one to use is set below
+	$image_left_class = "sm:mr-3"; // The image is to the left
+	$image_left_wrap_class = "sm:grid-cols-2 sm:grid-rows-1 sm:grid-cols-[auto_1fr] ";
+	$image_right_class = "sm:float-right sm:ml-[5px] "; // The image is floated right
+	$image_right_wrap_class = "sm:flow-root";
+	if (!$filters) {
+		switch ($layout) {
+			case "stacked":
+				// no change
+				break;
+			case "side-by-side-2-1":
+				// use bigger breakpoint as there is less space
+				$image_left_class = "md:mr-3"; // The image is to the left
+				$image_left_wrap_class = "md:grid-cols-2 md:grid-rows-1 md:grid-cols-[auto_1fr] ";
+				$image_right_class = "md:float-right md:ml-[5px] "; // The image is floated right
+				$image_right_wrap_class = "md:flow-root";
+				break;
+			case "side-by-side": // 3-1
+				// only float between sm and md - add additional classes to string
+				$image_left_class .= " md:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " md:block ";
+				$image_right_class .= " md:float-none md:ml-0 "; // The image is floated right
+				break;
+			case "side-by-side-4-1":
+				// only float between sm and lg - add additional classes to string
+				$image_left_class .= " lg:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " lg:block ";
+				$image_right_class .= " lg:float-none lg:ml-0 "; // The image is floated right
+				break;
+			case "side-by-side-4-2":
+				// never float
+				$image_left_class = $image_left_wrap_class = $image_right_class = $image_right_wrap_class = "";
+				break;
+			default:
+			// no change
+		}
+	}
+
+	// We read the image position and select which of the above classes should be
+	// used for the image_position_class and image_layout_class
+	$image_position = $listing_settings["styles"]["imagePosition"];
+	$list_item_image_layout_class = "grid "; // default - mobile and image position = top
+	switch ($image_position) {
+		case "left":
+			$image_position_class = $image_left_class;
+			$list_item_image_layout_class .= $image_left_wrap_class;
+			break;
+		case "right":
+			$image_position_class = $image_right_class;
+			$list_item_image_layout_class .= $image_right_wrap_class;
+			break;
+		default:
+			$image_position_class = "";
+	}
+
+	// Adds common Tailwind to the featured image.
+	$featured_image_class = "wb-listing-thumbnail bg-no-repeat bg-center mb-[2px] border $image_position_class $image_size_class";
+	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
+		$overarching_class .= " gap-x-4";
+	}
+
+	// set border style - inline style for border colour
+	// border class - the bottom border for non-shaded
+	$set_border_style = "";
+	$border_class = "";
+	if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
+		$border_class = "border-b";
+		if (!empty($listing_settings["styles"]["stylesResultsBorderColour"])) {
+			$set_border_style =
+				"border-color:" . esc_attr($listing_settings["styles"]["stylesResultsBorderColour"]) . ";";
+		}
+	}
+
+	// set bg colour style - if shaded and a colour is specified - inline style
+	$set_bg_colour_style = "";
+	if (
+		$listing_settings["styles"]["stylesResultsShadedBackground"] === true &&
+		$listing_settings["styles"]["stylesResultsShadedColour"] !== false
+	) {
+		$set_bg_colour_style =
+			"background-color:" . esc_attr($listing_settings["styles"]["stylesResultsShadedColour"]) . ";";
+	}
+
+	// List item classes - classes for each individual item in the list
+	$list_item_class = "wb-listing mb-4 $list_item_image_layout_class ";
+	if ($listing_settings["styles"]["stylesResultsShadedBackground"] === true) {
+		$list_item_class .= "wb-shaded p-4";
+	} else {
+		$list_item_class .= $border_class . " pb-2";
+	}
+	$details_position_class = "";
+	$class_array = [
+		"details_wrapper" => $details_position_class,
+		"top" => $overarching_class,
+		"image" => $featured_image_class,
+		"border_style" => $set_border_style,
+		"bg_colour_style" => $set_bg_colour_style,
+		"border" => $border_class,
+		"list_item_class" => $list_item_class,
+	];
+
+	return $class_array;
+}
+function wb_blocks_filterable_listing_field_display_classes($listing_settings)
+{
+	// Style fields as per settings
+	$field_layout = $listing_settings["styles"]["stylesFieldLayout"];
+	switch ($field_layout) {
+		case "inline":
+			$outer_class = "md:inline-flex gap-2 ";
+			$inner_class = "inline";
+			break;
+		case "inline-stacked":
+			$outer_class = "sm:inline-flex flex-col py-1 mr-4";
+			$inner_class = "sm:text-base [&_span.colon]:hidden";
+			break;
+		case "stacked-inline":
+			$outer_class = "flex gap-2";
+			$inner_class = "inline";
+			break;
+		default:
+			$outer_class = "flex gap-2 flex-col";
+			$inner_class = "";
+	}
+	$label_class = "";
+	if ($listing_settings["styles"]["stylesHideLabels"]) {
+		$label_class = " sr-only";
+	}
+
+	// $tax_joiner joins the values in the array together, (if it is <br />, they will be stacked)
+	$tax_joiner = "<br />"; // This joins the tax list together
+	if (
+		$listing_settings["styles"]["stylesFieldLayout"] == "inline" ||
+		$listing_settings["styles"]["stylesFieldLayout"] == "stacked-inline"
+	) {
+		$tax_joiner = "; "; // This joins the tax list together
+	}
+
+	$field_styling_array = [
+		"inner" => $inner_class,
+		"outer" => $outer_class,
+		"label" => $label_class,
+		"joiner" => $tax_joiner,
+	];
+	return $field_styling_array;
 }
 
 function wb_blocks_filterable_listing_item_details($display_fields, $listing_settings, $tax_url_array = [])
@@ -107,17 +310,16 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 		return;
 	}
 
+	$field_styling_array = wb_blocks_filterable_listing_field_display_classes($listing_settings);
+	$inner_class = $field_styling_array["inner"];
+	$outer_class = $field_styling_array["outer"];
+	$label_class = $field_styling_array["label"];
+	$tax_joiner = $field_styling_array["joiner"];
+
 	foreach ($display_fields as $display_field) {
 		$field_label = $display_field["label"];
 		$field_name = $display_field["name"];
 		$field_value = "";
-		$tax_joiner = "<br />"; // This joins the tax list together
-		if (
-			$listing_settings["styles"]["stylesFieldLayout"] == "inline" ||
-			$listing_settings["styles"]["stylesFieldLayout"] == "stacked-inline"
-		) {
-			$tax_joiner = "; "; // This joins the tax list together
-		}
 
 		if ($display_field["type"] == "taxonomy") {
 			$tax_terms = get_the_terms(get_the_ID(), $field_name);
@@ -157,47 +359,35 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 		}
 
 		if (!empty($field_value)) {
-
-			// Style fields as per settings
-			$field_layout = $listing_settings["styles"]["stylesFieldLayout"];
-			switch ($field_layout) {
-				case "inline":
-					$outerClass = "md:inline-flex gap-2 ";
-					$innerClass = "inline";
-					break;
-				case "inline-stacked":
-					$outerClass = "sm:inline-flex flex-col p-1 mr-4 sm:text-lg";
-					$innerClass = "sm:text-base [&_span.colon]:hidden";
-					break;
-				case "stacked-inline":
-					$outerClass = "flex gap-2";
-					$innerClass = "inline";
-					break;
-				default:
-					$outerClass = "flex gap-2";
-					$innerClass = "";
-			}
+			// Summary has a few different classes as it never has its own label
+			// so we override the classes set in the function with these
 			if ($field_name == "post_summary") {
-				$outerClass = "flex gap-2 text-xl";
-			} else {
-				$outerClass .= " text-base";
+				$outer_class = "flex gap-2";
+				$inner_class = "inline";
 			}
-			?>
-        <div class="<?php echo $outerClass; ?> mt-4 pe-4">
-            <?php if (
-            	!empty($field_label) &&
-            	$field_name != "post_summary" &&
-            	!$listing_settings["styles"]["stylesHideLabels"]
-            ) { ?>
-                <h3 class="<?php echo $innerClass; ?> font-bold">
-                    <?php echo esc_html(__($field_label, "wb_blocks")); ?><span class="colon">:</span>
-                </h3>
-            <?php } ?>
-            <div class="<?php echo $innerClass; ?>">
-                <?php echo wp_kses_post($field_value); ?>
-            </div>
-        </div>
-<?php
+
+			$field_label_html = "";
+			if (!empty($field_label) && $field_name != "post_summary") {
+				$field_label_html =
+					"
+					<h3 class='$inner_class $label_class font-bold'>
+						" .
+					esc_html(__($field_label, "wb_blocks")) .
+					"<span class='colon'>:</span>
+					</h3>
+				";
+			}
+
+			echo "
+				<div class='$outer_class mt-4 pe-4'>
+					$field_label_html
+					<div class='$inner_class'>
+						" .
+				wp_kses_post($field_value) .
+				"
+					</div>
+				</div>
+			";
 		}
 	}
 }
@@ -241,47 +431,53 @@ function wb_blocks_filterable_listing_item_terms($listing_settings)
 
 function wb_blocks_filterable_listing_pagination($custom_query)
 {
+	$block_id = $custom_query->query["block_id"];
+
+	$param_name = "listing_{$block_id}_page";
+
+	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
+	$current_page_number = max(1, $current_page_number);
+
+	$next_page_number = $current_page_number + 1;
+	$prev_page_number = $current_page_number - 1;
+
+	$next_page_text = __('Next<span class="hidden sm:inline"> page</span>', "wb_blocks");
+	$prev_page_text = __('Previous<span class="hidden sm:inline"> page</span>', "wb_blocks");
+
+	$next_url = add_query_arg($param_name, $next_page_number);
+	$prev_url = add_query_arg($param_name, $prev_page_number);
+
 	$query_to_paginate = $custom_query;
 
 	$max_pages = $query_to_paginate->max_num_pages;
 
-	$current_page_number = get_query_var("paged") ? get_query_var("paged") : 1;
-
 	if ($max_pages > 1) { ?>
-        <nav class="" aria-label="pagination">
-            <ul class="flex gap-4 list-none p-0 m-0">
-                <?php if ($current_page_number > "1") {
-                	echo "<li class='inline-flex items-center gap-1 font-medium px-3 py-1.5'>";
-                	previous_posts_link(
-                		'
-                        <span class="">' .
-                			__('Previous<span class="hidden sm:inline"> page</span>', "wb_blocks") .
-                			'
-                        </span>
-                        ',
-                		$max_pages,
-                	);
-                	echo "</li>";
-                } ?>
-                <li class="">
-                    <?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
-
-                </li>
-                <?php if ($current_page_number < $max_pages) {
-                	echo "<li class='archive-pagination-next-btn'>";
-                	next_posts_link(
-                		'
-                        <span class="inline-flex items-center gap-1 font-medium px-3 py-1.5">' .
-                			__('Next<span class="hidden sm:inline"> page</span>', "wb_blocks") .
-                			'</span>
-                        ',
-                		$max_pages,
-                	);
-                	echo "</li>";
-                } ?>
-            </ul>
-        </nav>
-        <?php }
+		<nav class="" aria-label="pagination">
+			<ul class="flex gap-4 list-none py-1.5 px-0 m-0">
+			<?php if ($current_page_number > "1") { ?>
+				<li>
+					<a href='<?php echo esc_url($prev_url); ?>'>
+						<span class='inline-flex items-center gap-1 font-medium pe-3 py-1.5'>
+							<?php echo $prev_page_text; ?>
+						</span>
+					</a>
+				</li>
+			<?php } ?>
+				<li class="ps-3 pe-3 py-1.5 first:ps-0">
+					<?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
+				</li>
+			<?php if ($current_page_number < $max_pages) { ?>
+				<li>
+					<a href='<?php echo esc_url($next_url); ?>'>
+						<span class='inline-flex items-center gap-1 font-medium ps-3 py-1.5'>
+							<?php echo $next_page_text; ?>
+						</span>
+					</a>
+				</li>
+			<?php } ?>
+			</ul>
+		</nav>
+		<?php }
 }
 
 ?>

@@ -9,17 +9,20 @@ function wb_blocks_filterable_listing_validate_active_filters($listing_settings)
 {
 	$active_filters = [];
 
+	$block_id = $listing_settings["blockID"];
 	$listing_filters = $listing_settings["filters"];
 
 	if ($listing_settings["searchTextFilter"]) {
-		$listing_search_text = get_query_var("listing_search");
-		$listing_search_text = stripslashes(sanitize_text_field(esc_html($listing_search_text)));
+		$query_var = $block_id . "_listing_search";
+		// We are adding the block ID to the query vars, so get_query_var won't work
+		$listing_search_text = isset($_GET[$query_var]) ? sanitize_text_field(wp_unslash($_GET[$query_var])) : "";
+		$listing_search_text = sanitize_text_field(wp_unslash($listing_search_text));
 
 		if (!empty($listing_search_text)) {
 			$active_filters[] = [
 				"filterType" => "search_text",
-				"queryVar" => "listing_search",
-				"value" => $listing_search_text,
+				"queryVar" => $query_var,
+				"value" => esc_html($listing_search_text),
 			];
 		}
 	}
@@ -27,14 +30,16 @@ function wb_blocks_filterable_listing_validate_active_filters($listing_settings)
 	foreach ($listing_filters as $filter) {
 		if (taxonomy_exists($filter)) {
 			// Create an array of what taxonomies have been selected in dropdown
-			wb_blocks_filterable_listing_block_validate_tax_filter($filter, $active_filters);
+			wb_blocks_filterable_listing_block_validate_tax_filter($block_id, $filter, $active_filters);
 		} elseif ($filter == "published_date") {
 			wb_blocks_filterable_listing_block_validate_date_filter(
+				$block_id,
 				$filter . "_from_date",
 				"published_date_from_date",
 				$active_filters,
 			);
 			wb_blocks_filterable_listing_block_validate_date_filter(
+				$block_id,
 				$filter . "_to_date",
 				"published_date_to_date",
 				$active_filters,
@@ -45,12 +50,14 @@ function wb_blocks_filterable_listing_validate_active_filters($listing_settings)
 			if (!empty($field_object)) {
 				if ($field_object["type"] == "date_picker") {
 					wb_blocks_filterable_listing_block_validate_date_filter(
+						$block_id,
 						$field_object["name"] . "_from_date",
 						"meta_from_date",
 						$active_filters,
 						$field_object["name"],
 					);
 					wb_blocks_filterable_listing_block_validate_date_filter(
+						$block_id,
 						$field_object["name"] . "_to_date",
 						"meta_to_date",
 						$active_filters,
@@ -64,7 +71,7 @@ function wb_blocks_filterable_listing_validate_active_filters($listing_settings)
 	return $active_filters;
 }
 
-function wb_blocks_filterable_listing_block_validate_tax_filter($filter, &$listing_active_filters)
+function wb_blocks_filterable_listing_block_validate_tax_filter($block_id, $filter, &$listing_active_filters)
 {
 	$taxonomy = get_taxonomy($filter);
 
@@ -76,8 +83,11 @@ function wb_blocks_filterable_listing_block_validate_tax_filter($filter, &$listi
 	$filter_term_id_subtopic = $taxonomy->query_var . "_subtopic";
 
 	// Retrieve the value of the main filter and subtopic query variables
-	$filter_term_id = get_query_var($taxonomy->query_var);
-	$filter_term_id_subtopic_value = get_query_var($filter_term_id_subtopic);
+	$query_var = $block_id . "_" . $taxonomy->query_var;
+	$query_var_subtopic = $block_id . "_" . $filter_term_id_subtopic;
+	// We are adding the block ID to the query vars, so get_query_var won't work
+	$filter_term_id = isset($_GET[$query_var]) ? $_GET[$query_var] : "";
+	$filter_term_id_subtopic_value = isset($_GET[$query_var_subtopic]) ? $_GET[$query_var_subtopic] : "";
 
 	// Combine them into an associative array
 	$filter_terms = [
@@ -115,12 +125,16 @@ function wb_blocks_filterable_listing_block_validate_tax_filter($filter, &$listi
 }
 
 function wb_blocks_filterable_listing_block_validate_date_filter(
+	$block_id,
 	$filter_query_var,
 	$filter_type,
 	&$listing_active_filters,
 	$filter_meta_key = "",
 ) {
-	$date_filter_value = get_query_var($filter_query_var);
+	$query_var = $block_id . "_" . $filter_query_var;
+	// We are adding the block ID to the query vars, so get_query_var won't work
+	$date_filter_value = isset($_GET[$query_var]) ? $_GET[$query_var] : "";
+
 	$date_filter_value = sanitize_text_field(esc_html($date_filter_value));
 
 	if (!empty($date_filter_value)) {
@@ -161,9 +175,11 @@ function wb_blocks_filterable_listing_block_get_active_filter_value($listing_act
 	return $filter_value;
 }
 
-function wb_blocks_filterable_listing_block_get_listing_query($listing_settings, $active_filters)
+function wb_blocks_filterable_listing_block_get_listing_query($block_id, $listing_settings, $active_filters)
 {
-	$paged = get_query_var("paged") ? get_query_var("paged") : 1;
+	$page = isset($_GET["listing_" . $block_id . "_page"]) ? absint($_GET["listing_" . $block_id . "_page"]) : 1;
+
+	$page = max(1, $page);
 
 	$tax_qry_ary = [];
 	$published_date_qry = [];
@@ -171,10 +187,11 @@ function wb_blocks_filterable_listing_block_get_listing_query($listing_settings,
 	$meta_date_filters = [];
 
 	$listing_args = [
+		"block_id" => $block_id,
 		"post_type" => $listing_settings["postType"],
 		"posts_per_page" => $listing_settings["itemsPerPage"],
 		"relevanssi" => true,
-		"paged" => $paged,
+		"paged" => $page,
 	];
 
 	if (!empty($listing_settings["restrictTaxonomies"]) && !empty($listing_settings["restrictTerms"])) {

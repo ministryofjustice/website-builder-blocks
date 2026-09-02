@@ -3,16 +3,16 @@ import {
 	SelectControl,
 	RangeControl,
 	ToggleControl,
-	NumberControl,
 	RadioControl,
 	BaseControl,
-	Button,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InnerBlocks, MediaUpload, InspectorControls, store as blockEditorStore } from "@wordpress/block-editor";
+import { InspectorControls, useSettings, PanelColorSettings } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
 import ReactSelect from "react-select";
+import PreviewAuto from "./preview-auto.js";
+import PreviewFilter from "./preview-filter.js";
 
 const { Fragment } = wp.element;
 const d = new Date();
@@ -22,9 +22,9 @@ const noItemSelectedText = "No item selected"; // Text in editor to shew that no
 export default function filterableListingEdit({ attributes, setAttributes }) {
 	const {
 		listingPostType,
-		listingIncludeFilters,
 		listingSearchTextFilter,
 		listingDisplayImage,
+		listingImagePosition,
 		listingFilters,
 		listingDisplayFields,
 		listingDisplayTerms,
@@ -37,8 +37,18 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesFieldLayout,
 		stylesLayout,
 		stylesResultsShadedBackground,
+		stylesResultsShadedColour,
+		stylesResultsBorderColour,
+		blockID,
+		variant,
 		className,
 	} = attributes;
+
+	if (!blockID) {
+		setAttributes({
+			blockID: crypto.randomUUID(),
+		});
+	}
 
 	const { allPostTypes } = useSelect(select => {
 		const { getPostTypes } = select(coreStore);
@@ -234,16 +244,16 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ listingRestrictTerms: [] });
 	};
 
-	const setListingIncludeFilters = newListingIncludeFilters => {
-		setAttributes({ listingIncludeFilters: newListingIncludeFilters });
-	};
-
 	const setListingSearchTextFilter = newSearchTextFilter => {
 		setAttributes({ listingSearchTextFilter: newSearchTextFilter });
 	};
 
 	const setListingDisplayImage = setDisplayImage => {
 		setAttributes({ listingDisplayImage: setDisplayImage });
+	};
+
+	const setListingImagePosition = setImagePosition => {
+		setAttributes({ listingImagePosition: setImagePosition });
 	};
 
 	const setListingFilters = selectedItems => {
@@ -296,16 +306,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					options={itemTypes}
 					onChange={setListingPostType}
 				/>
-				{listingPostType.length > 0 && (
-					<ToggleControl
-						label="Show filtering options"
-						help="If disabled, this will just show the latest items"
-						checked={listingIncludeFilters}
-						onChange={setListingIncludeFilters}
-					/>
-				)}
 			</PanelBody>
-			{listingPostType.length > 0 && listingIncludeFilters !== false && (
+			{listingPostType.length > 0 && variant !== "auto-item-list" && (
 				<PanelBody title={__("Filterable Listing settings")} initialOpen={true}>
 					<ToggleControl
 						label="Search Text Filter"
@@ -357,6 +359,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						label="Items per page"
 						min={3}
 						max={50}
+						step={1}
 						value={listingItemsPerPage}
 						onChange={setItemsPerPage}
 					/>
@@ -412,6 +415,16 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesResultsShadedBackground: newStylesResultsShadedBackground });
 	};
 
+	const setStylesResultsShadedColour = newStylesResultsShadedColour => {
+		setAttributes({ stylesResultsShadedColour: newStylesResultsShadedColour });
+	};
+
+	const setStylesResultsBorderColour = newStylesResultsBorderColour => {
+		setAttributes({ stylesResultsBorderColour: newStylesResultsBorderColour });
+	};
+
+	const [colours] = useSettings("color.palette");
+
 	return (
 		<Fragment>
 			{inspectorControls}
@@ -422,13 +435,25 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={listingDisplayImage}
 						onChange={setListingDisplayImage}
 					/>
+					{listingDisplayImage && (
+						<RadioControl
+							label="Image position"
+							selected={listingImagePosition ? listingImagePosition : "default"}
+							options={[
+								{ label: "Right", value: "right" },
+								{ label: "Top", value: "top" },
+								{ label: "Left", value: "left" },
+							]}
+							onChange={setListingImagePosition}
+						/>
+					)}
 					<ToggleControl
 						label="Shaded background"
 						help="Item divider line will be hidden"
 						checked={stylesResultsShadedBackground}
 						onChange={setStylesResultsShadedBackground}
 					/>
-					{listingIncludeFilters !== false && (
+					{variant !== "auto-item-list" && (
 						<RadioControl
 							label="Layout of filters and results"
 							selected={stylesLayout ? stylesLayout : "side-by-side"}
@@ -439,8 +464,23 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							onChange={setStylesLayout}
 						/>
 					)}
+					{variant === "auto-item-list" && (
+						<RadioControl
+							label="Layout of items"
+							help="Layouts will stack on narrow displays such as mobile phones"
+							selected={stylesLayout ? stylesLayout : "side-by-side"}
+							options={[
+								{ label: "4 wide (2 on large mobiles)", value: "side-by-side-4-2" },
+								{ label: "4 wide", value: "side-by-side-4-1" },
+								{ label: "3 wide", value: "side-by-side" },
+								{ label: "2 wide", value: "side-by-side-2-1" },
+								{ label: "Stacked", value: "stacked" },
+							]}
+							onChange={setStylesLayout}
+						/>
+					)}
 					<RadioControl
-						label="Layout of taxonomies"
+						label="Layout of fields"
 						selected={stylesFieldLayout ? stylesFieldLayout : "stacked"}
 						options={[
 							{ label: "Everything stacked", value: "stacked" },
@@ -470,9 +510,54 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						onChange={setStylesHideLabels}
 					/>
 				</PanelBody>
+				<PanelBody title={"Colour options"} initialOpen={false}>
+					{stylesResultsShadedBackground && (
+						<>
+							<PanelColorSettings
+								title="Shading colour"
+								help="leave blank for a semi-transparent shading to match the background"
+								colorSettings={[
+									{
+										value: stylesResultsShadedColour,
+										onChange: setStylesResultsShadedColour,
+										label: "Colour",
+										colors: colours,
+									},
+								]}
+							/>
+							<p className="components-base-control__help">
+								Leave blank for a semi-transparent shading to match the background.
+							</p>
+						</>
+					)}
+					{(!stylesResultsShadedBackground || listingDisplayImage) && (
+						<PanelColorSettings
+							title="Border colour"
+							colorSettings={[
+								{
+									value: stylesResultsBorderColour,
+									onChange: setStylesResultsBorderColour,
+									label: "Colour",
+									colors: colours,
+								},
+							]}
+						/>
+					)}
+				</PanelBody>
 			</InspectorControls>
 			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className="">Filterable Listing</div>
+				<div className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
+					<PreviewAuto
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+					<PreviewFilter
+						attributes={attributes}
+						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}
+						taxonomies={allTaxonomies || []}
+					/>
+				</div>
 			</div>
 		</Fragment>
 	);
