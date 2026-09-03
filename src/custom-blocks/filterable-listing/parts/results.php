@@ -358,45 +358,43 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 			$field_value = get_field($field_name);
 		}
 
-		if (!empty($field_value)) {
-			if (gettype($field_value) !== "string") {
-				continue;
-				// This is to protect against PHP string functions being run on non-strings.
-				// Files can be added, and the following error occurs:
-				//   Uncaught Error: str_contains(): Argument #1 ($haystack) must be
-				//   of type string, array given in /var/www/html/wp-includes/blocks.php on line 2064
-			}
+		if (empty($field_value) || !is_string($field_value)) {
+			continue;
+			// This is to protect against PHP string functions being run on non-strings.
+			// Files can be added, and the following error occurs:
+			//   Uncaught Error: str_contains(): Argument #1 ($haystack) must be
+			//   of type string, array given in /var/www/html/wp-includes/blocks.php on line 2064
+		}
 
-			// Summary has a few different classes as it never has its own label
-			// so we override the classes set in the function with these
-			if ($field_name == "post_summary") {
-				$outer_class = "flex gap-2";
-				$inner_class = "inline";
-			}
+		// Summary has a few different classes as it never has its own label
+		// so we override the classes set in the function with these
+		if ($field_name == "post_summary") {
+			$outer_class = "flex gap-2";
+			$inner_class = "inline";
+		}
 
-			$field_label_html = "";
-			if (!empty($field_label) && $field_name != "post_summary") {
-				$field_label_html =
-					"
-					<h3 class='$inner_class $label_class font-bold'>
-						" .
-					esc_html(__($field_label, "wb_blocks")) .
-					"<span class='colon'>:</span>
-					</h3>
-				";
-			}
-
-			echo "
-				<div class='$outer_class mt-4 pe-4'>
-					$field_label_html
-					<div class='$inner_class'>
-						" .
-				wp_kses_post($field_value) .
+		$field_label_html = "";
+		if (!empty($field_label) && $field_name != "post_summary") {
+			$field_label_html =
 				"
-					</div>
-				</div>
+				<h3 class='$inner_class $label_class font-bold'>
+					" .
+				esc_html(__($field_label, "wb_blocks")) .
+				"<span class='colon'>:</span>
+				</h3>
 			";
 		}
+
+		echo "
+			<div class='$outer_class mt-4 pe-4'>
+				$field_label_html
+				<div class='$inner_class'>
+					" .
+			wp_kses_post($field_value) .
+			"
+				</div>
+			</div>
+		";
 	}
 }
 
