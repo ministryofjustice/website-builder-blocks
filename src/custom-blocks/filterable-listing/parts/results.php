@@ -359,6 +359,14 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 		}
 
 		if (!empty($field_value)) {
+			if (gettype($field_value) !== "string") {
+				continue;
+				// This is to protect against PHP string functions being run on non-strings.
+				// Files can be added, and the following error occurs:
+				//   Uncaught Error: str_contains(): Argument #1 ($haystack) must be 
+				//   of type string, array given in /var/www/html/wp-includes/blocks.php on line 2064
+			}
+
 			// Summary has a few different classes as it never has its own label
 			// so we override the classes set in the function with these
 			if ($field_name == "post_summary") {
