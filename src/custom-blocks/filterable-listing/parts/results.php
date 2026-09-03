@@ -363,7 +363,7 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 				continue;
 				// This is to protect against PHP string functions being run on non-strings.
 				// Files can be added, and the following error occurs:
-				//   Uncaught Error: str_contains(): Argument #1 ($haystack) must be 
+				//   Uncaught Error: str_contains(): Argument #1 ($haystack) must be
 				//   of type string, array given in /var/www/html/wp-includes/blocks.php on line 2064
 			}
 
