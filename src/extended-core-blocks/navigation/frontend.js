@@ -25,7 +25,7 @@ for (const [index, drawerNav] of drawerNavs.entries()) {
 	const subMenus = drawerNav.querySelectorAll("ul.wp-block-navigation-submenu");
 
 	const resizeObserver = new ResizeObserver(entries => {
-		makeMenuDrawer(drawerNav, subMenus, navInitialPaddingBottom, index);
+		makeMenuDrawer(header, drawerNav, subMenus, navInitialPaddingBottom, index);
 	});
 
 	/**
@@ -39,17 +39,30 @@ for (const [index, drawerNav] of drawerNavs.entries()) {
 	});
 }
 
-function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
+function makeMenuDrawer(header, drawerNav, subMenus, initialPadding, index) {
 	const navBlockWidth = getComputedStyle(drawerNav).width;
+	const headerContent = header.querySelector(".has-global-padding > *");
+	const headerContentWidth = getComputedStyle(headerContent).width;
 
+	const headerRect = headerContent.getBoundingClientRect();
+	const navRect = drawerNav.getBoundingClientRect();
+	const navInsetLeft = navRect.left - headerRect.left;
+	
 	// Find the open submenu
 	const subMenu = Array.from(subMenus).find(subMenu => getComputedStyle(subMenu).visibility !== "hidden");
 
 	if (subMenu) {
 		let subMenuHeight = subMenu.offsetHeight;
 		subMenu.style.width = navBlockWidth;
-		subMenu.style.marginTop = initialPadding + "px";
 
+		subMenu.style.marginTop = initialPadding + "px";
+		if (headerContentWidth > navBlockWidth) {
+			// this won't work as it is string  with "px", not number
+		}
+		subMenu.style.left = "-" + navInsetLeft + "px";
+		subMenu.style.width = headerContentWidth;
+		subMenu.style.justifyContent = "center"; // centres the item slots, but items are still left-aligned inside their slots
+	
 		// Set this attribute, as a marker to know that we updated the margin bottom most recently.
 		header.setAttribute("data-margin-bottom-owner", `navigation-drawer-${index}`);
 		header.style.marginBottom = subMenuHeight + "px";
