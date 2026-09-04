@@ -70,7 +70,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 							<br />
 						</>
 					)}
-					{attributes.listingFilters.map(filter => {
+					{attributes.listingFilters && attributes.listingFilters.map(filter => {
 						const field = fieldLabels[filter];
 						const label = field?.name !== "category" ? field?.label || filter.replaceAll("_", " ") : "Topic";
 						if (field?.type == "taxonomy") {
