@@ -56,7 +56,9 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 		>
 			{image}
 
-			<h2 className="!mt-0 text-2xl font-bold"><a>Title {index + 1}</a></h2>
+			<h2 className="!mt-0 text-2xl font-bold">
+				<a>Title {index + 1}</a>
+			</h2>
 
 			{attributes.listingDisplayFields.map(item => {
 				const field = fieldLabels[item];
