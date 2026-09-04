@@ -52,8 +52,10 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 		layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4";
 		//wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
 	}
-	const featuredImagePreviewClass =
-		"float-right w-[125px] h-[125px] md:w-[152px] md:h-[152px] border wb-listing-thumbnail";
+	const float = attributes.listingImagePosition;
+	let imagePosition = float == "left" ? "sm:float-left mr-[5px]" : float == "right" ? "sm:float-right ml-3" : "";
+	imagePosition += " mb-2";
+	const featuredImagePreviewClass = `${imagePosition} w-[125px] h-[125px] md:w-[152px] md:h-[152px]`;
 
 	return (
 		<div className={`${attributes.className} wb-block-filterable-listing`}>
