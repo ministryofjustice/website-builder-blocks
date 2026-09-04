@@ -129,7 +129,6 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 			}
 
 			if (thisPostType.slug == listingPostType && thisPostType.taxonomies.length && allTaxonomies) {
-				//console.log(thisPostType);
 				thisPostType.taxonomies.forEach(postTypeTaxKey => {
 					allTaxonomies.forEach(taxonomy => {
 						if (taxonomy.slug == postTypeTaxKey) {
@@ -142,7 +141,6 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 								label: taxonomy.name,
 								value: taxonomy.slug,
 							});
-
 							displayFieldsList.push({
 								label: taxonomy.name,
 								value: taxonomy.slug,
@@ -170,10 +168,28 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						value: acfField.key,
 					});
 
-					displayFieldsList.push({
-						label: acfField.label,
-						value: acfField.key,
-					});
+					const nonStringTypes = [
+						"image",
+						"file",
+						"gallery",
+						"post_object",
+						"relationship",
+						"taxonomy",
+						"user",
+						"google_map",
+						"link", //ACF's Link field returns structured data rather than a simple string
+						"group",
+						"repeater",
+						"flexible_content",
+						"clone",
+						"checkbox",
+					];
+					if (!nonStringTypes.includes(acfField.type)) {
+						displayFieldsList.push({
+							label: acfField.label,
+							value: acfField.key,
+						});
+					}
 				});
 			}
 		});
