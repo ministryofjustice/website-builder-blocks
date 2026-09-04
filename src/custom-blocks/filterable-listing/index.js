@@ -34,7 +34,7 @@ registerBlockType("wb-blocks/filterable-listing", {
 		},
 		listingDisplayFields: {
 			type: "array",
-			default: "",
+			default: [],
 		},
 		listingDisplayTerms: {
 			type: "array",
