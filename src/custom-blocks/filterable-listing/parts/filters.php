@@ -13,7 +13,8 @@
 
 function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters)
 {
-	if (empty($listing_settings["filters"])) {
+	if (!$listing_settings["searchTextFilter"] && empty($listing_settings["filters"])) {
+		// If no filters selected, and search field not enabled, do nothing
 		return;
 	}
 	$url = add_query_arg($_GET, get_permalink());
