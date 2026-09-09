@@ -1,20 +1,35 @@
 /**
  * HMG logo SVG
+ *
+ * Block metadata — name, title, category, keywords, attributes — lives in
+ * block.json and is registered server-side from website-builder-blocks.php.
+ * This file only supplies the editor behaviour.
+ *
+ * The xclassName attribute in block.json is legacy: it was registered
+ * server-side but never read or written by either the editor or the render
+ * callback. It stays registered only so it isn't stripped from any content that
+ * happens to carry it.
  */
 import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
-import { InspectorControls } from "@wordpress/blockEditor";
+// "@wordpress/block-editor", not "@wordpress/blockEditor". The camelCase form
+// has no matching package on disk; webpack's dependency-extraction plugin was
+// externalising it to window.wp.blockEditor by coincidence of its own
+// camelCase-to-kebab handle conversion, so it happened to work at runtime while
+// being unresolvable to anything that actually reads the import path.
+import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import { SelectControl, PanelBody, PanelRow } from "@wordpress/components";
-import { RawHTML } from "@wordpress/element";
+import { Fragment, RawHTML } from "@wordpress/element";
 import crest from "./svg/crest.svg";
 import govuk from "./svg/govuk.svg";
 import ogl from "./svg/ogl.svg";
 import crown from "./svg/crown.svg";
 
-registerBlockType("wb-blocks/hmg-svg", {
-	title: __("HM Government logo SVG", "wb_block"),
-	description: __("The SVGs associated with government websites (for use in the footer)"),
-	category: "wb-blocks",
+import metadata from "./block.json";
+
+registerBlockType(metadata.name, {
+	// The SVG icon stays here rather than in block.json, which can only carry a
+	// Dashicon name or a serialisable object.
 	icon: (
 		<svg
 			focusable="false"
@@ -40,21 +55,10 @@ registerBlockType("wb-blocks/hmg-svg", {
 			</g>
 		</svg>
 	),
-	keywords: [__("crown"), __("copyright"), __("ogl"), __("royal"), __("crest"), __("arms"), __("coat-of-arms")],
-	attributes: {
-		logo: {
-			type: "string",
-			default: "crest",
-		},
-		className: {
-			type: "string",
-		},
-	},
 	edit: props => {
 		const {
 			setAttributes,
 			attributes: { logo },
-			className,
 		} = props;
 
 		// Grab newLogo, set the value of logo to newLogo.
@@ -68,34 +72,49 @@ registerBlockType("wb-blocks/hmg-svg", {
 			{ label: "Open Government Licence Logo", value: "ogl" },
 		];
 
-		return [
-			<InspectorControls>
-				<PanelBody title={__("Government identity", "wb_block")} initialOpen={true}>
-					<PanelRow>
-						<SelectControl
-							label={__("Identity mark", "wb_block")}
-							help=""
-							value={logo}
-							options={logoOptions}
-							onChange={onChangeLogo}
-						/>
-					</PanelRow>
-				</PanelBody>
-			</InspectorControls>,
-			<div className={`wb-hmg-svg ${className || ""} ${logo}`}>
-				<RawHTML>
-					{logo == "crest"
-						? decodeBase64Svg(crest)
-						: logo == "crown"
-							? decodeBase64Svg(crown)
-							: logo == "govuk"
-								? decodeBase64Svg(govuk)
-								: logo == "ogl"
-									? decodeBase64Svg(ogl)
-									: ""}
-				</RawHTML>
-			</div>,
-		];
+		// apiVersion 3: the visible wrapper must carry the props returned by
+		// useBlockProps, and className is no longer passed to edit() — the
+		// generated block class and any custom classes come back in blockProps.
+		//
+		// The logo name is still appended as a class, matching what this block
+		// rendered in the editor before. Note the render callback does not emit
+		// it, so editor and frontend markup differ here; that predates the
+		// apiVersion 3 work and is left alone rather than resolved silently in
+		// either direction.
+		const blockProps = useBlockProps({
+			className: `wb-hmg-svg ${logo}`,
+		});
+
+		return (
+			<Fragment>
+				<InspectorControls>
+					<PanelBody title={__("Government identity", "wb_block")} initialOpen={true}>
+						<PanelRow>
+							<SelectControl
+								label={__("Identity mark", "wb_block")}
+								help=""
+								value={logo}
+								options={logoOptions}
+								onChange={onChangeLogo}
+							/>
+						</PanelRow>
+					</PanelBody>
+				</InspectorControls>
+				<div {...blockProps}>
+					<RawHTML>
+						{logo == "crest"
+							? decodeBase64Svg(crest)
+							: logo == "crown"
+								? decodeBase64Svg(crown)
+								: logo == "govuk"
+									? decodeBase64Svg(govuk)
+									: logo == "ogl"
+										? decodeBase64Svg(ogl)
+										: ""}
+					</RawHTML>
+				</div>
+			</Fragment>
+		);
 	},
 
 	// return null as frontend output is done via PHP

@@ -115,17 +115,8 @@ function wb_blocks_register_blocks()
 		"render_callback" => "wb_blocks_render_callback_icon_block",
 	]);
 
-	register_block_type("wb-blocks/hmg-svg", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/hmg-svg", [
 		"render_callback" => "wb_blocks_render_callback_hmg_svg_block",
-		"attributes" => [
-			"xclassName" => [
-				"type" => "string",
-			],
-			"logo" => [
-				"type" => "string",
-			],
-		],
 	]);
 
 	register_block_type("wb-blocks/accordion", [
