@@ -53,8 +53,6 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["styles"]["stylesTaxLinks"] = $attributes["stylesTaxLinks"] ?? false;
 		$listing_settings["styles"]["stylesHideLabels"] = $attributes["stylesHideLabels"] ?? false;
 
-		$block_classes = $attributes["className"] ?? "";
-
 		$active_filters = [];
 		$active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
 
@@ -74,14 +72,29 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		if ($variant === "auto-item-list") {
 			$layoutClass = "";
 		}
+		// apiVersion 3 pairs useBlockProps in the editor with
+		// get_block_wrapper_attributes() here, so the two produce the same wrapper.
+		//
+		// Every attribute this element carried by hand is passed in rather than
+		// written into the tag. That matters for `class` in particular: the
+		// function returns a complete class="..." string, so writing one
+		// alongside it would emit the attribute twice and the browser would keep
+		// only the first.
+		//
+		// Behaviour note: className was read directly here, which holds only the
+		// user's custom classes — the generated wp-block-wb-blocks-filterable-listing
+		// class was never on the frontend. It is now, since
+		// get_block_wrapper_attributes() adds it. Nothing in this plugin's styles
+		// targets it.
+		$listing_wrapper_attributes = get_block_wrapper_attributes([
+			"id" => $block_id,
+			"class" => "wb-block-filterable-listing",
+			"data-block-id" => $block_id,
+			"data-tax-filters" => is_array($tax_filters) ? implode(",", $tax_filters) : "",
+		]);
 		?>
 
-    <div
-		id="<?php echo esc_attr($block_id); ?>"
-		class="<?php echo esc_attr($block_classes); ?> wb-block-filterable-listing"
-        data-block-id="<?php echo esc_attr($block_id); ?>"
-        data-tax-filters="<?php echo esc_attr(is_array($tax_filters) ? implode(",", $tax_filters) : ""); ?>"
-    >
+    <div <?php echo $listing_wrapper_attributes; ?>>
         <div class='<?php echo esc_attr($layoutClass); ?>'>
 			<?php if ($variant !== "auto-item-list") {
    	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);

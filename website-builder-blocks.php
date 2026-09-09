@@ -143,41 +143,8 @@ function wb_blocks_register_blocks()
 		"render_callback" => "wb_blocks_render_callback_allowed_third_party_embed",
 	]);
 
-	register_block_type("wb-blocks/filterable-listing", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/filterable-listing", [
 		"render_callback" => "wb_blocks_render_callback_filterable_listing_block",
-		"attributes" => [
-			"listingPostType" => [
-				"type" => "string",
-			],
-			"listingSearchTextFilter" => [
-				"type" => "boolean",
-			],
-			"listingFilters" => [
-				"type" => "array",
-			],
-			"listingDisplayFields" => [
-				"type" => "array",
-			],
-			"listingDisplayTerms" => [
-				"type" => "array",
-			],
-			"listingItemsPerPage" => [
-				"type" => "number",
-			],
-			"listingSortOrder" => [
-				"type" => "string",
-			],
-			"listingRestrictTaxonomies" => [
-				"type" => "array",
-			],
-			"listingRestrictTerms" => [
-				"type" => "array",
-			],
-			"stylesResultsShadedBackground" => [
-				"type" => "boolean",
-			],
-		],
 	]);
 	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/table-of-contents", [
 		"render_callback" => "wb_blocks_render_callback_toc_block",

@@ -1,4 +1,4 @@
-const { Fragment } = wp.element;
+import { Fragment } from "@wordpress/element";
 import PreviewItems from "./preview-items.js";
 
 export default function Preview({ attributes, acfFields, taxonomies }) {
