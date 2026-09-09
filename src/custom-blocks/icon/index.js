@@ -1,11 +1,17 @@
 /**
  * Icon
+ *
+ * Block metadata — name, title, category, keywords, attributes — lives in
+ * block.json and is registered server-side from website-builder-blocks.php.
+ * This file only supplies the editor behaviour.
  */
 import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
-import { InspectorControls, useSettings, PanelColorSettings } from "@wordpress/block-editor";
+import { InspectorControls, useBlockProps, useSettings, PanelColorSettings } from "@wordpress/block-editor";
 import { SelectControl, RangeControl, TextControl, PanelBody, PanelRow } from "@wordpress/components";
-import { useState } from "@wordpress/element";
+import { Fragment, useState } from "@wordpress/element";
+
+import metadata from "./block.json";
 
 const iconRootDirectory = IconData.rootDirectory + "/";
 const iconCategories = IconData.categories;
@@ -14,10 +20,9 @@ const iconSuffix = "/materialicons/24px.svg";
 const iconStyleDir = "/materialicons";
 const iconFilename = "/24px.svg";
 
-registerBlockType("wb-blocks/icon", {
-	title: __("Icon", "wb_block"),
-	description: __("Choose from a whole plethorah of icons"),
-	category: "wb-blocks",
+registerBlockType(metadata.name, {
+	// The SVG icon stays here rather than in block.json, which can only carry a
+	// Dashicon name or a serialisable object.
 	icon: (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" width="200" height="200">
 			<g transform="translate(60,60)">
@@ -36,47 +41,10 @@ registerBlockType("wb-blocks/icon", {
 			</g>
 		</svg>
 	),
-	keywords: [__("icon")],
-	attributes: {
-		icon: {
-			type: "string",
-			default: "action/group_work",
-			// the default icon should be abstract, and support all styles
-		},
-		iconStyle: {
-			type: "string",
-			default: "",
-		},
-		// available styles are those styles which the icon supports, it is set when the icon is changed
-		availableStyles: {
-			type: "array",
-			default: [
-				{ label: "Standard", value: "" },
-				{ label: "Outlined", value: "outlined" },
-				{ label: "Rounded", value: "round" },
-				{ label: "Sharp", value: "sharp" },
-				{ label: "Two-tone", value: "twotone" },
-			],
-		},
-		size: {
-			type: "number",
-			default: 6,
-		},
-		colour: {
-			type: "string",
-		},
-		alt: {
-			type: "string",
-		},
-		className: {
-			type: "string",
-		},
-	},
 	edit: props => {
 		const {
 			setAttributes,
 			attributes: { colour, icon, size, iconStyle, availableStyles, alt },
-			className,
 		} = props;
 
 		const [searchTerm, setSearchTerm] = useState("");
@@ -122,98 +90,111 @@ registerBlockType("wb-blocks/icon", {
 
 		const allColours = [...colorPalette, ...extraIconColours];
 		const iconPathURL = `url('${iconRootDirectory}${icon}${iconStyleDir}${iconStyle}${iconFilename}')`;
-		return [
-			<InspectorControls group="settings">
-				<PanelBody title="Icon picker" initialOpen={true}>
-					<TextControl
-						label="Search icons"
-						placeholder="Type to filter"
-						value={searchTerm}
-						onChange={value => setSearchTerm(value)}
-						style={{ marginBottom: "8px" }}
-					/>
-					<div
-						style={{
-							display: "grid",
-							gridTemplateColumns: "repeat(4, 1fr)",
-							gap: "10px",
-						}}
-					>
-						{filteredIcons.map(([index, data]) => (
-							<button
-								key={data.value}
-								onClick={() => onChangeIcon(data.value, data.styles)}
-								style={{
-									border: icon === data.value ? "8px solid #0ff" : "1px solid #ccc",
-									filter: icon === data.value ? "invert(1)" : "none",
-									padding: "10px",
-									background: "white",
-									cursor: "pointer",
-								}}
-							>
-								<img
-									src={iconRootDirectory + data.value + iconSuffix}
-									width={24}
-									height={24}
-									alt={data.name}
-									loading="lazy"
-									style={{ display: "inline" }}
-								/>
-							</button>
-						))}
-						{filteredIcons.length === 0 && (
-							<p
-								style={{
-									gridColumn: "1 / -1",
-									textAlign: "center",
-									color: "#666",
-								}}
-							>
-								No icons found.
-							</p>
-						)}
-					</div>
-				</PanelBody>
-			</InspectorControls>,
-			<InspectorControls group="styles">
-				<PanelBody>
-					<RangeControl label="Size" value={size} onChange={onChangeSize} min={1} max={12} step={0.5} />
-					<SelectControl
-						label="Style"
-						value={iconStyle}
-						options={availableStyles}
-						onChange={onChangeIconStyle}
-						__next40pxDefaultSize
-					/>
-					<PanelColorSettings
-						title="Icon colour"
-						colorSettings={[
-							{
-								value: colour,
-								onChange: onChangeColour,
-								label: "Colour",
-								colors: allColours,
-							},
-						]}
-					/>
-					<TextControl
-						label="Alt text"
-						help="Alt text only needed here if you are using an icon in lieu of a word, e.g. if you are using the telephone icon instead of writing “Telephone number”, write “Telephone number” here."
-						value={alt}
-						onChange={onChangeAlt}
-						style={{ marginBottom: "8px" }}
-					/>
-				</PanelBody>
-			</InspectorControls>,
-			<div
-				className={`wb-icon ${className || ""}`}
-				style={{
-					backgroundColor: colour,
-					"--icon-path": iconPathURL,
-					"--icon-size": size,
-				}}
-			></div>,
-		];
+
+		// apiVersion 3: the visible wrapper must carry the props returned by
+		// useBlockProps, and className is no longer passed to edit() — the
+		// generated block class and any custom classes come back in blockProps
+		// instead. useBlockProps merges the className and style passed in here
+		// with the ones it generates, so the icon's custom properties survive.
+		const blockProps = useBlockProps({
+			className: "wb-icon",
+			style: {
+				backgroundColor: colour,
+				"--icon-path": iconPathURL,
+				"--icon-size": size,
+			},
+		});
+
+		// InspectorControls render into the editor sidebar rather than the block
+		// itself, so they sit alongside the wrapper inside a Fragment. This was
+		// previously an unkeyed array, which React warns about.
+		return (
+			<Fragment>
+				<InspectorControls group="settings">
+					<PanelBody title="Icon picker" initialOpen={true}>
+						<TextControl
+							label="Search icons"
+							placeholder="Type to filter"
+							value={searchTerm}
+							onChange={value => setSearchTerm(value)}
+							style={{ marginBottom: "8px" }}
+						/>
+						<div
+							style={{
+								display: "grid",
+								gridTemplateColumns: "repeat(4, 1fr)",
+								gap: "10px",
+							}}
+						>
+							{filteredIcons.map(([index, data]) => (
+								<button
+									key={data.value}
+									onClick={() => onChangeIcon(data.value, data.styles)}
+									style={{
+										border: icon === data.value ? "8px solid #0ff" : "1px solid #ccc",
+										filter: icon === data.value ? "invert(1)" : "none",
+										padding: "10px",
+										background: "white",
+										cursor: "pointer",
+									}}
+								>
+									<img
+										src={iconRootDirectory + data.value + iconSuffix}
+										width={24}
+										height={24}
+										alt={data.name}
+										loading="lazy"
+										style={{ display: "inline" }}
+									/>
+								</button>
+							))}
+							{filteredIcons.length === 0 && (
+								<p
+									style={{
+										gridColumn: "1 / -1",
+										textAlign: "center",
+										color: "#666",
+									}}
+								>
+									No icons found.
+								</p>
+							)}
+						</div>
+					</PanelBody>
+				</InspectorControls>
+				<InspectorControls group="styles">
+					<PanelBody>
+						<RangeControl label="Size" value={size} onChange={onChangeSize} min={1} max={12} step={0.5} />
+						<SelectControl
+							label="Style"
+							value={iconStyle}
+							options={availableStyles}
+							onChange={onChangeIconStyle}
+							__next40pxDefaultSize
+						/>
+						<PanelColorSettings
+							title="Icon colour"
+							colorSettings={[
+								{
+									value: colour,
+									onChange: onChangeColour,
+									label: "Colour",
+									colors: allColours,
+								},
+							]}
+						/>
+						<TextControl
+							label="Alt text"
+							help="Alt text only needed here if you are using an icon in lieu of a word, e.g. if you are using the telephone icon instead of writing “Telephone number”, write “Telephone number” here."
+							value={alt}
+							onChange={onChangeAlt}
+							style={{ marginBottom: "8px" }}
+						/>
+					</PanelBody>
+				</InspectorControls>
+				<div {...blockProps}></div>
+			</Fragment>
+		);
 	},
 
 	// return null as frontend output is done via PHP

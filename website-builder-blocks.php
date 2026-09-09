@@ -104,14 +104,15 @@ function wb_blocks_register_blocks()
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations("wb-blocks-editor-script", "wb_blocks");
 
-	register_block_type("wb-blocks/icon", [
-		"editor_script" => "wb-blocks-editor-script",
+	// Registered from block.json rather than an inline array. The metadata is
+	// read out of build/ — not src/ — because webpack copies each block.json
+	// across on build, which keeps registration working from the compiled
+	// assets alone.
+	//
+	// render_callback stays here: block.json can only reference a PHP file, not
+	// a function, and the callbacks are already loaded by the include loop below.
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/icon", [
 		"render_callback" => "wb_blocks_render_callback_icon_block",
-		"attributes" => [
-			"icon" => [
-				"type" => "string",
-			],
-		],
 	]);
 
 	register_block_type("wb-blocks/hmg-svg", [
