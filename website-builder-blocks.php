@@ -139,27 +139,8 @@ function wb_blocks_register_blocks()
 		"render_callback" => "wb_blocks_render_callback_print_button_block",
 	]);
 
-	register_block_type("wb-blocks/allowed-third-party-embed", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/allowed-third-party-embed", [
 		"render_callback" => "wb_blocks_render_callback_allowed_third_party_embed",
-		"attributes" => [
-			"embedCode" => [
-				"type" => "string",
-				"default" => "",
-			],
-			"provider" => [
-				"type" => "string",
-				"default" => "",
-			],
-			"validationStatus" => [
-				"type" => "string",
-				"default" => "not-validated",
-			],
-			"validationMessage" => [
-				"type" => "string",
-				"default" => "",
-			],
-		],
 	]);
 
 	register_block_type("wb-blocks/filterable-listing", [

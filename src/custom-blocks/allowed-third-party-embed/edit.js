@@ -1,5 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import { BlockControls, InspectorControls } from "@wordpress/block-editor";
+import { BlockControls, InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import {
 	Button,
 	Notice,
@@ -29,10 +29,22 @@ const VALIDATION_STATUSES = {
 export default function Edit({
 	setAttributes,
 	attributes: { embedCode, provider, validationStatus, validationMessage },
-	className,
 	isSelected,
 }) {
 	const [mode, setMode] = useState(embedCode ? MODES.EDIT : MODES.PLACEHOLDER);
+
+	// apiVersion 3: whichever element this component returns as its root has to
+	// carry the props from useBlockProps, and className is no longer passed to
+	// edit() — the generated block class and any custom classes come back here
+	// instead.
+	//
+	// edit() has three return branches, so each one needs the wrapper. They use a
+	// plain div rather than spreading onto <Placeholder> directly: useBlockProps
+	// returns a ref, and Placeholder is not a forwardRef component, so React
+	// would drop it and warn. The div is editor-only — the render callback emits
+	// the raw embed code with no wrapper at all, which is deliberate, since
+	// provider scripts can be sensitive to being nested.
+	const blockProps = useBlockProps();
 
 	// This is temporary feedback shown while editing.
 	const [validationNotice, setValidationNotice] = useState(null);
@@ -120,14 +132,16 @@ export default function Edit({
 	 */
 	if (mode === MODES.PLACEHOLDER && !embedCode) {
 		return (
-			<Placeholder
-				label={__("Third-party Embed", "wb_blocks")}
-				instructions={__("Paste embed code from an approved provider.", "wb_blocks")}
-			>
-				<Button variant="primary" onClick={handleEditEmbed}>
-					{__("Add embed code", "wb_blocks")}
-				</Button>
-			</Placeholder>
+			<div {...blockProps}>
+				<Placeholder
+					label={__("Third-party Embed", "wb_blocks")}
+					instructions={__("Paste embed code from an approved provider.", "wb_blocks")}
+				>
+					<Button variant="primary" onClick={handleEditEmbed}>
+						{__("Add embed code", "wb_blocks")}
+					</Button>
+				</Placeholder>
+			</div>
 		);
 	}
 
@@ -138,24 +152,26 @@ export default function Edit({
 	 */
 	if (!isSelected && embedCode) {
 		return (
-			<Placeholder label={__("Third-party Embed", "wb_blocks")}>
-				<div>
-					<p>
-						<strong>{__("Provider:", "wb_blocks")}</strong> {provider || __("Unknown", "wb_blocks")}
-					</p>
+			<div {...blockProps}>
+				<Placeholder label={__("Third-party Embed", "wb_blocks")}>
+					<div>
+						<p>
+							<strong>{__("Provider:", "wb_blocks")}</strong> {provider || __("Unknown", "wb_blocks")}
+						</p>
 
-					<p>
-						<strong>{__("Status:", "wb_blocks")}</strong> {getStatusLabel()}
-					</p>
+						<p>
+							<strong>{__("Status:", "wb_blocks")}</strong> {getStatusLabel()}
+						</p>
 
-					<p>{getStatusMessage()}</p>
-				</div>
-			</Placeholder>
+						<p>{getStatusMessage()}</p>
+					</div>
+				</Placeholder>
+			</div>
 		);
 	}
 
 	return (
-		<>
+		<div {...blockProps}>
 			<InspectorControls>
 				<PanelBody title={__("Third-party embed", "wb_blocks")} initialOpen={true}>
 					<p>
@@ -219,7 +235,7 @@ export default function Edit({
 				</ToolbarGroup>
 			</BlockControls>
 
-			<div className={`wb-allowed-third-party-embed ${className || ""}`}>
+			<div className="wb-allowed-third-party-embed">
 				{mode === MODES.EDIT && (
 					<>
 						<TextareaControl
@@ -258,6 +274,6 @@ export default function Edit({
 					</Placeholder>
 				)}
 			</div>
-		</>
+		</div>
 	);
 }

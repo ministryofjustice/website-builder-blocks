@@ -1,5 +1,7 @@
 //Test allowed third party embed block is registered in the editor side
 
+import metadata from "../block.json";
+
 //mock the function call
 jest.mock("@wordpress/blocks", () => ({
 	registerBlockType: jest.fn(),
@@ -21,7 +23,12 @@ describe("Confirms allowed third-party embed block registration", () => {
 		jest.resetModules();
 	});
 
-	it("registers the block with the expected settings", () => {
+	// Since the apiVersion 3 migration, index.js passes only the editor
+	// behaviour to registerBlockType(). Everything else — title, category, icon,
+	// keywords, supports, attributes — comes from block.json, which is registered
+	// server-side and reaches the editor through WordPress' block bootstrap. So
+	// this asserts the call shape, and the metadata is checked separately below.
+	it("registers the block with the editor behaviour", () => {
 		const { registerBlockType } = require("@wordpress/blocks");
 
 		require("../index");
@@ -31,35 +38,42 @@ describe("Confirms allowed third-party embed block registration", () => {
 		expect(registerBlockType).toHaveBeenCalledWith(
 			"wb-blocks/allowed-third-party-embed",
 			expect.objectContaining({
-				title: "Allowed third party embed",
-				description: "Add code from an allowed third party provider",
-				category: "wb-blocks",
-				icon: "embed-generic",
-				keywords: ["html", "third party embed", "smart survey", "ticket tailor", "script"],
-				supports: {
-					html: false,
-				},
-				attributes: {
-					embedCode: {
-						type: "string",
-						default: "",
-					},
-					provider: {
-						type: "string",
-						default: "",
-					},
-					validationStatus: {
-						type: "string",
-						default: "not-validated",
-					},
-					validationMessage: {
-						type: "string",
-						default: "",
-					},
-				},
 				edit: expect.any(Function),
 				save: expect.any(Function),
 			}),
 		);
+	});
+
+	it("declares the expected metadata in block.json", () => {
+		expect(metadata).toMatchObject({
+			apiVersion: 3,
+			name: "wb-blocks/allowed-third-party-embed",
+			title: "Allowed third party embed",
+			description: "Add code from an allowed third party provider",
+			category: "wb-blocks",
+			icon: "embed-generic",
+			keywords: ["html", "third party embed", "smart survey", "ticket tailor", "script"],
+			supports: {
+				html: false,
+			},
+			attributes: {
+				embedCode: {
+					type: "string",
+					default: "",
+				},
+				provider: {
+					type: "string",
+					default: "",
+				},
+				validationStatus: {
+					type: "string",
+					default: "not-validated",
+				},
+				validationMessage: {
+					type: "string",
+					default: "",
+				},
+			},
+		});
 	});
 });
