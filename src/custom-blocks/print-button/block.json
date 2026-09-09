@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wb-blocks/print-button",
+	"title": "Print button",
+	"description": "Button to print page",
+	"category": "wb-blocks",
+	"icon": "printer",
+	"keywords": ["print", "click"],
+	"textdomain": "wb_blocks",
+	"editorScript": "wb-blocks-editor-script",
+	"attributes": {
+		"buttonText": {
+			"type": "string",
+			"default": "Print this page"
+		},
+		"buttonShowIcon": {
+			"type": "boolean",
+			"default": false
+		},
+		"buttonShowText": {
+			"type": "boolean",
+			"default": true
+		},
+		"buttonIconPosition": {
+			"type": "string",
+			"default": "right"
+		},
+		"buttonIconStyle": {
+			"type": "string",
+			"default": "materialicons"
+		},
+		"buttonIconSize": {
+			"type": "number",
+			"default": 1
+		},
+		"buttonClassName": {
+			"type": "string"
+		}
+	}
+}

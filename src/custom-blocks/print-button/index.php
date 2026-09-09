@@ -13,8 +13,7 @@
 
 function wb_blocks_render_callback_print_button_block($attributes, $content)
 {
-	// Parse attributes found in index.js
-	$attribute_print_button_className = $attributes["buttonClassName"] ?? "";
+	// Parse attributes found in block.json
 	$attribute_print_button_text = $attributes["buttonText"] ?? "Print this page";
 	$attribute_show_button_text = $attributes["buttonShowText"] ?? true;
 	$attribute_show_button_icon = $attributes["buttonShowIcon"] ?? false;
@@ -30,13 +29,24 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 		dirname(__DIR__, 3) . "/website-builder-blocks.php",
 	);
 
+	// apiVersion 3 pairs useBlockProps in the editor with
+	// get_block_wrapper_attributes() here, so the two produce the same wrapper.
+	//
+	// The legacy buttonClassName attribute is deliberately not read: custom
+	// classes have always been saved separately in `className`, which this
+	// function picks up on its own, so nothing is lost for buttons saved before
+	// the apiVersion 3 upgrade. The generated wp-block-wb-blocks-print-button
+	// class also now comes from here rather than from a value the editor wrote
+	// into an attribute, which is what style.scss's mobile rules key off.
+	$print_button_wrapper_attributes = get_block_wrapper_attributes();
+
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
 	ob_start();
 	?>
 
-	<div class="<?php echo esc_attr($attribute_print_button_className); ?>">
+	<div <?php echo $print_button_wrapper_attributes; ?>>
 
 		<button
 			hidden
@@ -69,9 +79,6 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	<?php
  // Get all the html/content that has been captured in the buffer and output via return
  $output = ob_get_contents();
-
- // Decode the output in case editors want to add in hyperlinks or other markup
- $output = html_entity_decode($output);
 
  ob_end_clean();
 

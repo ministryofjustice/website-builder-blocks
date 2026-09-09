@@ -145,23 +145,8 @@ function wb_blocks_register_blocks()
 		"render_callback" => "wb_blocks_render_callback_reveal_block",
 	]);
 
-	register_block_type("wb-blocks/print-button", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/print-button", [
 		"render_callback" => "wb_blocks_render_callback_print_button_block",
-		"attributes" => [
-			"buttonClassName" => [
-				"type" => "string",
-			],
-			"buttonShowIcon" => [
-				"type" => "boolean",
-			],
-			"buttonText" => [
-				"type" => "string",
-			],
-			"buttonIconPosition" => [
-				"type" => "string",
-			],
-		],
 	]);
 
 	register_block_type("wb-blocks/allowed-third-party-embed", [
