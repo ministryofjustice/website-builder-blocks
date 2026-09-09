@@ -119,26 +119,16 @@ function wb_blocks_register_blocks()
 		"render_callback" => "wb_blocks_render_callback_hmg_svg_block",
 	]);
 
-	register_block_type("wb-blocks/accordion", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/accordion", [
 		"render_callback" => "wb_render_callback_accordion_block",
-		"attributes" => [],
 	]);
 
-	register_block_type("wb-blocks/accordion-section", [
-		"editor_script" => "wb-blocks-editor-script",
+	// The accordion section's metadata lives in its own directory because
+	// register_block_type() reads one block.json per directory. Its editor code
+	// and render callback both still sit alongside the parent accordion, which
+	// is the only place it can be used.
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/accordion-section", [
 		"render_callback" => "wb_render_callback_accordion_block_section",
-		"attributes" => [
-			"accordionSectionClassName" => [
-				"type" => "string",
-			],
-			"accordionSectionTitle" => [
-				"type" => "string",
-			],
-			"accordionSectionTextArea" => [
-				"type" => "string",
-			],
-		],
 	]);
 
 	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/reveal", [

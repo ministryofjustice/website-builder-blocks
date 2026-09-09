@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wb-blocks/accordion-section",
+	"title": "Accordion Section",
+	"description": "A single collapsible section of an accordion.",
+	"category": "wb-blocks",
+	"parent": ["wb-blocks/accordion"],
+	"textdomain": "wb_blocks",
+	"editorScript": "wb-blocks-editor-script",
+	"usesContext": ["wb-blocks/accordionHeadingLevel", "wb-blocks/accordionHeadingFontSize"],
+	"attributes": {
+		"sectionTitle": {
+			"type": "string"
+		},
+		"accordionHeadingLevel": {
+			"type": "number"
+		},
+		"accordionHeadingFontSize": {
+			"type": "string"
+		},
+		"defaultOpen": {
+			"type": "boolean"
+		},
+		"accordionSectionClassName": {
+			"type": "string"
+		}
+	}
+}
