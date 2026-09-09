@@ -150,17 +150,8 @@ function wb_blocks_register_blocks()
 		],
 	]);
 
-	register_block_type("wb-blocks/reveal", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/reveal", [
 		"render_callback" => "wb_blocks_render_callback_reveal_block",
-		"attributes" => [
-			"revealClassName" => [
-				"type" => "string",
-			],
-			"revealTitle" => [
-				"type" => "string",
-			],
-		],
 	]);
 
 	register_block_type("wb-blocks/print-button", [
