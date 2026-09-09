@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wb-blocks/table-of-contents",
+	"title": "Table of contents",
+	"description": "Table of contents",
+	"category": "wb-blocks",
+	"icon": "id-alt",
+	"keywords": ["contents", "toc", "side navigation"],
+	"textdomain": "wb_blocks",
+	"editorScript": "wb-blocks-editor-script",
+	"attributes": {
+		"tocTitle": {
+			"type": "string",
+			"default": "Table of contents"
+		},
+		"backToTopText": {
+			"type": "string",
+			"default": "Back to top"
+		},
+		"sticky": {
+			"type": "boolean",
+			"default": false
+		},
+		"scrollSpy": {
+			"type": "boolean",
+			"default": false
+		},
+		"dualLevel": {
+			"type": "boolean",
+			"default": false
+		},
+		"customNesting": {
+			"type": "string",
+			"default": ""
+		},
+		"tocClassName": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}

@@ -179,26 +179,8 @@ function wb_blocks_register_blocks()
 			],
 		],
 	]);
-	register_block_type("wb-blocks/table-of-contents", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/table-of-contents", [
 		"render_callback" => "wb_blocks_render_callback_toc_block",
-		"attributes" => [
-			"tocTitle" => [
-				"type" => "string",
-			],
-			"backToTopText" => [
-				"type" => "string",
-			],
-			"sticky" => [
-				"type" => "boolean",
-			],
-			"scrollSpy" => [
-				"type" => "boolean",
-			],
-			"tocClassName" => [
-				"type" => "string",
-			],
-		],
 	]);
 }
 
