@@ -17,12 +17,16 @@ function wb_blocks_render_callback_icon_block($attributes)
 	$attribute_icon_svg = esc_attr($attributes["icon"] ?? "action/group_work");
 	$attribute_icon_style = esc_attr($attributes["iconStyle"] ?? "");
 	$attribute_icon_colour = esc_attr($attributes["colour"] ?? "currentColor");
-	$attribute_icon_size = esc_attr($attributes["size"] ?? "1");
+	$attribute_icon_size = esc_attr($attributes["size"] ?? 6);
 	// Deliberately not esc_attr()'d here: this value is now handed to
 	// get_block_wrapper_attributes(), which escapes every attribute it emits.
 	// Escaping first would double-encode, so an alt text containing an
 	// apostrophe would render as "Council&#039;s" in the aria-label.
-	$attribute_icon_alt_text = trim($attributes["alt"] ?? "");
+	//
+	// Cast to string before trimming. esc_attr() used to do that coercion as a
+	// side effect, so dropping it would let malformed block markup — an array
+	// or null in `alt` — reach trim() and throw a TypeError on PHP 8.
+	$attribute_icon_alt_text = trim((string) ($attributes["alt"] ?? ""));
 
 	// Styles can be:
 	// materialicons

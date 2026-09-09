@@ -5,16 +5,14 @@
  * block.json and is registered server-side from website-builder-blocks.php.
  * This file only supplies the editor behaviour.
  */
-import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
 import { InspectorControls, useBlockProps, useSettings, PanelColorSettings } from "@wordpress/block-editor";
-import { SelectControl, RangeControl, TextControl, PanelBody, PanelRow } from "@wordpress/components";
+import { SelectControl, RangeControl, TextControl, PanelBody } from "@wordpress/components";
 import { Fragment, useState } from "@wordpress/element";
 
 import metadata from "./block.json";
 
 const iconRootDirectory = IconData.rootDirectory + "/";
-const iconCategories = IconData.categories;
 const iconOptions = IconData.options;
 const iconSuffix = "/materialicons/24px.svg";
 const iconStyleDir = "/materialicons";

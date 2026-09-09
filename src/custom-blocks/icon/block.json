@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "wb-blocks/icon",
 	"title": "Icon",
-	"description": "Choose from a whole plethorah of icons",
+	"description": "Choose from a whole plethora of icons",
 	"category": "wb-blocks",
 	"keywords": ["icon"],
 	"textdomain": "wb_blocks",
