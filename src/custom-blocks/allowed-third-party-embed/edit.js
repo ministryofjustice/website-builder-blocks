@@ -206,14 +206,14 @@ export default function Edit({
 								disabled={!embedCode.trim()}
 								label={__("Validate embed code", "wb_blocks")}
 							>
-								{__("Validate Code", "wb_blocks")}
+								{__("Validate code", "wb_blocks")}
 							</ToolbarButton>
 						</Tooltip>
 					)}
 
 					{mode === MODES.VALIDATED && (
 						<ToolbarButton onClick={handleEditEmbed} label={__("Edit embed code", "wb_blocks")}>
-							{__("Edit Code", "wb_blocks")}
+							{__("Edit code", "wb_blocks")}
 						</ToolbarButton>
 					)}
 				</ToolbarGroup>
