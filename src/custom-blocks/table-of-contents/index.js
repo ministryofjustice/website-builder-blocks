@@ -1,48 +1,25 @@
-const { registerBlockType, registerBlockStyle } = wp.blocks;
-const { __ } = wp.i18n;
+/**
+ * Table of contents
+ *
+ * Block metadata — name, title, category, icon, keywords, attributes — lives in
+ * block.json and is registered server-side from website-builder-blocks.php.
+ * This file only supplies the editor behaviour.
+ *
+ * The tocClassName attribute in block.json is legacy: edit() used to copy the
+ * editor's generated className into it so the render callback could read it
+ * back. apiVersion 3 no longer passes className to edit(), and the render
+ * callback now derives the same classes itself. It stays registered only so it
+ * isn't stripped from content saved before this change.
+ */
+import { registerBlockType } from "@wordpress/blocks";
 
 /**
  * Internal dependencies
  */
 import edit from "./edit";
+import metadata from "./block.json";
 
-registerBlockType("wb-blocks/table-of-contents", {
-	title: "Table of contents",
-	description: "Table of contents",
-	category: "wb-blocks",
-	icon: "id-alt",
-	keywords: ["contents", "toc", "side navigation"],
-
-	attributes: {
-		tocTitle: {
-			type: "string",
-			default: "Table of contents",
-		},
-		backToTopText: {
-			type: "string",
-			default: "Back to top",
-		},
-		sticky: {
-			type: "boolean",
-			default: false,
-		},
-		scrollSpy: {
-			type: "boolean",
-			default: false,
-		},
-		dualLevel: {
-			type: "boolean",
-			default: false,
-		},
-		customNesting: {
-			type: "string",
-			default: "",
-		},
-		tocClassName: {
-			type: "string",
-			default: "",
-		},
-	},
+registerBlockType(metadata.name, {
 	edit,
 	// return null as frontend output is done via PHP
 	save: () => null,

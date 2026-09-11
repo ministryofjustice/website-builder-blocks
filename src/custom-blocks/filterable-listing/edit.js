@@ -7,14 +7,14 @@ import {
 	BaseControl,
 } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
-import { InspectorControls, useSettings, PanelColorSettings } from "@wordpress/block-editor";
+import { InspectorControls, useBlockProps, useSettings, PanelColorSettings } from "@wordpress/block-editor";
 import { useSelect } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data";
+import { Fragment, useEffect } from "@wordpress/element";
 import ReactSelect from "react-select";
 import PreviewAuto from "./preview-auto.js";
 import PreviewFilter from "./preview-filter.js";
 
-const { Fragment } = wp.element;
 const d = new Date();
 
 const noItemSelectedText = "No item selected"; // Text in editor to shew that no item will be displayed
@@ -41,14 +41,25 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesResultsBorderColour,
 		blockID,
 		variant,
-		className,
 	} = attributes;
 
-	if (!blockID) {
-		setAttributes({
-			blockID: crypto.randomUUID(),
-		});
-	}
+	// apiVersion 3: the wrapper element must carry the props returned by
+	// useBlockProps, and className is no longer read out of attributes here —
+	// the generated block class and any custom classes come back in blockProps.
+	const blockProps = useBlockProps({
+		className: "wb-blocks-filterable-listing",
+	});
+
+	// blockID is persisted so that pagination links stay stable between renders.
+	// Generating it in the render body meant dispatching to the store while
+	// React was rendering; an effect is the correct place for a side effect.
+	useEffect(() => {
+		if (!blockID) {
+			setAttributes({
+				blockID: crypto.randomUUID(),
+			});
+		}
+	}, [blockID]);
 
 	const { allPostTypes } = useSelect(select => {
 		const { getPostTypes } = select(coreStore);
@@ -561,8 +572,13 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 					)}
 				</PanelBody>
 			</InspectorControls>
-			<div className={`wb-blocks-filterable-listing ${className}`}>
-				<div className={`wb-blocks-filterable-listing ${className} ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
+			{/* The inner div previously repeated `wb-blocks-filterable-listing ${className}`
+			    from the outer one. className here was attributes.className, which is
+			    undefined unless the user set a custom class — so both elements were
+			    rendering a literal class of "undefined". blockProps supplies the classes
+			    on the wrapper now, and the inner div keeps only what is its own. */}
+			<div {...blockProps}>
+				<div className={`wb-blocks-filterable-listing ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
 					<PreviewAuto
 						attributes={attributes}
 						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}

@@ -104,162 +104,46 @@ function wb_blocks_register_blocks()
 	// Make the block's strings available for translation in JavaScript
 	wp_set_script_translations("wb-blocks-editor-script", "wb_blocks");
 
-	register_block_type("wb-blocks/icon", [
-		"editor_script" => "wb-blocks-editor-script",
+	// Registered from block.json rather than an inline array. The metadata is
+	// read out of build/ — not src/ — because webpack copies each block.json
+	// across on build, which keeps registration working from the compiled
+	// assets alone.
+	//
+	// render_callback stays here: block.json can only reference a PHP file, not
+	// a function, and the callbacks are already loaded by the include loop below.
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/icon", [
 		"render_callback" => "wb_blocks_render_callback_icon_block",
-		"attributes" => [
-			"icon" => [
-				"type" => "string",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/hmg-svg", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/hmg-svg", [
 		"render_callback" => "wb_blocks_render_callback_hmg_svg_block",
-		"attributes" => [
-			"xclassName" => [
-				"type" => "string",
-			],
-			"logo" => [
-				"type" => "string",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/accordion", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/accordion", [
 		"render_callback" => "wb_render_callback_accordion_block",
-		"attributes" => [],
 	]);
 
-	register_block_type("wb-blocks/accordion-section", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/accordion-section", [
 		"render_callback" => "wb_render_callback_accordion_block_section",
-		"attributes" => [
-			"accordionSectionClassName" => [
-				"type" => "string",
-			],
-			"accordionSectionTitle" => [
-				"type" => "string",
-			],
-			"accordionSectionTextArea" => [
-				"type" => "string",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/reveal", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/reveal", [
 		"render_callback" => "wb_blocks_render_callback_reveal_block",
-		"attributes" => [
-			"revealClassName" => [
-				"type" => "string",
-			],
-			"revealTitle" => [
-				"type" => "string",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/print-button", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/print-button", [
 		"render_callback" => "wb_blocks_render_callback_print_button_block",
-		"attributes" => [
-			"buttonClassName" => [
-				"type" => "string",
-			],
-			"buttonShowIcon" => [
-				"type" => "boolean",
-			],
-			"buttonText" => [
-				"type" => "string",
-			],
-			"buttonIconPosition" => [
-				"type" => "string",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/allowed-third-party-embed", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/allowed-third-party-embed", [
 		"render_callback" => "wb_blocks_render_callback_allowed_third_party_embed",
-		"attributes" => [
-			"embedCode" => [
-				"type" => "string",
-				"default" => "",
-			],
-			"provider" => [
-				"type" => "string",
-				"default" => "",
-			],
-			"validationStatus" => [
-				"type" => "string",
-				"default" => "not-validated",
-			],
-			"validationMessage" => [
-				"type" => "string",
-				"default" => "",
-			],
-		],
 	]);
 
-	register_block_type("wb-blocks/filterable-listing", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/filterable-listing", [
 		"render_callback" => "wb_blocks_render_callback_filterable_listing_block",
-		"attributes" => [
-			"listingPostType" => [
-				"type" => "string",
-			],
-			"listingSearchTextFilter" => [
-				"type" => "boolean",
-			],
-			"listingFilters" => [
-				"type" => "array",
-			],
-			"listingDisplayFields" => [
-				"type" => "array",
-			],
-			"listingDisplayTerms" => [
-				"type" => "array",
-			],
-			"listingItemsPerPage" => [
-				"type" => "number",
-			],
-			"listingSortOrder" => [
-				"type" => "string",
-			],
-			"listingRestrictTaxonomies" => [
-				"type" => "array",
-			],
-			"listingRestrictTerms" => [
-				"type" => "array",
-			],
-			"stylesResultsShadedBackground" => [
-				"type" => "boolean",
-			],
-		],
 	]);
-	register_block_type("wb-blocks/table-of-contents", [
-		"editor_script" => "wb-blocks-editor-script",
+	register_block_type(plugin_dir_path(__FILE__) . "build/custom-blocks/table-of-contents", [
 		"render_callback" => "wb_blocks_render_callback_toc_block",
-		"attributes" => [
-			"tocTitle" => [
-				"type" => "string",
-			],
-			"backToTopText" => [
-				"type" => "string",
-			],
-			"sticky" => [
-				"type" => "boolean",
-			],
-			"scrollSpy" => [
-				"type" => "boolean",
-			],
-			"tocClassName" => [
-				"type" => "string",
-			],
-		],
 	]);
 }
 

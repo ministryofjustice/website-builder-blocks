@@ -1,38 +1,100 @@
 import { PanelBody, ToggleControl, TextControl } from "@wordpress/components";
-import { useEffect } from "@wordpress/element";
+import { Fragment } from "@wordpress/element";
+import { useRefEffect } from "@wordpress/compose";
 import { __ } from "@wordpress/i18n";
-import { RichText, InspectorControls } from "@wordpress/block-editor";
-
-const { Fragment } = wp.element;
+import { RichText, InspectorControls, useBlockProps } from "@wordpress/block-editor";
 
 export default function tocEdit({ attributes, setAttributes }) {
-	useEffect(() => {
-		let contentArea = document.querySelector(".editor-visual-editor");
-		if (!contentArea) {
-			return;
-		}
-		let contentsList = document.getElementById("table-of-contents-contents-list");
-		const mutationObserver = new MutationObserver(mutationList => {
-			let headingItems = contentArea.querySelectorAll("main h2:not(.wb-toc-ignore), main h3:not(.wb-toc-ignore)");
-			let contentItems = contentsList.querySelectorAll("li");
-			if (headingItems.length != contentItems.length) {
+	const { tocTitle, backToTopText, sticky, scrollSpy, dualLevel, customNesting } = attributes;
+
+	// This block reads the editor's DOM to build a live preview of the contents
+	// list, which is what made it apiVersion 3's headline problem: once the post
+	// editor is iframed, the post content is in a *different document*, so the
+	// old code's document.querySelector(".editor-visual-editor") and
+	// document.getElementById("table-of-contents-contents-list") both looked in
+	// the parent page and found nothing.
+	//
+	// useRefEffect hands us the block's own DOM node, so everything is resolved
+	// relative to it instead of a global document:
+	//
+	//   node.ownerDocument — the canvas document, whether or not it is an iframe
+	//   node.querySelector — this block's own contents list, no id lookup needed
+	//
+	// It also gives a cleanup function, which the old useEffect had no way to
+	// provide: the observers below were previously created and never
+	// disconnected, one per heading per rebuild.
+	const tocRef = useRefEffect(
+		node => {
+			const doc = node.ownerDocument;
+
+			// .editor-styles-wrapper exists in both the iframed and non-iframed
+			// canvas; body is a last resort.
+			const contentArea = doc.querySelector(".editor-styles-wrapper") ?? doc.body;
+			const contentsList = node.querySelector("#table-of-contents-contents-list");
+
+			if (!contentArea || !contentsList) {
+				return;
+			}
+
+			// The original selector was scoped to "main". That element is not
+			// guaranteed to exist in the iframed canvas, so fall back to the
+			// content area itself — headings the block should skip are excluded
+			// by .wb-toc-ignore either way.
+			const scope = contentArea.querySelector("main") ?? contentArea;
+
+			const headingObservers = new Set();
+
+			const rebuildContentsList = () => {
+				const headingItems = scope.querySelectorAll("h2:not(.wb-toc-ignore), h3:not(.wb-toc-ignore)");
+				const contentItems = contentsList.querySelectorAll("li");
+
+				if (headingItems.length === contentItems.length) {
+					return;
+				}
+
 				contentsList.innerHTML = "";
+
 				for (let i = 0; i < headingItems.length; i++) {
 					if (headingItems[i].innerHTML.includes(tocTitle)) continue;
+
 					let hasSubMenuButton = false;
 					if (i < headingItems.length - 1 && headingItems[i].tagName == "H2" && headingItems[i + 1].tagName == "H3") {
 						// Not last item, is H2 before an H3
 						hasSubMenuButton = true;
 					}
-					onClassChange(headingItems[i]); // Live updating of contents item if content is changed without re-writing the entire table of contents
+
+					// Live updating of contents item if content is changed without re-writing the entire table of contents
+					headingObservers.add(onClassChange(headingItems[i], contentsList));
 					contentsList.innerHTML += createContentItem(headingItems[i], hasSubMenuButton);
 				}
-			}
-		});
-		mutationObserver.observe(contentArea, { childList: true, subtree: true });
-	}, []);
+			};
 
-	const { tocTitle, backToTopText, sticky, scrollSpy, tocClassName, dualLevel, customNesting, className } = attributes;
+			const mutationObserver = new MutationObserver(rebuildContentsList);
+			mutationObserver.observe(contentArea, { childList: true, subtree: true });
+
+			// Populate immediately rather than waiting for the first edit.
+			rebuildContentsList();
+
+			return () => {
+				mutationObserver.disconnect();
+				headingObservers.forEach(observer => observer.disconnect());
+				headingObservers.clear();
+			};
+		},
+		[tocTitle],
+	);
+
+	// apiVersion 3: the wrapper element must carry the props returned by
+	// useBlockProps, and className is no longer passed to edit(). This also
+	// replaces a setAttributes({ tocClassName: className }) call made during
+	// render, which wrote to the store on every render pass.
+	const blockProps = useBlockProps({
+		ref: tocRef,
+		className: `wb-blocks-toc ${sticky ? "toc-sticky" : ""} ${customNesting ? "" : "toc-no-marker"} ${
+			customNesting == "|" ? "toc-border" : ""
+		} ${dualLevel ? "dual-level" : ""}`,
+		style: { "--bullet-icon": "'" + customNesting + "'" },
+	});
 
 	const allowedBullets = [
 		"-", // hyphen
@@ -46,9 +108,6 @@ export default function tocEdit({ attributes, setAttributes }) {
 		"➤", // slick triangle
 		"|", // pipe (special case - denotes a left border)
 	];
-
-	// Set className attribute for PHP frontend to use
-	setAttributes({ tocClassName: className });
 
 	const setTocTitle = newTocTitle => {
 		setAttributes({ tocTitle: newTocTitle });
@@ -149,15 +208,15 @@ export default function tocEdit({ attributes, setAttributes }) {
 	return (
 		<Fragment>
 			{inspectorControls}
-			<div
-				className={`wb-blocks-toc ${tocClassName ? tocClassName : ""} ${sticky ? "toc-sticky" : ""} ${customNesting ? "" : "toc-no-marker"} ${customNesting == "|" ? "toc-border" : ""} ${dualLevel ? "dual-level" : ""} `}
-				style={{ "--bullet-icon": "'" + customNesting + "'" }}
-			>
-				<div id="table-of-contents" class="wb-table-of-contents">
-					<h2 class="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
+			<div {...blockProps}>
+				{/* These three were `class` rather than `className`, which React does not
+				    apply to the DOM — so none of the wb-table-of-contents styling was
+				    reaching the editor preview. */}
+				<div id="table-of-contents" className="wb-table-of-contents">
+					<h2 className="wb-table-of-contents__heading wb-toc-ignore" id="table-of-contents-heading">
 						<RichText value={tocTitle} onChange={setTocTitle} />
 					</h2>
-					<ol id="table-of-contents-contents-list" class="wb-table-of-contents__list"></ol>
+					<ol id="table-of-contents-contents-list" className="wb-table-of-contents__list"></ol>
 				</div>
 			</div>
 		</Fragment>
@@ -195,7 +254,10 @@ function createContentItem(heading, hasSubMenuButton = false) {
 	);
 }
 
-function onClassChange(node) {
+// contentsList is threaded through these helpers rather than looked up from a
+// global document: in an iframed editor the contents list lives in the canvas
+// document, so document.getElementById() in the parent page finds nothing.
+function onClassChange(node, contentsList) {
 	// Class change happens when any editing is done, so we look for a class change
 	// If a class change is detected we run the alterHeading function
 
@@ -206,8 +268,8 @@ function onClassChange(node) {
 			if (item.attributeName === "class") {
 				const classString = node.classList.toString();
 				if (classString !== lastClassString) {
-					applyButtonFunctionality();
-					alterHeading(node);
+					applyButtonFunctionality(contentsList);
+					alterHeading(node, contentsList);
 					lastClassString = classString;
 					break;
 				}
@@ -219,9 +281,11 @@ function onClassChange(node) {
 
 	return mutationObserver;
 }
-function alterHeading(heading) {
+function alterHeading(heading, contentsList) {
 	if (!heading) return;
-	let headingContentItem = document.getElementById("toc-link-for_" + heading.id);
+	// The heading and the contents list share a document, so resolve the lookup
+	// against the heading's own document rather than the global one.
+	let headingContentItem = heading.ownerDocument.getElementById("toc-link-for_" + heading.id);
 	if (!headingContentItem) return; // The function will run before the contents list has been created so this is important
 
 	// Check: has the text changed
@@ -234,10 +298,10 @@ function alterHeading(heading) {
 	}
 }
 
-function applyButtonFunctionality() {
+function applyButtonFunctionality(toc) {
 	// Function to duplicate the open close functionality of the frontend
 	// The backend list is a series of non-nested list-items, for reasons
-	const toc = document.getElementById("table-of-contents-contents-list");
+	if (!toc) return;
 
 	// Scan for buttons, but targetting the button's list item
 	const controllingListItems = toc.querySelectorAll(".wb-table-of-contents__item:has(button)");

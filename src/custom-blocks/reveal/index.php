@@ -13,9 +13,24 @@
 
 function wb_blocks_render_callback_reveal_block($attributes, $content)
 {
-	// Parse attributes found in index.js
-	$attribute_reveal_className = $attributes["revealClassName"] ?? "";
+	// Parse attributes found in block.json
 	$attribute_reveal_revealTitle = $attributes["revealTitle"] ?? "";
+
+	// apiVersion 3 pairs useBlockProps in the editor with
+	// get_block_wrapper_attributes() here, so the two produce the same wrapper.
+	//
+	// The legacy revealClassName attribute is deliberately not read: custom
+	// classes have always been saved separately in `className`, which this
+	// function picks up on its own, so nothing is lost for reveals saved before
+	// the apiVersion 3 upgrade.
+	//
+	// Note the function returns a complete class="..." pair, so the wb-blocks-reveal
+	// class is passed in rather than written into the tag alongside it —
+	// otherwise the element would carry two class attributes and the browser
+	// would keep only the first.
+	$reveal_wrapper_attributes = get_block_wrapper_attributes([
+		"class" => "wb-blocks-reveal",
+	]);
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -23,7 +38,7 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
 	ob_start();
 	?>
 
-    <div class="wb-blocks-reveal <?= esc_attr($attribute_reveal_className) ?>">
+    <div <?= $reveal_wrapper_attributes ?>>
         <details class="wb-details">
             <summary class="wb-details__summary">
                 <?php /**
