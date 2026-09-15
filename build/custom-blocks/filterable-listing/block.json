@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wb-blocks/filterable-listing",
+  "title": "Filterable Listing",
+  "description": "Listing block",
+  "category": "wb-blocks",
+  "icon": "id-alt",
+  "keywords": [
+    "listing",
+    "latest",
+    "items"
+  ],
+  "textdomain": "wb_blocks",
+  "editorScript": "wb-blocks-editor-script",
+  "attributes": {
+    "listingPostType": {
+      "type": "string",
+      "default": ""
+    },
+    "listingSearchTextFilter": {
+      "type": "boolean",
+      "default": true
+    },
+    "listingDisplayImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "listingImagePosition": {
+      "type": "string",
+      "default": "right"
+    },
+    "listingFilters": {
+      "type": "array",
+      "default": []
+    },
+    "listingDisplayFields": {
+      "type": "array",
+      "default": []
+    },
+    "listingDisplayTerms": {
+      "type": "array",
+      "default": []
+    },
+    "listingItemsPerPage": {
+      "type": "number",
+      "default": 10
+    },
+    "listingSortOrder": {
+      "type": "string",
+      "default": "published_date"
+    },
+    "listingRestrictTaxonomies": {
+      "type": "array",
+      "default": []
+    },
+    "listingRestrictTerms": {
+      "type": "array",
+      "default": []
+    },
+    "stylesTaxLinks": {
+      "type": "boolean",
+      "default": false
+    },
+    "stylesHideLabels": {
+      "type": "boolean",
+      "default": false
+    },
+    "stylesFieldLayout": {
+      "type": "string",
+      "default": "stacked-inline"
+    },
+    "stylesLayout": {
+      "type": "string",
+      "default": "side-by-side"
+    },
+    "stylesResultsShadedBackground": {
+      "type": "boolean",
+      "default": false
+    },
+    "stylesResultsShadedColour": {
+      "type": "string"
+    },
+    "stylesResultsBorderColour": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string",
+      "default": "default"
+    },
+    "blockID": {
+      "type": "string"
+    },
+    "className": {
+      "type": "string"
+    }
+  }
+}

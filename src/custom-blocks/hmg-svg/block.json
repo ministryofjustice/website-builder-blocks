@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wb-blocks/hmg-svg",
+	"title": "HM Government logo SVG",
+	"description": "The SVGs associated with government websites (for use in the footer)",
+	"category": "wb-blocks",
+	"keywords": ["crown", "copyright", "ogl", "royal", "crest", "arms", "coat-of-arms"],
+	"textdomain": "wb_blocks",
+	"editorScript": "wb-blocks-editor-script",
+	"attributes": {
+		"logo": {
+			"type": "string",
+			"default": "crest"
+		},
+		"className": {
+			"type": "string"
+		},
+		"xclassName": {
+			"type": "string"
+		}
+	}
+}

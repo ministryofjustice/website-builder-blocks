@@ -47,7 +47,25 @@ function wb_render_callback_accordion_block($attributes, $content)
 
 	$openAllText = esc_html($attributes["openAll"] ?? "Expand all sections");
 	$closeAllText = esc_html($attributes["closeAll"] ?? "Collapse all sections");
-	$accordionClassName = esc_html($attributes["accordionClassName"]) ?? "";
+
+	// apiVersion 3 pairs useBlockProps in the editor with
+	// get_block_wrapper_attributes() here, so the two produce the same wrapper.
+	//
+	// The legacy accordionClassName attribute is deliberately not read: custom
+	// classes have always been saved separately in `className`, which this
+	// function picks up on its own. Its old read was also mis-parenthesised —
+	// esc_html($attributes["accordionClassName"]) ?? "" applies the null
+	// coalesce to esc_html()'s return value, not to the missing array key, so a
+	// block without the attribute passed null into esc_html() and raised a
+	// deprecation notice on PHP 8.1+ instead of defaulting to "".
+	//
+	// Note the function returns a complete class="..." pair, so wb-accordion is
+	// passed in rather than written into the tag alongside it — otherwise the
+	// element would carry two class attributes and the browser would keep only
+	// the first.
+	$accordion_wrapper_attributes = get_block_wrapper_attributes([
+		"class" => "wb-accordion",
+	]);
 
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
@@ -55,9 +73,7 @@ function wb_render_callback_accordion_block($attributes, $content)
 	ob_start();
 	?>
 
-	<div
-		class="wb-accordion <?= $accordionClassName ?> "
-	>
+	<div <?= $accordion_wrapper_attributes ?>>
 	<?php // The Tailwind class "hidden" is removed by JS - which is needed for this to work
 	// This is a check to ensure that without JS, the JS dependent button isn't shewn
 	?>
@@ -95,8 +111,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	$tailwind_chevron =
 		"w-2 h-2 mx-4 shrink-0 border-r-2 border-b-2 border-current rotate-[45deg] transition-transform duration-200 group-open:rotate-[225deg]";
 
-	// Parse attributes found in index.js
-	$attribute_accordion_section_className = esc_attr($attributes["accordionSectionClassName"]) ?? "";
+	// Parse attributes found in block.json
 	$attribute_accordion_heading_size = esc_html($attributes["accordionHeadingFontSize"] ?? "base");
 	$attribute_accordion_section_title = esc_html($attributes["sectionTitle"] ?? "");
 	$attribute_accordion_section_open_by_default = $attributes["defaultOpen"] ?? false;
@@ -105,6 +120,14 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 		$attribute_accordion_heading_level = 3;
 	}
 
+	// As above: the wrapper classes are passed in rather than written into the
+	// tag, so the element carries a single class attribute. The same
+	// mis-parenthesised esc_attr(...) ?? "" read of accordionSectionClassName
+	// has gone with it.
+	$accordion_section_wrapper_attributes = get_block_wrapper_attributes([
+		"class" => "wb-accordion__section group mt-4",
+	]);
+
 	// Turn on buffering so we can collect all the html markup below and load it via the return
 	// This is an alternative method to using sprintf(). By using buffering you can write your
 	// code below as you would in any other PHP file rather then having to use the sprintf() syntax
@@ -112,7 +135,7 @@ function wb_render_callback_accordion_block_section($attributes, $content)
 	?>
 
 	<details
-		class="<?= $attribute_accordion_section_className ?> wb-accordion__section group mt-4"
+		<?= $accordion_section_wrapper_attributes ?>
 		<?php if ($attribute_accordion_section_open_by_default) {
   	echo "open";
   } ?>

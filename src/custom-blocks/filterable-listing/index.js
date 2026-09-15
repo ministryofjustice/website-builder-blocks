@@ -1,105 +1,27 @@
-const { registerBlockType, registerBlockVariation } = wp.blocks;
-const { __ } = wp.i18n;
-
+/**
+ * Filterable Listing
+ *
+ * Block metadata — name, title, category, icon, keywords, attributes — lives in
+ * block.json and is registered server-side from website-builder-blocks.php.
+ * This file supplies the editor behaviour and the block variations.
+ *
+ * The variations stay here rather than moving into block.json: isActive is a
+ * function, which JSON cannot express.
+ */
+import { registerBlockType, registerBlockVariation } from "@wordpress/blocks";
 import { InnerBlocks } from "@wordpress/block-editor";
+
 import edit from "./edit";
+import metadata from "./block.json";
 
-registerBlockType("wb-blocks/filterable-listing", {
-	title: "Filterable Listing",
-	description: "Listing block",
-	category: "wb-blocks",
-	icon: "id-alt",
-	keywords: ["listing", "latest", "items"],
-
-	attributes: {
-		listingPostType: {
-			type: "string",
-			default: "",
-		},
-		listingSearchTextFilter: {
-			type: "boolean",
-			default: true,
-		},
-		listingDisplayImage: {
-			type: "boolean",
-			default: true,
-		},
-		listingImagePosition: {
-			type: "string",
-			default: "right",
-		},
-		listingFilters: {
-			type: "array",
-			default: "",
-		},
-		listingDisplayFields: {
-			type: "array",
-			default: [],
-		},
-		listingDisplayTerms: {
-			type: "array",
-			default: [],
-		},
-		listingItemsPerPage: {
-			type: "number",
-			default: 10,
-		},
-		listingSortOrder: {
-			type: "string",
-			default: "published_date",
-		},
-		listingRestrictTaxonomies: {
-			type: "array",
-			default: "",
-		},
-		listingRestrictTerms: {
-			type: "array",
-			default: "",
-		},
-		stylesTaxLinks: {
-			type: "boolean",
-			default: false,
-		},
-		stylesHideLabels: {
-			type: "boolean",
-			default: false,
-		},
-		stylesFieldLayout: {
-			type: "string",
-			default: "stacked-inline",
-		},
-		stylesLayout: {
-			type: "string",
-			default: "side-by-side",
-		},
-		stylesResultsShadedBackground: {
-			type: "boolean",
-			default: false,
-		},
-		stylesResultsShadedColour: {
-			type: "string",
-		},
-		stylesResultsBorderColour: {
-			type: "string",
-		},
-		variant: {
-			type: "string",
-			default: "default",
-		},
-		blockID: {
-			type: "string",
-		},
-		className: {
-			type: "string",
-		},
-	},
+registerBlockType(metadata.name, {
 	edit,
 	save: () => {
 		return <InnerBlocks.Content />;
 	},
 });
 
-registerBlockVariation("wb-blocks/filterable-listing", {
+registerBlockVariation(metadata.name, {
 	name: "default",
 	title: "Filterable Listing",
 	attributes: {
@@ -111,7 +33,7 @@ registerBlockVariation("wb-blocks/filterable-listing", {
 	scope: ["transform"],
 });
 
-registerBlockVariation("wb-blocks/filterable-listing", {
+registerBlockVariation(metadata.name, {
 	name: "auto-item-list",
 	title: "Item Listing",
 	description: "Automatically pull through items",

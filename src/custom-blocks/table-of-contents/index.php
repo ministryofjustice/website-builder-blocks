@@ -15,11 +15,29 @@ require_once "inc/functions.php";
 
 function wb_blocks_render_callback_toc_block($attributes, $content)
 {
-	// Parse attributes found in index.js
+	// Parse attributes found in block.json
 	$attribute_title = $attributes["tocTitle"] ?? "Table of contents";
 	$attribute_backToTopText = $attributes["backToTopText"] ?? "Back to top";
-	$attribute_className = $attributes["tocClassName"] ?? "";
 	$attribute_sticky = $attributes["sticky"] ?? false;
+
+	// This block deliberately does NOT use get_block_wrapper_attributes().
+	//
+	// That function has to be echoed onto a wrapper element, and this block has
+	// none: wb_table_of_contents() returns #table-of-contents directly. Adding a
+	// wrapper would break the sticky variant — #table-of-contents.toc-sticky is
+	// position: sticky, which is bounded by its containing block, so a div that
+	// shrinks to the table's own height would stop it moving at all.
+	//
+	// The classes that function would have produced are built here instead, so
+	// the markup is unchanged: the generated block class (via core's own helper
+	// rather than a hardcoded string) plus whatever custom classes the user set.
+	// The legacy tocClassName attribute is no longer read — it held the same
+	// generated + custom classes, copied out of the editor by edit().
+	$attribute_className = wp_get_block_default_classname("wb-blocks/table-of-contents");
+
+	if (!empty($attributes["className"])) {
+		$attribute_className .= " " . $attributes["className"];
+	}
 	$attribute_scrollSpy = $attributes["scrollSpy"] ?? false;
 	$attribute_both_levels = $attributes["dualLevel"] ?? false;
 	$attribute_nesting = $attributes["customNesting"] ?? "";
