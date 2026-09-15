@@ -156,7 +156,7 @@ registerBlockType(metadata.name, {
 							<PanelRow>
 								<TextControl
 									label={__("Alt text", "wb_blocks")}
-									help={__("Add button action description for screen readers", "wb_blocks", "wb_blocks")}
+									help={__("Add button action description for screen readers", "wb_blocks")}
 									value={buttonText}
 									onChange={onChangeButtonText}
 								></TextControl>
@@ -241,6 +241,13 @@ registerBlockType(metadata.name, {
 							<span className="wb-print-button__text">
 								<RichText
 									tagName="span"
+									// Bold and italic only. The render callback passes this value
+									// through wp_kses() with a matching tag list, so anything else
+									// the toolbar offered — links, inline images, highlight — would
+									// show in the editor and then silently vanish on the frontend.
+									// Links are excluded on their own merits too: an anchor inside a
+									// <button> is invalid HTML and fights the print onclick handler.
+									allowedFormats={["core/bold", "core/italic"]}
 									value={buttonText}
 									placeholder={__("Add button text", "wb_blocks")}
 									keepPlaceholderOnFocus

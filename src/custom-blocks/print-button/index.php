@@ -21,8 +21,33 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 	$attribute_button_icon_style = $attributes["buttonIconStyle"] ?? "materialicons";
 	$attribute_button_icon_size = $attributes["buttonIconSize"] ?? 1;
 	$frontend_icon_size = $attribute_show_button_text ? 1 : $attribute_button_icon_size;
-	$button_aria_label =
-		trim($attribute_print_button_text) !== "" ? trim($attribute_print_button_text) : "Print this page";
+
+	// buttonText comes from a RichText control, so it can contain inline markup.
+	// The editor's format toolbar is limited to bold and italic (see the
+	// allowedFormats prop in index.js); this list is the server-side counterpart,
+	// with b and i kept alongside strong and em to cover content pasted in before
+	// that limit existed.
+	//
+	// Deliberately narrower than wp_kses_post(): that would permit <a> and <img>,
+	// and an anchor nested inside a <button> is invalid HTML — interactive
+	// content inside interactive content — which would also fight the onclick
+	// handler below.
+	$button_text_allowed_tags = [
+		"strong" => [],
+		"b" => [],
+		"em" => [],
+		"i" => [],
+	];
+
+	// The aria-label has to be plain text: it is an attribute, so markup in it is
+	// read out literally by assistive technology rather than rendered. Note the
+	// emptiness check runs on the stripped value — "<strong></strong>" is not
+	// empty by trim() alone, and would otherwise produce a blank label.
+	//
+	// This path is reachable with formatted text: buttonText persists when "Show
+	// text" is toggled off, so markup entered while it was on ends up here.
+	$button_text_plain = trim(wp_strip_all_tags($attribute_print_button_text));
+	$button_aria_label = $button_text_plain !== "" ? $button_text_plain : "Print this page";
 
 	$print_icon_url = plugins_url(
 		"/assets/icons/action/print/" . $attribute_button_icon_style . "/24px.svg",
@@ -67,7 +92,7 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 		>
 			<?php if ($attribute_show_button_text): ?>
 				<span class="wb-print-button__text">
-					<?php echo esc_html($attribute_print_button_text); ?>
+					<?php echo wp_kses($attribute_print_button_text, $button_text_allowed_tags); ?>
 				</span>
 			<?php endif; ?>
 		</button>
@@ -77,7 +102,6 @@ function wb_blocks_render_callback_print_button_block($attributes, $content)
 
 
 	<?php
- // Get all the html/content that has been captured in the buffer and output via return
  $output = ob_get_contents();
 
  ob_end_clean();
