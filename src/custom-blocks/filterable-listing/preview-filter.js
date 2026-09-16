@@ -5,7 +5,6 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 	if (attributes.variant !== "default") return null;
 
 	const selectedAcfFields = acfFields.filter(field => attributes.listingDisplayFields.includes(field.key));
-
 	const fieldLabels = {
 		title: {
 			label: "Title",
@@ -192,7 +191,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 						className={`wb-listing wbb:mb-4 wbb:pb-2 ${attributes.stylesResultsShadedBackground ? "" : "wbb:border-b"}`}
 						style={{ borderColor: attributes.stylesResultsBorderColour }}
 					>
-						𝑥 items
+						Showing 𝑥 to 𝑦 of 𝑧 items
 					</div>
 					{Array.from({ length: attributes.listingItemsPerPage }, (_, i) => (
 						<PreviewItems
