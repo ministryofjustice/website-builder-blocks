@@ -65,9 +65,9 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 			}
 		}
 
-		$layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4"; //default, side-by-side - if converted from an auto-list, other values might be here
+		$layoutClass = "wbb:grid wbb:grid-cols-1 wbb:sm:grid-cols-3 wbb:gap-4"; //default, side-by-side - if converted from an auto-list, other values might be here
 		if ($listing_settings["styles"]["stylesLayout"] == "stacked") {
-			$layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4"; //wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
+			$layoutClass = "wb-item-listing-is-stacked wbb:grid wbb:grid-cols-1 wbb:sm:grid-cols-1 wbb:gap-4"; //wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
 		}
 		if ($variant === "auto-item-list") {
 			$layoutClass = "";
@@ -99,7 +99,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 			<?php if ($variant !== "auto-item-list") {
    	wb_blocks_filterable_listing_block_filters($block_id, $listing_settings, $active_filters);
    } ?>
-			<div class="col-span-2"> 
+			<div class="wbb:col-span-2">
 				<?php wb_blocks_filterable_listing_block_results($listing_settings, $active_filters); ?> 
 			</div>
         </div>

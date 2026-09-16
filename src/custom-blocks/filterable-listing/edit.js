@@ -578,7 +578,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 			    rendering a literal class of "undefined". blockProps supplies the classes
 			    on the wrapper now, and the inner div keeps only what is its own. */}
 			<div {...blockProps}>
-				<div className={`wb-blocks-filterable-listing ${stylesResultsShadedBackground ? "" : "pt-4"}`}>
+				<div className={`wb-blocks-filterable-listing ${stylesResultsShadedBackground ? "" : "wbb:pt-4"}`}>
 					<PreviewAuto
 						attributes={attributes}
 						acfFields={allPostTypes?.find(postType => postType.slug === attributes.listingPostType)?.acfFields || []}

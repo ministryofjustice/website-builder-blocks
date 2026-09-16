@@ -2,11 +2,11 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 	// Create a placeholder image
 	const image = attributes.listingDisplayImage ? (
 		<div
-			className={`${featuredImagePreviewClass} wb-listing-thumbnail flex items-center justify-center border`}
+			className={`${featuredImagePreviewClass} wb-listing-thumbnail wbb:flex wbb:items-center wbb:justify-center wbb:border`}
 			style={{ background: "#8888", borderColor: attributes.stylesResultsBorderColour }}
 		>
 			<svg
-				className="h-[50%] w-[50%] text-gray-400"
+				className="wbb:h-[50%] wbb:w-[50%] wbb:text-gray-400"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -25,27 +25,27 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 	var innerClass = "";
 	switch (attributes.stylesFieldLayout) {
 		case "inline":
-			outerClass = "md:inline-flex gap-2 text-base";
-			innerClass = "inline";
+			outerClass = "wbb:md:inline-flex wbb:gap-2 wbb:text-base";
+			innerClass = "wbb:inline";
 			break;
 		case "inline-stacked":
-			outerClass = "sm:inline-flex flex-col py-1 mr-4 text-base";
-			innerClass = "sm:text-base [&_span.colon]:hidden";
+			outerClass = "wbb:sm:inline-flex wbb:flex-col wbb:py-1 wbb:mr-4 wbb:text-base";
+			innerClass = "wbb:sm:text-base wbb:[&_span.colon]:hidden";
 			break;
 		case "stacked-inline":
-			outerClass = "flex gap-2 text-base";
-			innerClass = "inline";
+			outerClass = "wbb:flex wbb:gap-2 wbb:text-base";
+			innerClass = "wbb:inline";
 			break;
 		default:
-			outerClass = "flex gap-2 text-base flex-col";
+			outerClass = "wbb:flex wbb:gap-2 wbb:text-base wbb:flex-col";
 			innerClass = "";
 	}
-	outerClass += " mt-4 pe-4";
+	outerClass += " wbb:mt-4 wbb:pe-4";
 
 	return (
 		<div
-			className={`wb-listing mb-4 flow-root ${
-				attributes.stylesResultsShadedBackground ? "wb-shaded p-4" : "border-b pb-2"
+			className={`wb-listing wbb:mb-4 wbb:flow-root ${
+				attributes.stylesResultsShadedBackground ? "wb-shaded wbb:p-4" : "wbb:border-b wbb:pb-2"
 			}`}
 			style={{
 				...(attributes.stylesResultsShadedBackground && attributes.stylesResultsShadedColour
@@ -56,7 +56,7 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 		>
 			{image}
 
-			<h2 className="!mt-0 text-2xl font-bold">
+			<h2 className="wbb:!mt-0 wbb:text-2xl wbb:font-bold">
 				<a>Title {index + 1}</a>
 			</h2>
 
@@ -65,15 +65,19 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 				const isSummary = field?.name === "post_summary";
 
 				return (
-					<div key={item} className={isSummary ? "mt-4 flex gap-2 pe-4 text-xl" : outerClass}>
+					<div key={item} className={isSummary ? "wbb:mt-4 wbb:flex wbb:gap-2 wbb:pe-4 wbb:text-xl" : outerClass}>
 						{!isSummary && !attributes.stylesHideLabels && (
-							<h3 className={`${innerClass} !my-0 text-base font-bold`}>
+							<h3 className={`${innerClass} wbb:!my-0 wbb:text-base wbb:font-bold`}>
 								{field?.label || item.replaceAll("_", " ")}
 								<span className="colon">:</span>
 							</h3>
 						)}
 
-						<div className={isSummary ? "inline" : `${innerClass} !my-0 before:content-['<'] after:content-['>']`}>
+						<div
+							className={
+								isSummary ? "wbb:inline" : `${innerClass} wbb:!my-0 wbb:before:content-['<'] wbb:after:content-['>']`
+							}
+						>
 							{field?.type === "taxonomy" && attributes.stylesTaxLinks ? (
 								<a href="#">{field?.label || item.replaceAll("_", " ")}</a>
 							) : (

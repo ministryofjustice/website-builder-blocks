@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(wbb);
 
 @theme {
 	--content: "./*.php" "./**/*.php" "./**/*.html" "./**/*.js";

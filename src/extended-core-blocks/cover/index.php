@@ -38,7 +38,7 @@ add_filter(
 				data-play-text='" .
 					esc_attr($play_button_text) .
 					"'
-				class='wp-element-button video-pause-button absolute bottom-4 left-4 z-10'
+				class='wp-element-button video-pause-button wbb:absolute wbb:bottom-4 wbb:left-4 wbb:z-10'
 				aria-controls='" .
 					esc_attr($video_id) .
 					"'

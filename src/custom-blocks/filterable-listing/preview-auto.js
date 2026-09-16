@@ -49,34 +49,35 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 
 	// Image position - using float left and float right here for simpler code (the php file has more comprehensive positioning)
 	const float = attributes.listingImagePosition;
-	let imagePosition = float == "left" ? "sm:float-left mr-[5px]" : float == "right" ? "sm:float-right ml-3" : "";
-	imagePosition += " mb-2";
-	var overarchingClass = "grid ";
-	var featuredImagePreviewClass = `${imagePosition} w-[125px] h-[125px] md:w-[152px] md:h-[152px]`;
+	let imagePosition =
+		float == "left" ? "wbb:sm:float-left wbb:mr-[5px]" : float == "right" ? "wbb:sm:float-right wbb:ml-3" : "";
+	imagePosition += " wbb:mb-2";
+	var overarchingClass = "wbb:grid ";
+	var featuredImagePreviewClass = `${imagePosition} wbb:w-[125px] wbb:h-[125px] wbb:md:w-[152px] wbb:md:h-[152px]`;
 	switch (attributes.stylesLayout) {
 		case "stacked":
-			overarchingClass += "grid-cols-1";
+			overarchingClass += "wbb:grid-cols-1";
 			break;
 		case "side-by-side-2-1":
-			overarchingClass += "grid-cols-1 md:grid-cols-2";
+			overarchingClass += "wbb:grid-cols-1 wbb:md:grid-cols-2";
 			break;
 		case "side-by-side": // 3-1
-			overarchingClass += "grid-cols-1 md:grid-cols-3";
-			featuredImagePreviewClass += " md:float-none";
+			overarchingClass += "wbb:grid-cols-1 wbb:md:grid-cols-3";
+			featuredImagePreviewClass += " wbb:md:float-none";
 			break;
 		case "side-by-side-4-1":
-			overarchingClass += "grid-cols-1 lg:grid-cols-4";
-			featuredImagePreviewClass = `${imagePosition} lg:float-none w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]`;
+			overarchingClass += "wbb:grid-cols-1 wbb:lg:grid-cols-4";
+			featuredImagePreviewClass = `${imagePosition} wbb:lg:float-none wbb:w-[125px] wbb:h-[125px] wbb:lg:w-[152px] wbb:lg:h-[152px]`;
 			break;
 		case "side-by-side-4-2":
-			overarchingClass += "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
-			featuredImagePreviewClass = `${imagePosition} lg:float-none w-[125px] h-[125px] sm:w-[100px] sm:h-[100px] lg:w-[152px] lg:h-[152px]`;
+			overarchingClass += "wbb:grid-cols-1 wbb:sm:grid-cols-2 wbb:lg:grid-cols-4";
+			featuredImagePreviewClass = `${imagePosition} wbb:lg:float-none wbb:w-[125px] wbb:h-[125px] wbb:sm:w-[100px] wbb:sm:h-[100px] wbb:lg:w-[152px] wbb:lg:h-[152px]`;
 			break;
 		default:
-			overarchingClass += "grid-cols-1 md:grid-cols-3 ";
+			overarchingClass += "wbb:grid-cols-1 wbb:md:grid-cols-3 ";
 	}
 
-	if (attributes.stylesResultsShadedBackground) overarchingClass += " gap-x-4";
+	if (attributes.stylesResultsShadedBackground) overarchingClass += " wbb:gap-x-4";
 
 	return (
 		<div className={overarchingClass}>
