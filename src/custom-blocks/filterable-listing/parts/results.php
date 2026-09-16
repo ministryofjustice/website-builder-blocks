@@ -16,7 +16,6 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 	$block_id = $listing_settings["blockID"];
 	$filters = $listing_settings["variant"] !== "auto-item-list";
 	$post_type_obj = get_post_type_object($listing_settings["postType"]);
-	$flex_cpt_name = $post_type_obj->labels->singular_name;
 	$flex_cpt_name_plural = $post_type_obj->labels->name;
 
 	$listing_query = wb_blocks_filterable_listing_block_get_listing_query(
@@ -37,14 +36,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 
 		$display_fields = wb_blocks_filterable_listing_block_get_display_fields($listing_settings["displayFields"]);
 
-		$item_count_text = "";
-		if ($listing_query->found_posts > 1 && $filters) {
-			$item_count_text = $listing_query->found_posts . " " . strtolower($flex_cpt_name_plural);
-		} elseif ($listing_query->found_posts == 1 && $filters) {
-			$item_count_text = "1 " . strtolower($flex_cpt_name);
-		}
-
-		$item_count_text = esc_html($item_count_text);
+		$item_count_text = wb_blocks_filterable_listing_count($listing_query, $listing_settings);
 		echo "
 			<div
 				style='$set_border_style'
@@ -486,4 +478,40 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 		<?php }
 }
 
-?>
+function wb_blocks_filterable_listing_count($custom_query, $listing_settings)
+{
+	$block_id = $custom_query->query["block_id"];
+	$param_name = "listing_{$block_id}_page";
+
+	$post_type_obj = get_post_type_object($listing_settings["postType"]);
+	$flex_cpt_name_singular = strtolower($post_type_obj->labels->singular_name);
+	$flex_cpt_name_plural = strtolower($post_type_obj->labels->name);
+
+	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
+	$current_page_number = max(1, $current_page_number);
+
+	$posts_per_page = $custom_query->get("posts_per_page"); // Posts requested per page
+	$current_count = count($custom_query->posts); // Posts on this page
+	$total_results = $custom_query->found_posts;
+	$current_results_range_start = $current_page_number * $posts_per_page - $posts_per_page + 1;
+	$current_results_range_end = $current_results_range_start + $current_count - 1;
+
+	if ($current_results_range_start === 1 && $current_results_range_end === $total_results) {
+		//All results displayed on this view, no pagination
+		if ($total_results === 1) {
+			return "1 $flex_cpt_name_singular";
+		}
+		return "$total_results $flex_cpt_name_plural";
+	}
+
+	if ($current_results_range_start === $total_results && $current_results_range_end === $total_results) {
+		return sprintf(__("Showing the last of %s $flex_cpt_name_plural", "wb_blocks"), $total_results);
+	}
+
+	return sprintf(
+		__("Showing %s to %s of %s $flex_cpt_name_plural", "wb_blocks"),
+		$current_results_range_start,
+		$current_results_range_end,
+		$total_results,
+	);
+}
