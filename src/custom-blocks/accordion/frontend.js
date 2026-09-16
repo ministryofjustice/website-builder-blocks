@@ -38,7 +38,7 @@ document.querySelectorAll(".wb-accordion").forEach(accordion => {
 });
 
 function setAccordionState(button, state) {
-	button.classList.remove("hidden");
+	button.classList.remove("wbb:hidden");
 	const openText = button.dataset.opentext || "Expand all sections";
 	const closeText = button.dataset.closetext || "Collapse all sections";
 	if (state == "open") {

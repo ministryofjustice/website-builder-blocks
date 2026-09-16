@@ -19,12 +19,12 @@ Block: Filterable Listing (Frontend styles)
 	border-radius: min(var(--site-radius), 2rem);
 }
 .wb-datepicker__dialog {
-	@apply absolute left-0 z-[10] w-auto min-w-[280px] p-5 outline outline-2 outline-offset-[-2px] transition-[background-color,outline-color] duration-200;
+	@apply wbb:absolute wbb:left-0 wbb:z-[10] wbb:w-auto wbb:min-w-[280px] wbb:p-5 wbb:outline wbb:outline-2 wbb:outline-offset-[-2px] wbb:transition-[background-color,outline-color] wbb:duration-200;
 
 	border-radius: min(var(--site-radius, 0), 25px);
 
 	//colours
-	@apply bg-[var(--colour-page-background,#fff)] text-[var(--colour-foreground,#0b0c0c)] dark:bg-[var(--colour-page-background,#111827)] dark:text-[var(--colour-foreground,#ffffff)];
+	@apply wbb:bg-[var(--colour-page-background,#fff)] wbb:text-[var(--colour-foreground,#0b0c0c)] wbb:dark:bg-[var(--colour-page-background,#111827)] wbb:dark:text-[var(--colour-foreground,#ffffff)];
 
 	&--open {
 		display: block;
@@ -32,18 +32,18 @@ Block: Filterable Listing (Frontend styles)
 }
 
 .wb-datepicker__dialog-header {
-	@apply relative mb-[10px] flex w-full items-center justify-center md:w-auto;
+	@apply wbb:relative wbb:mb-[10px] wbb:flex wbb:w-full wbb:items-center wbb:justify-center wbb:md:w-auto;
 }
 .wb-datepicker__dialog-navbuttons {
 	display: flex;
 	align-items: center;
 }
 .wb-datepicker__dialog-calendar {
-	@apply mb-5;
+	@apply wbb:mb-5;
 	border-collapse: collapse;
 }
 .wb-datepicker__button {
-	@apply m-0 h-[40px] w-[44px] border-0 bg-transparent p-0 text-sm leading-[1.14286] font-normal antialiased outline-2 outline-offset-[-2px] outline-transparent;
+	@apply wbb:m-0 wbb:h-[40px] wbb:w-[44px] wbb:border-0 wbb:bg-transparent wbb:p-0 wbb:text-sm wbb:leading-[1.14286] wbb:font-normal wbb:antialiased wbb:outline-2 wbb:outline-offset-[-2px] wbb:outline-transparent;
 	position: relative;
 }
 .wb-datepicker__wrapper {

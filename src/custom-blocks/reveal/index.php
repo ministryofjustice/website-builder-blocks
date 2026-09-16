@@ -50,7 +50,7 @@ function wb_blocks_render_callback_reveal_block($attributes, $content)
                     <?= esc_html($attribute_reveal_revealTitle) ?>
                 </a>
             </summary>
-            <div class="wb-details__text py-2 [&_p:first-child]:mt-0!">
+            <div class="wb-details__text wbb:py-2 wbb:[&_p:first-child]:mt-0!">
                 <?= wp_kses_post($content) ?>
             </div>
         </details>

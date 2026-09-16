@@ -46,26 +46,27 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 		),
 	};
 
-	var layoutClass = "grid grid-cols-1 sm:grid-cols-3 gap-4";
+	var layoutClass = "wbb:grid wbb:grid-cols-1 wbb:sm:grid-cols-3 wbb:gap-4";
 	//default, side-by-side - if converted from an auto-list, other values might be here
 	if (attributes.stylesLayout === "stacked") {
-		layoutClass = "wb-item-listing-is-stacked grid grid-cols-1 sm:grid-cols-1 gap-4";
+		layoutClass = "wb-item-listing-is-stacked wbb:grid wbb:grid-cols-1 wbb:sm:grid-cols-1 wbb:gap-4";
 		//wb-item-listing-is-stacked used to shew full day names if wide - see date-picker.js
 	}
 	const float = attributes.listingImagePosition;
-	let imagePosition = float == "left" ? "sm:float-left mr-[5px]" : float == "right" ? "sm:float-right ml-3" : "";
-	imagePosition += " mb-2";
-	const featuredImagePreviewClass = `${imagePosition} w-[125px] h-[125px] md:w-[152px] md:h-[152px]`;
+	let imagePosition =
+		float == "left" ? "wbb:sm:float-left wbb:mr-[5px]" : float == "right" ? "wbb:sm:float-right wbb:ml-3" : "";
+	imagePosition += " wbb:mb-2";
+	const featuredImagePreviewClass = `${imagePosition} wbb:w-[125px] wbb:h-[125px] wbb:md:w-[152px] wbb:md:h-[152px]`;
 
 	return (
 		<div className={`${attributes.className} wb-block-filterable-listing`}>
 			<div className={layoutClass}>
-				<div className="col-span-1 pr-[var(--prose-max-width-padding)]">
+				<div className="wbb:col-span-1 wbb:pr-[var(--prose-max-width-padding)]">
 					{attributes.listingSearchTextFilter && (
 						<>
 							<div>
-								<label className="mb-1 block font-medium">Search</label>
-								<input disabled className="w-full border px-3 py-2" type="search" />
+								<label className="wbb:mb-1 wbb:block wbb:font-medium">Search</label>
+								<input disabled className="wbb:w-full wbb:border wbb:px-3 wbb:py-2" type="search" />
 							</div>
 							<br />
 						</>
@@ -78,8 +79,8 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 								return (
 									<Fragment key={filter}>
 										<div>
-											<label className="mb-1 block font-medium">{label}</label>
-											<select disabled className="wb-blocks-filterable-listing-bloc-tax-filter w-full border px-3 py-2">
+											<label className="wbb:mb-1 wbb:block wbb:font-medium">{label}</label>
+											<select disabled className="wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2">
 												<option value="0">Select option</option>
 											</select>
 										</div>
@@ -90,14 +91,14 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 								return (
 									<Fragment key={filter}>
 										<div className="wb-datepicker">
-											<label className="mb-1 block font-medium">Date from</label>
-											<div className="mb-1 block font-medium">For example, 29/2/2024.</div>
+											<label className="wbb:mb-1 wbb:block wbb:font-medium">Date from</label>
+											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
-												<div className="flex">
-													<input disabled className="wb-js-datepicker-input w-full px-3 py-2" type="text" value="" />
+												<div className="wbb:flex">
+													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
 													<button
 														disabled
-														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle px-1"
+														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
 														type="button"
 													>
 														<svg
@@ -133,14 +134,14 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 													</button>
 												</div>
 											</div>
-											<label className="mb-1 block font-medium">Date to</label>
-											<div className="mb-1 block font-medium">For example, 29/2/2024.</div>
+											<label className="wbb:mb-1 wbb:block wbb:font-medium">Date to</label>
+											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
-												<div className="flex">
-													<input disabled className="wb-js-datepicker-input w-full px-3 py-2" type="text" value="" />
+												<div className="wbb:flex">
+													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
 													<button
 														disabled
-														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle px-1"
+														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
 														type="button"
 													>
 														<svg
@@ -183,9 +184,9 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 							}
 						})}
 				</div>
-				<div className="col-span-2">
+				<div className="wbb:col-span-2">
 					<div
-						className={`wb-listing mb-4 pb-2 ${attributes.stylesResultsShadedBackground ? "" : "border-b"}`}
+						className={`wb-listing wbb:mb-4 wbb:pb-2 ${attributes.stylesResultsShadedBackground ? "" : "wbb:border-b"}`}
 						style={{ borderColor: attributes.stylesResultsBorderColour }}
 					>
 						𝑥 items
@@ -201,11 +202,11 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 					))}
 				</div>
 			</div>
-			<div className="m-0 flex list-none items-center justify-center gap-4 p-0">
-				<div className="inline-block">{`Page 1 of  ⌈𝑥÷${attributes.listingItemsPerPage}⌉`}</div>
-				<div className="inline-block">
+			<div className="wbb:m-0 wbb:flex wbb:list-none wbb:items-center wbb:justify-center wbb:gap-4 wbb:p-0">
+				<div className="wbb:inline-block">{`Page 1 of  ⌈𝑥÷${attributes.listingItemsPerPage}⌉`}</div>
+				<div className="wbb:inline-block">
 					<a href="#">
-						<span className="inline-flex items-center gap-1">Next</span>
+						<span className="wbb:inline-flex wbb:items-center wbb:gap-1">Next</span>
 					</a>
 				</div>
 			</div>

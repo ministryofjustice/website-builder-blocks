@@ -21,7 +21,7 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 	?>
 
 	<!-- Lefthand column with filters and search -->
-	<div class="col-span-1 pr-[var(--prose-max-width-padding)]">
+	<div class="wbb:col-span-1 wbb:pr-[var(--prose-max-width-padding)]">
 	<form action="<?= esc_url($url) ?>" method="GET">
 <?php
 wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
@@ -49,7 +49,7 @@ foreach ($listing_settings["filters"] as $filter) {
 ?>
 
 		<div>
-			<button class="wp-element-button mr-1 px-4 py-2">
+			<button class="wp-element-button wbb:mr-1 wbb:px-4 wbb:py-2">
 				<?php _e("Search", "wb_blocks"); ?>
 			</button>
 			<a href="<?= esc_url(get_permalink()) ?>" class="">
@@ -70,13 +70,13 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
 			$block_id . "_listing_search",
 		); ?>
 		<div class="">
-			<label class="block font-medium mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
+			<label class="wbb:block wbb:font-medium wbb:mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
 				<?php _e("Search", "wb_blocks"); ?>
 			</label>
 			<input
 				id="listing-search-field-<?= esc_attr($block_id) ?>"
 				name="<?= esc_attr($block_id) ?>_listing_search"
-				class="w-full border px-3 py-2"
+				class="wbb:w-full wbb:border wbb:px-3 wbb:py-2"
 				value="<?= esc_attr($listing_search_text) ?>"
 				type="search"
 			/>
@@ -105,14 +105,14 @@ function wb_blocks_filterable_listing_block_date_filter($block_id, $filter_name,
 
 <div class="wb-datepicker" data-module="wb-date-picker">
 	<div class="">
-		<label class="block font-medium mb-1" for="<?php echo $from_date_name; ?>">
+		<label class="wbb:block wbb:font-medium wbb:mb-1" for="<?php echo $from_date_name; ?>">
 			<?php echo esc_html($from_date_label); ?>
 		</label>
-		<div id="<?php echo $from_date_name; ?>_hint" class="block font-medium mb-1">
+		<div id="<?php echo $from_date_name; ?>_hint" class="wbb:block wbb:font-medium wbb:mb-1">
 			For example, 13/2/2024.
 		</div>
-		<input 
-			class="w-full px-3 py-2 wb-js-datepicker-input"
+		<input
+			class="wbb:w-full wbb:px-3 wbb:py-2 wb-js-datepicker-input"
 			id="<?php echo $from_date_name; ?>" 
 			name="<?php echo esc_attr($block_id) . "_" . $from_date_name; ?>" 
 			type="text" 
@@ -125,14 +125,14 @@ function wb_blocks_filterable_listing_block_date_filter($block_id, $filter_name,
 <br/>
 <div class="wb-datepicker" data-module="wb-date-picker">
 	<div class="">
-		<label class="block font-medium mb-1" for="<?php echo $to_date_name; ?>">
+		<label class="wbb:block wbb:font-medium wbb:mb-1" for="<?php echo $to_date_name; ?>">
 			<?php echo esc_html($to_date_label); ?>
 		</label>
-		<div id="<?php echo $to_date_name; ?>_hint" class="block font-medium mb-1">
+		<div id="<?php echo $to_date_name; ?>_hint" class="wbb:block wbb:font-medium wbb:mb-1">
 			For example, 29/2/2024.
 		</div>
-		<input 
-			class="w-full px-3 py-2 wb-js-datepicker-input"
+		<input
+			class="wbb:w-full wbb:px-3 wbb:py-2 wb-js-datepicker-input"
 			id="<?php echo $to_date_name; ?>" 
 			name="<?php echo esc_attr($block_id) . "_" . $to_date_name; ?>" 
 			type="text" 
@@ -190,7 +190,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 	$dropdown_args = [
 		"name" => $block_id . "_" . $taxonomy->query_var,
 		"id" => $parent_class_name,
-		"class" => "wb-blocks-filterable-listing-bloc-tax-filter w-full border px-3 py-2",
+		"class" => "wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2",
 		"taxonomy" => $taxonomy_name,
 		"show_option_all" => "Select option",
 		"depth" => 1,
@@ -211,7 +211,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 		$filter_label = "Topic";
 	}
 
-	echo '<label class="block font-medium mb-1" for="' .
+	echo '<label class="wbb:block wbb:font-medium wbb:mb-1" for="' .
 		esc_attr($parent_class_name) .
 		'">' .
 		esc_html($filter_label) .
@@ -234,7 +234,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 
 	if ($has_subtopics) {
 		$disabled_subtopics = 'disabled="disabled"';
-		$subtopic_wrapper_classes = "hidden";
+		$subtopic_wrapper_classes = "wbb:hidden";
 
 		$sub_topics = [];
 
@@ -272,7 +272,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 			<br/><br/>
 			<div id='$wrapper_id' class='$subtopic_wrapper_classes'>
 				<label
-					class='block font-medium mb-1'
+					class='wbb:block wbb:font-medium wbb:mb-1'
 					for='$select_id'
 				>
 					$subfilter_label
@@ -280,7 +280,7 @@ function wb_blocks_filterable_listing_block_taxonomy_filter(
 				<select
 					name='$select_name'
 					id='$select_id'
-					class='w-full border px-3 py-2'
+					class='wbb:w-full wbb:border wbb:px-3 wbb:py-2'
 					$disabled_subtopics
 				>
 					<option
