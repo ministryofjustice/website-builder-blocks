@@ -52,7 +52,7 @@ function wb_blocks_render_callback_filterable_listing_block($attributes, $conten
 		$listing_settings["styles"]["stylesFieldLayout"] = $attributes["stylesFieldLayout"] ?? "stacked-inline";
 		$listing_settings["styles"]["stylesTaxLinks"] = $attributes["stylesTaxLinks"] ?? false;
 		$listing_settings["styles"]["stylesHideLabels"] = $attributes["stylesHideLabels"] ?? false;
-
+		$listing_settings["styles"]["arrows"] = $attributes["stylesArrows"] ?? [0,"",""];
 		$active_filters = [];
 		$active_filters = wb_blocks_filterable_listing_validate_active_filters($listing_settings);
 

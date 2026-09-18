@@ -442,14 +442,25 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 
 	$param_name = "listing_{$block_id}_page";
 
+	$arrow_style = $custom_query->query["styles"]["arrows"];
+	$class_prev = $class_next = $mask_prev = $mask_next = "";
+	if ($arrow_style[0] > 0) {
+		$arrow_prev = $arrow_style[1];
+		$arrow_next = $arrow_style[2];
+		$mask_prev = "style='--left-icon:url(\"$arrow_prev\"')";
+		$mask_next = "style='--right-icon:url(\"$arrow_next\"')";
+		$class_prev = "wbb-page-nav--prev";
+		$class_next = "wbb-page-nav--next";
+	}
+
 	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
 	$current_page_number = max(1, $current_page_number);
 
 	$next_page_number = $current_page_number + 1;
 	$prev_page_number = $current_page_number - 1;
 
-	$next_page_text = __('Next<span class="wbb:hidden wbb:sm:inline"> page</span> ⮕', "wb_blocks");
-	$prev_page_text = __('⬅ Previous<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
+	$next_page_text = __('Next<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
+	$prev_page_text = __('Previous<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
 
 	$next_url = add_query_arg($param_name, $next_page_number);
 	$prev_url = add_query_arg($param_name, $prev_page_number);
@@ -463,8 +474,11 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 			<ul class="wbb:flex wbb:gap-4 wbb:list-none wbb:py-1.5 wbb:px-0 wbb:m-0">
 			<?php if ($current_page_number > "1") { ?>
 				<li>
-					<a href='<?php echo esc_url($prev_url); ?>'>
-						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:pe-3 wbb:py-1.5'>
+					<a
+						class="wbb-page-nav <?php echo $class_prev;?>"
+						<?php echo $mask_prev;?>
+						href='<?php echo esc_url($prev_url); ?>'
+					><span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:pe-3 wbb:py-1.5'>
 							<?php echo $prev_page_text; ?>
 						</span>
 					</a>
@@ -475,11 +489,14 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 				</li>
 			<?php if ($current_page_number < $max_pages) { ?>
 				<li>
-					<a href='<?php echo esc_url($next_url); ?>'>
+					<a
+						class="wbb-page-nav <?php echo $class_next;?>"
+						<?php echo $mask_next;?>
+						href='<?php echo esc_url($next_url); ?>'
+					>
 						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:ps-3 wbb:py-1.5'>
 							<?php echo $next_page_text; ?>
-						</span>
-					</a>
+						</span></a>
 				</li>
 			<?php } ?>
 			</ul>
