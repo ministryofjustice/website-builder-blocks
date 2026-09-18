@@ -319,6 +319,8 @@ function wb_blocks_filterable_listing_block_get_listing_query($block_id, $listin
 		$listing_args["order"] = "DESC";
 	}
 
+	$listing_args["styles"] = $listing_settings["styles"];
+
 	return new WP_Query($listing_args);
 }
 

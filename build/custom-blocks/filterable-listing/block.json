@@ -84,6 +84,14 @@
     "stylesResultsBorderColour": {
       "type": "string"
     },
+    "stylesArrows": {
+      "type": "array",
+      "default": [
+        0,
+        "",
+        ""
+      ]
+    },
     "variant": {
       "type": "string",
       "default": "default"
