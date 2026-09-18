@@ -64,3 +64,26 @@ Block: Filterable Listing (Frontend styles)
 		}
 	}
 }
+
+.wbb-page-nav--prev:before {
+	content: "";
+	margin-right: 6px;
+	mask-image: var(--left-icon);
+}
+.wbb-page-nav--next:after {
+	content: "";
+	margin-left: 6px;
+	mask-image: var(--right-icon);
+}
+.wbb-page-nav:after,
+.wbb-page-nav:before{
+	background-color: currentColor;
+	width: 1.25em;
+	height: 1.25em;
+	position: relative;
+	top: 5px;
+	display: inline-block;
+	mask-size: contain;
+	mask-position: center;
+	mask-repeat: no-repeat;
+}
