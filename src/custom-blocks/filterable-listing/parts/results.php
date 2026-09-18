@@ -470,7 +470,7 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 				</li>
 			<?php } ?>
 				<li class="wbb:ps-3 wbb:pe-3 wbb:py-1.5 wbb:first:ps-0">
-					<?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
+					<?php printf(__("Page <b>%s</b> of <b>%s</b>", "wb_blocks"), $current_page_number, $max_pages); ?>
 				</li>
 			<?php if ($current_page_number < $max_pages) { ?>
 				<li>
