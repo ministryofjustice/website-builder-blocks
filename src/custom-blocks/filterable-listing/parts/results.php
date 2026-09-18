@@ -64,11 +64,12 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$thumb_id = get_post_thumbnail_id(get_the_ID());
    	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
+	$item_heading_text_size = $filters ? "2xl" : "lg"
    	?>
 			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
-					<h2 class="wbb:font-bold wbb:text-2xl">
+					<h2 class="wbb:font-bold wbb:text-<?php echo $item_heading_text_size; ?>">
 						<a href="<?php echo esc_url(get_permalink()); ?>">
 							<?php echo esc_html(get_the_title()); ?>
 						</a>
@@ -447,8 +448,8 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 	$next_page_number = $current_page_number + 1;
 	$prev_page_number = $current_page_number - 1;
 
-	$next_page_text = __('Next<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
-	$prev_page_text = __('Previous<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
+	$next_page_text = __('Next<span class="wbb:hidden wbb:sm:inline"> page</span> ⮕', "wb_blocks");
+	$prev_page_text = __('⬅ Previous<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
 
 	$next_url = add_query_arg($param_name, $next_page_number);
 	$prev_url = add_query_arg($param_name, $prev_page_number);
