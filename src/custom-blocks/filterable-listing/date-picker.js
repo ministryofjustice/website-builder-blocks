@@ -105,7 +105,7 @@ DatePicker.prototype.initControls = function () {
 	const $componentWrapper = document.createElement("div");
 	const $inputWrapper = document.createElement("div");
 	$componentWrapper.classList.add("wb-datepicker__wrapper");
-	$inputWrapper.classList.add("flex");
+	$inputWrapper.classList.add("wbb:flex");
 
 	this.$input.parentNode.insertBefore($componentWrapper, this.$input);
 	$componentWrapper.appendChild($inputWrapper);
@@ -194,7 +194,7 @@ DatePicker.prototype.createCalendar = function () {
 			// Tailwind overrides non-focus styling and sizing associated with this class
 			$dateButton.setAttribute(
 				"class",
-				"wp-element-button text-left w-9 !py-0 !px-2 !rounded-none not-focus:!bg-transparent not-focus:!text-[var(--colour-foreground,#0b0c0c)] dark:not-focus:!text-[var(--colour-foreground,#ffffff)]",
+				"wp-element-button wbb:text-left wbb:w-9 wbb:!py-0 wbb:!px-2 wbb:!rounded-none wbb:not-focus:!bg-transparent wbb:not-focus:!text-[var(--colour-foreground,#0b0c0c)] wbb:dark:not-focus:!text-[var(--colour-foreground,#ffffff)]",
 			);
 			$row.appendChild($cell);
 
@@ -207,8 +207,8 @@ DatePicker.prototype.createCalendar = function () {
 };
 
 DatePicker.prototype.toggleTemplate = function () {
-	return `<button class="wp-element-button px-1 wb-datepicker__toggle wb-js-datepicker-toggle" type="button" aria-haspopup="dialog" aria-controls="${this.id}" aria-expanded="false">
-            <span class="sr-only">Choose date</span>
+	return `<button class="wp-element-button wbb:px-1 wb-datepicker__toggle wb-js-datepicker-toggle" type="button" aria-haspopup="dialog" aria-controls="${this.id}" aria-expanded="false">
+            <span class="wbb:sr-only">Choose date</span>
             <svg width="32" height="24" focusable="false" class="wb-datepicker-icon" aria-hidden="true" role="img" viewBox="0 0 22 22">
               <path
                 fill="currentColor"
@@ -239,34 +239,34 @@ DatePicker.prototype.toggleTemplate = function () {
 DatePicker.prototype.dialogTemplate = function (titleId) {
 	return `<div class="wb-datepicker__dialog-header">
             <div class="wb-datepicker__dialog-navbuttons">
-              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-prev-year !p-0 !rounded-none not-focus:!bg-transparent not-focus:!text-[var(--colour-foreground,#0b0c0c)] dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
-                <span class="sr-only">Previous year</span>
+              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-prev-year wbb:!p-0 wbb:!rounded-none wbb:not-focus:!bg-transparent wbb:not-focus:!text-[var(--colour-foreground,#0b0c0c)] wbb:dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
+                <span class="wbb:sr-only">Previous year</span>
                 <svg width="44" height="40" viewBox="0 0 44 40" fill="none" fill="none" focusable="false" aria-hidden="true" role="img">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M23.1643 20L28.9572 14.2071L27.5429 12.7929L20.3358 20L27.5429 27.2071L28.9572 25.7929L23.1643 20Z" fill="currentColor"/>
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M17.1643 20L22.9572 14.2071L21.5429 12.7929L14.3358 20L21.5429 27.2071L22.9572 25.7929L17.1643 20Z" fill="currentColor"/>
                 </svg>
               </button>
 
-              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-prev-month !p-0 !rounded-none not-focus:!bg-transparent not-focus:!text-[var(--colour-foreground,#0b0c0c)] dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
-                <span class="sr-only">Previous month</span>
+              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-prev-month wbb:!p-0 wbb:!rounded-none wbb:not-focus:!bg-transparent wbb:not-focus:!text-[var(--colour-foreground,#0b0c0c)] wbb:dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
+                <span class="wbb:sr-only">Previous month</span>
                 <svg width="44" height="40" viewBox="0 0 44 40" fill="none" focusable="false" aria-hidden="true" role="img">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M20.5729 20L25.7865 14.2071L24.5137 12.7929L18.0273 20L24.5137 27.2071L25.7865 25.7929L20.5729 20Z" fill="currentColor"/>
                 </svg>
               </button>
             </div>
 
-            <h2 id="${titleId}" class="wb-datepicker__dialog-title wb-js-datepicker-month-year text-center px-[3px] w-[80px]" aria-live="polite">June 2020</h2>
+            <h2 id="${titleId}" class="wb-datepicker__dialog-title wb-js-datepicker-month-year wbb:text-center wbb:px-[3px] wbb:w-[80px]" aria-live="polite">June 2020</h2>
 
             <div class="wb-datepicker__dialog-navbuttons">
-              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-next-month !p-0 !rounded-none not-focus:!bg-transparent not-focus:!text-[var(--colour-foreground,#0b0c0c)] dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
-                <span class="sr-only">Next month</span>
+              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-next-month wbb:!p-0 wbb:!rounded-none wbb:not-focus:!bg-transparent wbb:not-focus:!text-[var(--colour-foreground,#0b0c0c)] wbb:dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
+                <span class="wbb:sr-only">Next month</span>
                 <svg width="44" height="40" viewBox="0 0 44 40" fill="none"  focusable="false" aria-hidden="true" role="img">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M23.4271 20L18.2135 14.2071L19.4863 12.7929L25.9727 20L19.4863 27.2071L18.2135 25.7929L23.4271 20Z" fill="currentColor"/>
                 </svg>
               </button>
 
-              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-next-year !p-0 !rounded-none not-focus:!bg-transparent not-focus:!text-[var(--colour-foreground,#0b0c0c)] dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
-                <span class="sr-only">Next year</span>
+              <button class="wp-element-button wb-datepicker__button wb-js-datepicker-next-year wbb:!p-0 wbb:!rounded-none wbb:not-focus:!bg-transparent wbb:not-focus:!text-[var(--colour-foreground,#0b0c0c)] wbb:dark:not-focus:!text-[var(--colour-foreground,#ffffff)]">
+                <span class="wbb:sr-only">Next year</span>
                 <svg width="44" height="40" viewBox="0 0 44 40" fill="none" fill="none" focusable="false" aria-hidden="true" role="img">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M20.8357 20L15.0428 14.2071L16.4571 12.7929L23.6642 20L16.4571 27.2071L15.0428 25.7929L20.8357 20Z" fill="currentColor"/>
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M26.8357 20L21.0428 14.2071L22.4571 12.7929L29.6642 20L22.4571 27.2071L21.0428 25.7929L26.8357 20Z" fill="currentColor"/>
@@ -275,25 +275,25 @@ DatePicker.prototype.dialogTemplate = function (titleId) {
             </div>
           </div>
 
-          <table class="wb-datepicker__calendar wb-js-datepicker-grid mx-auto md:relative md:right-2 w-full md:w-[calc(100%-0.5rem)]" role="grid" aria-labelledby="${titleId}">
+          <table class="wb-datepicker__calendar wb-js-datepicker-grid wbb:mx-auto wbb:md:relative wbb:md:right-2 wbb:w-full wbb:md:w-[calc(100%-0.5rem)]" role="grid" aria-labelledby="${titleId}">
             <thead>
-              <tr class="relative left-2"></tr>
+              <tr class="wbb:relative wbb:left-2"></tr>
             </thead>
 
             <tbody></tbody>
           </table>
 
-          <div class="flex flex-column md:flex-row gap-3">
-            <button type="button" class="wp-element-button wb-js-datepicker-okay w-full md:w-auto">Select</button>
-            <button type="button" class="wp-element-button wb-js-datepicker-cancel w-full md:w-auto">Close</button>
+          <div class="wbb:flex flex-column wbb:md:flex-row wbb:gap-3">
+            <button type="button" class="wp-element-button wb-js-datepicker-okay wbb:w-full wbb:md:w-auto">Select</button>
+            <button type="button" class="wp-element-button wb-js-datepicker-cancel wbb:w-full wbb:md:w-auto">Close</button>
           </div>`;
 };
 
 DatePicker.prototype.createCalendarHeaders = function () {
 	this.dayLabels.forEach(day => {
-		const hiddenDayPartClass = "sr-only md:[.wb-item-listing-is-stacked_&]:not-sr-only"; //For hiding the bit of the day name which is abbreviated out, see the dayLabelsAbbr array.
+		const hiddenDayPartClass = "wbb:sr-only wbb:md:[.wb-item-listing-is-stacked_&]:not-sr-only"; //For hiding the bit of the day name which is abbreviated out, see the dayLabelsAbbr array.
 		const dayString = `<span class="${hiddenDayPartClass}">${this.dayLabelsAbbr[day][0]}</span>${this.dayLabelsAbbr[day][1]}<span class="${hiddenDayPartClass}">${this.dayLabelsAbbr[day][2]}</span>`;
-		const html = `<th class="w-[calc(100%/7)]" scope="col">${dayString}</th>`;
+		const html = `<th class="wbb:w-[calc(100%/7)]" scope="col">${dayString}</th>`;
 		const $headerRow = this.$dialog.querySelector("thead > tr");
 		$headerRow.insertAdjacentHTML("beforeend", html);
 	});
@@ -881,7 +881,7 @@ DSCalendarDay.prototype.update = function (day, hidden, disabled) {
 	}
 	this.button.setAttribute("data-testid", this.picker.formattedDateFromDate(day));
 
-	this.button.innerHTML = `<span class="sr-only">${accessibleLabel}</span><span aria-hidden="true">${label}</span>`;
+	this.button.innerHTML = `<span class="wbb:sr-only">${accessibleLabel}</span><span aria-hidden="true">${label}</span>`;
 	this.date = new Date(day);
 };
 

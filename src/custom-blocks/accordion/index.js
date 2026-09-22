@@ -28,10 +28,10 @@ import { Fragment, useEffect } from "@wordpress/element";
 import metadata from "./block.json";
 import sectionMetadata from "../accordion-section/block.json";
 
-const tailwind_open_all_basic = "cursor-pointer inline-flex items-center mb-2 !font-bold";
+const tailwind_open_all_basic = "wbb:cursor-pointer wbb:inline-flex wbb:items-center wbb:mb-2 wbb:!font-bold";
 const tailwind_open_all_chevron =
-	"pr-1 after:content-[''] after:inline-block after:w-1.5 after:h-1.5 after:ml-2 after:border-r-2 after:border-b-2 after:border-current after:rotate-[45deg] after:transition-transform after:duration-200 data-[state=open]:after:rotate-[-135deg]";
-const tailwind_borders = "first-of-type:border-t border-b";
+	"wbb:pr-1 wbb:after:content-[''] wbb:after:inline-block wbb:after:w-1.5 wbb:after:h-1.5 wbb:after:ml-2 wbb:after:border-r-2 wbb:after:border-b-2 wbb:after:border-current wbb:after:rotate-[45deg] wbb:after:transition-transform wbb:after:duration-200 wbb:data-[state=open]:after:rotate-[-135deg]";
+const tailwind_borders = "wbb:first-of-type:border-t wbb:border-b";
 
 /**
  * Block: Accordion
@@ -227,7 +227,7 @@ registerBlockType(sectionMetadata.name, {
 				<div {...blockProps}>
 					<RichText
 						tagName={`h${headingLevel}`}
-						className={`wp-block-heading inline-block has-${headingFontSize}-font-size !my-4`}
+						className={`wp-block-heading wbb:inline-block has-${headingFontSize}-font-size wbb:!my-4`}
 						value={sectionTitle}
 						placeholder="Add accordion section title…"
 						onChange={onChangeAccordionTitle}

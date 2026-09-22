@@ -48,7 +48,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 		echo "
 			<div
 				style='$set_border_style'
-				class='wb-listing mb-4 pb-2 $border_class'>
+				class='wb-listing wbb:mb-4 wbb:pb-2 $border_class'>
 				$item_count_text
 			</div>
 		";
@@ -68,7 +68,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
-					<h2 class="font-bold text-2xl">
+					<h2 class="wbb:font-bold wbb:text-2xl">
 						<a href="<?php echo esc_url(get_permalink()); ?>">
 							<?php echo esc_html(get_the_title()); ?>
 						</a>
@@ -88,14 +88,14 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
  // If there are no results, we add a placeholder to say so
  // The placeholder changes depending on the variant of the block
 	} elseif ($filters) { ?>
-		<h2 class="font-bold text-2xl">
+		<h2 class="wbb:font-bold wbb:text-2xl">
 			<?php printf(esc_html__("Your search matched no %s.", "wb_blocks"), strtolower($flex_cpt_name_plural)); ?>
 		</h2>
 		<p class="">
 			<?php _e("Try searching again with expanded criteria.", "wb_blocks"); ?>
 		</p>
 		<?php } else { ?>
-		<p class="font-bold text-2xl">
+		<p class="wbb:font-bold wbb:text-2xl">
 			<?php _e($flex_cpt_name_plural . " shall appear here.", "wb_blocks"); ?>
 		</p>
 <?php }
@@ -130,38 +130,38 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	// Overarching top class (layout of results and filters)
 	// Image size class - how the image resizes to different screen widths in each layout
 	$overarching_class = "";
-	$image_size_class = "w-[125px] h-[125px] md:w-[152px] md:h-[152px]";
+	$image_size_class = "wbb:w-[125px] wbb:h-[125px] wbb:md:w-[152px] wbb:md:h-[152px]";
 	if (!$filters) {
-		$overarching_class .= "grid ";
+		$overarching_class .= "wbb:grid ";
 		switch ($layout) {
 			case "stacked":
-				$overarching_class .= "grid-cols-1";
+				$overarching_class .= "wbb:grid-cols-1";
 				break;
 			case "side-by-side-2-1":
-				$overarching_class .= "grid-cols-1 md:grid-cols-2";
+				$overarching_class .= "wbb:grid-cols-1 wbb:md:grid-cols-2";
 				break;
 			case "side-by-side": // 3-1
-				$overarching_class .= "grid-cols-1 md:grid-cols-3";
+				$overarching_class .= "wbb:grid-cols-1 wbb:md:grid-cols-3";
 				break;
 			case "side-by-side-4-1":
-				$overarching_class .= "grid-cols-1 lg:grid-cols-4";
+				$overarching_class .= "wbb:grid-cols-1 wbb:lg:grid-cols-4";
 				break;
 			case "side-by-side-4-2":
-				$image_size_class = "w-[125px] h-[125px] lg:w-[152px] lg:h-[152px]";
-				$overarching_class .= "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+				$image_size_class = "wbb:w-[125px] wbb:h-[125px] wbb:lg:w-[152px] wbb:lg:h-[152px]";
+				$overarching_class .= "wbb:grid-cols-1 wbb:sm:grid-cols-2 wbb:lg:grid-cols-4";
 				break;
 			default:
 				// 3-1
-				$overarching_class .= "grid-cols-1 md:grid-cols-3";
+				$overarching_class .= "wbb:grid-cols-1 wbb:md:grid-cols-3";
 		}
 	}
 
 	// This section sets different left and right classes for each layout
 	// Which one to use is set below
-	$image_left_class = "sm:mr-3"; // The image is to the left
-	$image_left_wrap_class = "sm:grid-cols-2 sm:grid-rows-1 sm:grid-cols-[auto_1fr] ";
-	$image_right_class = "sm:float-right sm:ml-[5px] "; // The image is floated right
-	$image_right_wrap_class = "sm:flow-root";
+	$image_left_class = "wbb:sm:mr-3"; // The image is to the left
+	$image_left_wrap_class = "wbb:sm:grid-cols-2 wbb:sm:grid-rows-1 wbb:sm:grid-cols-[auto_1fr] ";
+	$image_right_class = "wbb:sm:float-right wbb:sm:ml-[5px] "; // The image is floated right
+	$image_right_wrap_class = "wbb:sm:flow-root";
 	if (!$filters) {
 		switch ($layout) {
 			case "stacked":
@@ -169,22 +169,22 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 				break;
 			case "side-by-side-2-1":
 				// use bigger breakpoint as there is less space
-				$image_left_class = "md:mr-3"; // The image is to the left
-				$image_left_wrap_class = "md:grid-cols-2 md:grid-rows-1 md:grid-cols-[auto_1fr] ";
-				$image_right_class = "md:float-right md:ml-[5px] "; // The image is floated right
-				$image_right_wrap_class = "md:flow-root";
+				$image_left_class = "wbb:md:mr-3"; // The image is to the left
+				$image_left_wrap_class = "wbb:md:grid-cols-2 wbb:md:grid-rows-1 wbb:md:grid-cols-[auto_1fr] ";
+				$image_right_class = "wbb:md:float-right wbb:md:ml-[5px] "; // The image is floated right
+				$image_right_wrap_class = "wbb:md:flow-root";
 				break;
 			case "side-by-side": // 3-1
 				// only float between sm and md - add additional classes to string
-				$image_left_class .= " md:mr-0"; // The image is to the left
-				$image_left_wrap_class .= " md:block ";
-				$image_right_class .= " md:float-none md:ml-0 "; // The image is floated right
+				$image_left_class .= " wbb:md:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " wbb:md:block ";
+				$image_right_class .= " wbb:md:float-none wbb:md:ml-0 "; // The image is floated right
 				break;
 			case "side-by-side-4-1":
 				// only float between sm and lg - add additional classes to string
-				$image_left_class .= " lg:mr-0"; // The image is to the left
-				$image_left_wrap_class .= " lg:block ";
-				$image_right_class .= " lg:float-none lg:ml-0 "; // The image is floated right
+				$image_left_class .= " wbb:lg:mr-0"; // The image is to the left
+				$image_left_wrap_class .= " wbb:lg:block ";
+				$image_right_class .= " wbb:lg:float-none wbb:lg:ml-0 "; // The image is floated right
 				break;
 			case "side-by-side-4-2":
 				// never float
@@ -198,7 +198,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	// We read the image position and select which of the above classes should be
 	// used for the image_position_class and image_layout_class
 	$image_position = $listing_settings["styles"]["imagePosition"];
-	$list_item_image_layout_class = "grid "; // default - mobile and image position = top
+	$list_item_image_layout_class = "wbb:grid "; // default - mobile and image position = top
 	switch ($image_position) {
 		case "left":
 			$image_position_class = $image_left_class;
@@ -213,9 +213,9 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	}
 
 	// Adds common Tailwind to the featured image.
-	$featured_image_class = "wb-listing-thumbnail bg-no-repeat bg-center mb-[2px] border $image_position_class $image_size_class";
+	$featured_image_class = "wb-listing-thumbnail wbb:bg-no-repeat wbb:bg-center wbb:mb-[2px] wbb:border $image_position_class $image_size_class";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] == true) {
-		$overarching_class .= " gap-x-4";
+		$overarching_class .= " wbb:gap-x-4";
 	}
 
 	// set border style - inline style for border colour
@@ -223,7 +223,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	$set_border_style = "";
 	$border_class = "";
 	if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
-		$border_class = "border-b";
+		$border_class = "wbb:border-b";
 		if (!empty($listing_settings["styles"]["stylesResultsBorderColour"])) {
 			$set_border_style =
 				"border-color:" . esc_attr($listing_settings["styles"]["stylesResultsBorderColour"]) . ";";
@@ -241,11 +241,11 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	}
 
 	// List item classes - classes for each individual item in the list
-	$list_item_class = "wb-listing mb-4 $list_item_image_layout_class ";
+	$list_item_class = "wb-listing wbb:mb-4 $list_item_image_layout_class ";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] === true) {
-		$list_item_class .= "wb-shaded p-4";
+		$list_item_class .= "wb-shaded wbb:p-4";
 	} else {
-		$list_item_class .= $border_class . " pb-2";
+		$list_item_class .= $border_class . " wbb:pb-2";
 	}
 	$details_position_class = "";
 	$class_array = [
@@ -266,24 +266,24 @@ function wb_blocks_filterable_listing_field_display_classes($listing_settings)
 	$field_layout = $listing_settings["styles"]["stylesFieldLayout"];
 	switch ($field_layout) {
 		case "inline":
-			$outer_class = "md:inline-flex gap-2 ";
-			$inner_class = "inline";
+			$outer_class = "wbb:md:inline-flex wbb:gap-2 ";
+			$inner_class = "wbb:inline";
 			break;
 		case "inline-stacked":
-			$outer_class = "sm:inline-flex flex-col py-1 mr-4";
-			$inner_class = "sm:text-base [&_span.colon]:hidden";
+			$outer_class = "wbb:sm:inline-flex wbb:flex-col wbb:py-1 wbb:mr-4";
+			$inner_class = "wbb:sm:text-base wbb:[&_span.colon]:hidden";
 			break;
 		case "stacked-inline":
-			$outer_class = "flex gap-2";
-			$inner_class = "inline";
+			$outer_class = "wbb:flex wbb:gap-2";
+			$inner_class = "wbb:inline";
 			break;
 		default:
-			$outer_class = "flex gap-2 flex-col";
+			$outer_class = "wbb:flex wbb:gap-2 wbb:flex-col";
 			$inner_class = "";
 	}
 	$label_class = "";
 	if ($listing_settings["styles"]["stylesHideLabels"]) {
-		$label_class = " sr-only";
+		$label_class = " wbb:sr-only";
 	}
 
 	// $tax_joiner joins the values in the array together, (if it is <br />, they will be stacked)
@@ -369,15 +369,15 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 		// Summary has a few different classes as it never has its own label
 		// so we override the classes set in the function with these
 		if ($field_name == "post_summary") {
-			$outer_class = "flex gap-2";
-			$inner_class = "inline";
+			$outer_class = "wbb:flex wbb:gap-2";
+			$inner_class = "wbb:inline";
 		}
 
 		$field_label_html = "";
 		if (!empty($field_label) && $field_name != "post_summary") {
 			$field_label_html =
 				"
-				<h3 class='$inner_class $label_class font-bold'>
+				<h3 class='$inner_class $label_class wbb:font-bold'>
 					" .
 				esc_html(__($field_label, "wb_blocks")) .
 				"<span class='colon'>:</span>
@@ -386,7 +386,7 @@ function wb_blocks_filterable_listing_item_details($display_fields, $listing_set
 		}
 
 		echo "
-			<div class='$outer_class mt-4 pe-4'>
+			<div class='$outer_class wbb:mt-4 wbb:pe-4'>
 				$field_label_html
 				<div class='$inner_class'>
 					" .
@@ -447,8 +447,8 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 	$next_page_number = $current_page_number + 1;
 	$prev_page_number = $current_page_number - 1;
 
-	$next_page_text = __('Next<span class="hidden sm:inline"> page</span>', "wb_blocks");
-	$prev_page_text = __('Previous<span class="hidden sm:inline"> page</span>', "wb_blocks");
+	$next_page_text = __('Next<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
+	$prev_page_text = __('Previous<span class="wbb:hidden wbb:sm:inline"> page</span>', "wb_blocks");
 
 	$next_url = add_query_arg($param_name, $next_page_number);
 	$prev_url = add_query_arg($param_name, $prev_page_number);
@@ -459,23 +459,23 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 
 	if ($max_pages > 1) { ?>
 		<nav class="" aria-label="pagination">
-			<ul class="flex gap-4 list-none py-1.5 px-0 m-0">
+			<ul class="wbb:flex wbb:gap-4 wbb:list-none wbb:py-1.5 wbb:px-0 wbb:m-0">
 			<?php if ($current_page_number > "1") { ?>
 				<li>
 					<a href='<?php echo esc_url($prev_url); ?>'>
-						<span class='inline-flex items-center gap-1 font-medium pe-3 py-1.5'>
+						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:pe-3 wbb:py-1.5'>
 							<?php echo $prev_page_text; ?>
 						</span>
 					</a>
 				</li>
 			<?php } ?>
-				<li class="ps-3 pe-3 py-1.5 first:ps-0">
+				<li class="wbb:ps-3 wbb:pe-3 wbb:py-1.5 wbb:first:ps-0">
 					<?php printf(__("Page %s of %s", "wb_blocks"), $current_page_number, $max_pages); ?>
 				</li>
 			<?php if ($current_page_number < $max_pages) { ?>
 				<li>
 					<a href='<?php echo esc_url($next_url); ?>'>
-						<span class='inline-flex items-center gap-1 font-medium ps-3 py-1.5'>
+						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:ps-3 wbb:py-1.5'>
 							<?php echo $next_page_text; ?>
 						</span>
 					</a>
