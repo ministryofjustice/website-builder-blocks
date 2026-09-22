@@ -64,7 +64,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$thumb_id = get_post_thumbnail_id(get_the_ID());
    	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
-	$item_heading_text_size = $filters ? "2xl" : "lg"
+	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
 			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php echo $image_html; ?>
@@ -442,15 +442,19 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 
 	$param_name = "listing_{$block_id}_page";
 
-	$arrow_style = $custom_query->query["styles"]["arrows"];
+	$arrow_style = $custom_query->query["styles"]["arrows"] ?? [0, "", ""];
 	$class_prev = $class_next = $mask_prev = $mask_next = "";
-	if ($arrow_style[0] > 0) {
-		$arrow_prev = $arrow_style[1];
-		$arrow_next = $arrow_style[2];
-		$mask_prev = "style='--left-icon:url(\"$arrow_prev\"')";
-		$mask_next = "style='--right-icon:url(\"$arrow_next\"')";
-		$class_prev = "wbb-page-nav--prev";
-		$class_next = "wbb-page-nav--next";
+	if (is_array($arrow_style) && $arrow_style[0] > 0) {
+		$arrow_prev = esc_url($arrow_style[1] ?? "");
+		$arrow_next = esc_url($arrow_style[2] ?? "");
+		if ($arrow_prev) {
+			$mask_prev = "style='--left-icon:url(\"$arrow_prev\")'";
+			$class_prev = "wbb-page-nav--prev";
+		}
+		if ($arrow_next) {
+			$mask_next = "style='--right-icon:url(\"$arrow_next\")'";
+			$class_next = "wbb-page-nav--next";
+		}
 	}
 
 	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
