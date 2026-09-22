@@ -564,7 +564,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						checked={stylesHideLabels}
 						onChange={setStylesHideLabels}
 					/>
-				</PanelBody>,
+				</PanelBody>
 				{variant !== "auto-item-list" && <PanelBody title={"Pagination styles"} initialOpen={false}>
 					<div
 						style={{
