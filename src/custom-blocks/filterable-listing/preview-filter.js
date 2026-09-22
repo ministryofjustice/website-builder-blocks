@@ -58,11 +58,9 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 	imagePosition += " wbb:mb-2";
 	const featuredImagePreviewClass = `${imagePosition} wbb:w-[125px] wbb:h-[125px] wbb:md:w-[152px] wbb:md:h-[152px]`;
 
-	const iconRootDirectory = IconData.rootDirectory + "/";
-	const iconPathSuffix = "/materialicons/24px.svg";
-	const customArrowRight = attributes.stylesArrows[2];
-	const maskRight = "url('" + iconRootDirectory + customArrowRight + iconPathSuffix + "')";
-		
+	const arrowIndex = attributes.stylesArrows?.[0] ?? 0;
+	const arrowRight = attributes.stylesArrows?.[2] ?? "";
+	const maskRight = arrowIndex > 0 && arrowRight ? `url("${arrowRight}")` : undefined;
 	return (
 		<div className={`${attributes.className} wb-block-filterable-listing`}>
 			<div className={layoutClass}>
