@@ -468,14 +468,13 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 	};
 
 	const setArrowStyle = index => {
-		let arrowArray = [
+		const hasArrows = index > 0;
+		const arrowArray = [
 			index,
-			iconRootDirectory+allowedArrowsLeft[index]+iconPathSuffix,
-			iconRootDirectory+allowedArrowsRight[index]+iconPathSuffix
+			hasArrows ? iconRootDirectory + allowedArrowsLeft[index] + iconPathSuffix : "",
+			hasArrows ? iconRootDirectory + allowedArrowsRight[index] + iconPathSuffix : "",
 		];
-		setAttributes({
-			stylesArrows: arrowArray, //toggle
-		});
+		setAttributes({ stylesArrows: arrowArray });
 	};
 	
 	const [colours] = useSettings("color.palette");
