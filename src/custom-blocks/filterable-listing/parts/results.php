@@ -36,7 +36,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 
 		$display_fields = wb_blocks_filterable_listing_block_get_display_fields($listing_settings["displayFields"]);
 
-$item_count_text = $filters ? wb_blocks_filterable_listing_count($listing_query, $listing_settings) : "";
+		$item_count_text = $filters ? wb_blocks_filterable_listing_count($listing_query, $listing_settings) : "";
 		echo "
 			<div
 				style='$set_border_style'

@@ -82,7 +82,10 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 									<Fragment key={filter}>
 										<div>
 											<label className="wbb:mb-1 wbb:block wbb:font-medium">{label}</label>
-											<select disabled className="wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2">
+											<select
+												disabled
+												className="wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2"
+											>
 												<option value="0">Select option</option>
 											</select>
 										</div>
@@ -97,7 +100,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
 												<div className="wbb:flex">
-													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
+													<input
+														disabled
+														className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2"
+														type="text"
+														value=""
+													/>
 													<button
 														disabled
 														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
@@ -140,7 +148,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
 												<div className="wbb:flex">
-													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
+													<input
+														disabled
+														className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2"
+														type="text"
+														value=""
+													/>
 													<button
 														disabled
 														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
