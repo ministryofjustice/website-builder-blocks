@@ -73,6 +73,10 @@ foreach ($listing_settings["filters"] as $filter) {
 function wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings)
 {
 	$block_id = $listing_settings["blockID"];
+	$post_type_obj = get_post_type_object($listing_settings["postType"]);
+	$flex_cpt_name_singular = strtolower($post_type_obj->labels->singular_name);
+	$flex_cpt_name_plural = strtolower($post_type_obj->labels->name);
+
 	if ($listing_settings["searchTextFilter"]) {
 		$listing_search_text = wb_blocks_filterable_listing_block_get_active_filter_value(
 			$active_filters,
@@ -80,7 +84,9 @@ function wb_blocks_filterable_listing_block_search_text_filter($active_filters, 
 		); ?>
 		<div class="wbb:flex-1">
 			<label class="wbb:block wbb:font-medium wbb:mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
-				<?php _e("Search", "wb_blocks"); ?>
+				<?php ucfirst(printf(esc_html__("Search %s", "wb_blocks"), $flex_cpt_name_plural));
+		// In other languages, the name might come first, so we need to handle capitalization accordingly
+		?>
 			</label>
 			<input
 				id="listing-search-field-<?= esc_attr($block_id) ?>"
