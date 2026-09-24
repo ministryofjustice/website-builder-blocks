@@ -18,11 +18,20 @@ function wb_blocks_filterable_listing_block_filters($block_id, $listing_settings
 		return;
 	}
 	$url = add_query_arg($_GET, get_permalink());
+
+	$clear_filters_class = $form_class = "";
+	if (!count($listing_settings["filters"]) && $listing_settings["searchTextFilter"]) {
+		// There are no filters (!count) but there is a search field
+		// Special case where we want the search button to be next to the search field
+		// And we do not need the clear filters button
+		$clear_filters_class = "wbb:hidden";
+		$form_class = "wbb:flex wbb:items-end wbb:gap-4 wbb:w-full";
+	}
 	?>
 
 	<!-- Lefthand column with filters and search -->
 	<div class="wbb:col-span-1 wbb:pr-[var(--prose-max-width-padding)]">
-	<form action="<?= esc_url($url) ?>" method="GET">
+	<form class="<?php echo esc_attr($form_class); ?>" action="<?= esc_url($url) ?>" method="GET">
 <?php
 wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings);
 
@@ -48,11 +57,11 @@ foreach ($listing_settings["filters"] as $filter) {
 }
 ?>
 
-		<div>
-			<button class="wp-element-button wbb:mr-1 wbb:px-4 wbb:py-2">
+		<div class="wbb:shrink-0">
+			<button class="wp-element-button wbb:mr-1 wbb:px-4 wbb:py-2 wbb:!mb-0">
 				<?php _e("Search", "wb_blocks"); ?>
 			</button>
-			<a href="<?= esc_url(get_permalink()) ?>" class="">
+			<a href="<?= esc_url(get_permalink()) ?>" class="<?php echo esc_attr($clear_filters_class); ?>">
 				<?php _e("Clear", "wb_blocks"); ?>
 			</a>
 		</div>
@@ -64,14 +73,20 @@ foreach ($listing_settings["filters"] as $filter) {
 function wb_blocks_filterable_listing_block_search_text_filter($active_filters, $listing_settings)
 {
 	$block_id = $listing_settings["blockID"];
+	$post_type_obj = get_post_type_object($listing_settings["postType"]);
+	$flex_cpt_name_singular = strtolower($post_type_obj->labels->singular_name);
+	$flex_cpt_name_plural = strtolower($post_type_obj->labels->name);
+
 	if ($listing_settings["searchTextFilter"]) {
 		$listing_search_text = wb_blocks_filterable_listing_block_get_active_filter_value(
 			$active_filters,
 			$block_id . "_listing_search",
 		); ?>
-		<div class="">
+		<div class="wbb:flex-1">
 			<label class="wbb:block wbb:font-medium wbb:mb-1" for="listing-search-field-<?= esc_attr($block_id) ?>">
-				<?php _e("Search", "wb_blocks"); ?>
+				<?php ucfirst(printf(esc_html__("Search %s", "wb_blocks"), $flex_cpt_name_plural));
+		// In other languages, the name might come first, so we need to handle capitalization accordingly
+		?>
 			</label>
 			<input
 				id="listing-search-field-<?= esc_attr($block_id) ?>"
