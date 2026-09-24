@@ -55,16 +55,16 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 			}}
 		>
 			{image}
-			{attributes.variant === "auto-item-list" &&
-			<h2 className="wbb:!mt-0 wbb:text-lg wbb:font-bold">
-				<a>Title {index + 1}</a>
-			</h2>
-			}
-			{attributes.variant !== "auto-item-list" &&
-			<h2 className="wbb:!mt-0 wbb:text-2xl wbb:font-bold">
-				<a>Title {index + 1}</a>
-			</h2>
-			}
+			{attributes.variant === "auto-item-list" && (
+				<h2 className="wbb:!mt-0 wbb:text-lg wbb:font-bold">
+					<a>Title {index + 1}</a>
+				</h2>
+			)}
+			{attributes.variant !== "auto-item-list" && (
+				<h2 className="wbb:!mt-0 wbb:text-2xl wbb:font-bold">
+					<a>Title {index + 1}</a>
+				</h2>
+			)}
 			{attributes.listingDisplayFields.map(item => {
 				const field = fieldLabels[item];
 				const isSummary = field?.name === "post_summary";

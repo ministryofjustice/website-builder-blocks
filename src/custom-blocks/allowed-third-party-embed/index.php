@@ -17,7 +17,7 @@ function wb_blocks_render_callback_allowed_third_party_embed($attributes)
 	$attribute_embed_code = $attributes["embedCode"] ?? "";
 	$validation_status = $attributes["validationStatus"] ?? "not-validated";
 
-	if (empty($attribute_embed_code)|| $validation_status != "valid") {
+	if (empty($attribute_embed_code) || $validation_status != "valid") {
 		return "";
 	}
 

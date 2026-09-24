@@ -5,7 +5,6 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 	if (attributes.variant !== "default") return null;
 
 	const selectedAcfFields = acfFields.filter(field => attributes.listingDisplayFields.includes(field.key));
-
 	const fieldLabels = {
 		title: {
 			label: "Title",
@@ -83,7 +82,10 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 									<Fragment key={filter}>
 										<div>
 											<label className="wbb:mb-1 wbb:block wbb:font-medium">{label}</label>
-											<select disabled className="wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2">
+											<select
+												disabled
+												className="wb-blocks-filterable-listing-bloc-tax-filter wbb:w-full wbb:border wbb:px-3 wbb:py-2"
+											>
 												<option value="0">Select option</option>
 											</select>
 										</div>
@@ -98,7 +100,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
 												<div className="wbb:flex">
-													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
+													<input
+														disabled
+														className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2"
+														type="text"
+														value=""
+													/>
 													<button
 														disabled
 														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
@@ -141,7 +148,12 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 											<div className="wbb:mb-1 wbb:block wbb:font-medium">For example, 29/2/2024.</div>
 											<div className="wb-datepicker__wrapper">
 												<div className="wbb:flex">
-													<input disabled className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2" type="text" value="" />
+													<input
+														disabled
+														className="wb-js-datepicker-input wbb:w-full wbb:px-3 wbb:py-2"
+														type="text"
+														value=""
+													/>
 													<button
 														disabled
 														className="wp-element-button wb-datepicker__toggle wb-js-datepicker-toggle wbb:px-1"
@@ -192,7 +204,7 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 						className={`wb-listing wbb:mb-4 wbb:pb-2 ${attributes.stylesResultsShadedBackground ? "" : "wbb:border-b"}`}
 						style={{ borderColor: attributes.stylesResultsBorderColour }}
 					>
-						𝑥 items
+						Showing 𝑥 to 𝑦 of 𝑧 items
 					</div>
 					{Array.from({ length: attributes.listingItemsPerPage }, (_, i) => (
 						<PreviewItems
@@ -208,7 +220,11 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 			<div className="wbb:m-0 wbb:flex wbb:list-none wbb:items-center wbb:justify-center wbb:gap-4 wbb:p-0">
 				<div className="wbb:inline-block">{`Page 1 of  ⌈𝑧÷${attributes.listingItemsPerPage}⌉`}</div>
 				<div className="wbb:inline-block">
-					<a href="#" style={{ "--right-icon": maskRight }} className={`wbb-page-nav ${attributes.stylesArrows[0] > 0 ? "wbb-page-nav--next" : ""}`}>
+					<a
+						href="#"
+						style={{ "--right-icon": maskRight }}
+						className={`wbb-page-nav ${attributes.stylesArrows[0] > 0 ? "wbb-page-nav--next" : ""}`}
+					>
 						<span className="wbb:inline-flex wbb:items-center wbb:gap-1">Next</span>
 					</a>
 				</div>

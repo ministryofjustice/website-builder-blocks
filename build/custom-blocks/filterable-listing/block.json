@@ -43,7 +43,7 @@
       "default": []
     },
     "listingItemsPerPage": {
-      "type": "number",
+      "type": "integer",
       "default": 10
     },
     "listingSortOrder": {

@@ -39,7 +39,7 @@
 			"default": []
 		},
 		"listingItemsPerPage": {
-			"type": "number",
+			"type": "integer",
 			"default": 10
 		},
 		"listingSortOrder": {
@@ -82,7 +82,7 @@
 		},
 		"stylesArrows": {
 			"type": "array",
-			"default": [0,"",""]
+			"default": [0, "", ""]
 		},
 		"variant": {
 			"type": "string",

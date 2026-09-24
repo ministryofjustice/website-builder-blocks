@@ -140,7 +140,8 @@ function wb_render_callback_accordion_block_section($attributes, $content)
   	echo "open";
   } ?>
 	>
-		<summary class="<?php echo $tailwind_remove_marker . $tailwind_state_colours; ?> wbb:cursor-pointer wbb:py-4 wbb:px-2 wbb:my-1 wbb:-ml-2">
+		<summary class="<?php echo $tailwind_remove_marker .
+  	$tailwind_state_colours; ?> wbb:cursor-pointer wbb:py-4 wbb:px-2 wbb:my-1 wbb:-ml-2">
 			<h<?php echo $attribute_accordion_heading_level; ?> class="<?php echo "has-$attribute_accordion_heading_size-font-size"; ?> wp-block-heading wbb:inline-block wbb:!m-0">
 				<?= $attribute_accordion_section_title ?>
 			</h<?php echo $attribute_accordion_heading_level; ?>>
