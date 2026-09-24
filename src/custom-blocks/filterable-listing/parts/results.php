@@ -64,11 +64,12 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$thumb_id = get_post_thumbnail_id(get_the_ID());
    	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
+	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
 			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
-					<h2 class="wbb:font-bold wbb:text-2xl">
+					<h2 class="wbb:font-bold wbb:text-<?php echo $item_heading_text_size; ?>">
 						<a href="<?php echo esc_url(get_permalink()); ?>">
 							<?php echo esc_html(get_the_title()); ?>
 						</a>
@@ -441,6 +442,21 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 
 	$param_name = "listing_{$block_id}_page";
 
+	$arrow_style = $custom_query->query["styles"]["arrows"] ?? [0, "", ""];
+	$class_prev = $class_next = $mask_prev = $mask_next = "";
+	if (is_array($arrow_style) && $arrow_style[0] > 0) {
+		$arrow_prev = esc_url($arrow_style[1] ?? "");
+		$arrow_next = esc_url($arrow_style[2] ?? "");
+		if ($arrow_prev) {
+			$mask_prev = "style='--left-icon:url(\"$arrow_prev\")'";
+			$class_prev = "wbb-page-nav--prev";
+		}
+		if ($arrow_next) {
+			$mask_next = "style='--right-icon:url(\"$arrow_next\")'";
+			$class_next = "wbb-page-nav--next";
+		}
+	}
+
 	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
 	$current_page_number = max(1, $current_page_number);
 
@@ -462,8 +478,11 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 			<ul class="wbb:flex wbb:gap-4 wbb:list-none wbb:py-1.5 wbb:px-0 wbb:m-0">
 			<?php if ($current_page_number > "1") { ?>
 				<li>
-					<a href='<?php echo esc_url($prev_url); ?>'>
-						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:pe-3 wbb:py-1.5'>
+					<a
+						class="wbb-page-nav <?php echo $class_prev;?>"
+						<?php echo $mask_prev;?>
+						href='<?php echo esc_url($prev_url); ?>'
+					><span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:pe-3 wbb:py-1.5'>
 							<?php echo $prev_page_text; ?>
 						</span>
 					</a>
@@ -474,11 +493,14 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 				</li>
 			<?php if ($current_page_number < $max_pages) { ?>
 				<li>
-					<a href='<?php echo esc_url($next_url); ?>'>
+					<a
+						class="wbb-page-nav <?php echo $class_next;?>"
+						<?php echo $mask_next;?>
+						href='<?php echo esc_url($next_url); ?>'
+					>
 						<span class='wbb:inline-flex wbb:items-center wbb:gap-1 wbb:font-medium wbb:ps-3 wbb:py-1.5'>
 							<?php echo $next_page_text; ?>
-						</span>
-					</a>
+						</span></a>
 				</li>
 			<?php } ?>
 			</ul>

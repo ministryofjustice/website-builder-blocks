@@ -58,6 +58,9 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 	imagePosition += " wbb:mb-2";
 	const featuredImagePreviewClass = `${imagePosition} wbb:w-[125px] wbb:h-[125px] wbb:md:w-[152px] wbb:md:h-[152px]`;
 
+	const arrowIndex = attributes.stylesArrows?.[0] ?? 0;
+	const arrowRight = attributes.stylesArrows?.[2] ?? "";
+	const maskRight = arrowIndex > 0 && arrowRight ? `url("${arrowRight}")` : undefined;
 	return (
 		<div className={`${attributes.className} wb-block-filterable-listing`}>
 			<div className={layoutClass}>
@@ -203,9 +206,9 @@ export default function Preview({ attributes, acfFields, taxonomies }) {
 				</div>
 			</div>
 			<div className="wbb:m-0 wbb:flex wbb:list-none wbb:items-center wbb:justify-center wbb:gap-4 wbb:p-0">
-				<div className="wbb:inline-block">{`Page 1 of  ⌈𝑥÷${attributes.listingItemsPerPage}⌉`}</div>
+				<div className="wbb:inline-block">{`Page 1 of  ⌈𝑧÷${attributes.listingItemsPerPage}⌉`}</div>
 				<div className="wbb:inline-block">
-					<a href="#">
+					<a href="#" style={{ "--right-icon": maskRight }} className={`wbb-page-nav ${attributes.stylesArrows[0] > 0 ? "wbb-page-nav--next" : ""}`}>
 						<span className="wbb:inline-flex wbb:items-center wbb:gap-1">Next</span>
 					</a>
 				</div>

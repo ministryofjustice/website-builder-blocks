@@ -39,9 +39,26 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		stylesResultsShadedBackground,
 		stylesResultsShadedColour,
 		stylesResultsBorderColour,
+		stylesArrows,
 		blockID,
 		variant,
 	} = attributes;
+
+	// Supported arrows for pagination
+	const iconRootDirectory = IconData.rootDirectory + "/";
+	const iconPathSuffix = "/materialicons/24px.svg";
+	const allowedArrowsLeft = [
+		"",
+		"navigation/arrow_back",
+		"navigation/chevron_left",
+		"navigation/arrow_back_ios",
+	];
+	const allowedArrowsRight = [
+		"",
+		"navigation/arrow_forward",
+		"navigation/chevron_right",
+		"navigation/arrow_forward_ios",
+	];
 
 	// apiVersion 3: the wrapper element must carry the props returned by
 	// useBlockProps, and className is no longer read out of attributes here —
@@ -450,6 +467,16 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 		setAttributes({ stylesResultsBorderColour: newStylesResultsBorderColour });
 	};
 
+	const setArrowStyle = index => {
+		const hasArrows = index > 0;
+		const arrowArray = [
+			index,
+			hasArrows ? iconRootDirectory + allowedArrowsLeft[index] + iconPathSuffix : "",
+			hasArrows ? iconRootDirectory + allowedArrowsRight[index] + iconPathSuffix : "",
+		];
+		setAttributes({ stylesArrows: arrowArray });
+	};
+	
 	const [colours] = useSettings("color.palette");
 
 	return (
@@ -537,6 +564,51 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						onChange={setStylesHideLabels}
 					/>
 				</PanelBody>
+				{variant !== "auto-item-list" && <PanelBody title={"Pagination styles"} initialOpen={false}>
+					<div
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(2, 1fr)",
+							gap: "10px",
+						}}
+					>
+						{allowedArrowsLeft.map((data, index) => [
+							<button
+								key={allowedArrowsLeft[index]}
+								onClick={() => setArrowStyle(index)}
+								style={{
+									outline:
+										attributes.stylesArrows[0] === index ? "8px solid #0ff" : "1px solid #ccc",
+									filter: attributes.stylesArrows[0] === index ? "invert(1)" : "none",
+									padding: "10px",
+									background: "white",
+									cursor: "pointer",
+									textAlign: "center",
+								}}
+							>
+								{index === 0 && <span>
+									None	
+								</span>}
+								{index > 0 && <img
+									src={iconRootDirectory + allowedArrowsLeft[index] + iconPathSuffix}
+									width={24}
+									height={24}
+									alt={allowedArrowsLeft[index]}
+									loading="lazy"
+									style={{ display: "inline" }}
+								/>}
+								{index > 0 && <img
+									src={iconRootDirectory + allowedArrowsRight[index] + iconPathSuffix}
+									width={24}
+									height={24}
+									alt={allowedArrowsRight[index]}
+									loading="lazy"
+									style={{ display: "inline" }}
+								/>}
+							</button>
+						])}
+					</div>
+				</PanelBody>}
 				<PanelBody title={"Colour options"} initialOpen={false}>
 					{stylesResultsShadedBackground && (
 						<>
