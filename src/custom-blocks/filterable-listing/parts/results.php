@@ -449,8 +449,8 @@ function wb_blocks_filterable_listing_pagination($custom_query)
 		}
 	}
 
-	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
-	$current_page_number = max(1, $current_page_number);
+	$current_page_number = array_key_exists($param_name, $_GET) ? absint(wp_unslash($_GET[$param_name])) : 1;
+	$current_page_number = max(1, $current_page_number); // deals with 0 values
 
 	$next_page_number = $current_page_number + 1;
 	$prev_page_number = $current_page_number - 1;
@@ -509,8 +509,8 @@ function wb_blocks_filterable_listing_count($custom_query, $listing_settings)
 	$flex_cpt_name_singular = strtolower($post_type_obj->labels->singular_name);
 	$flex_cpt_name_plural = strtolower($post_type_obj->labels->name);
 
-	$current_page_number = array_key_exists($param_name, $_GET) ? absint($_GET[$param_name]) : 1;
-	$current_page_number = max(1, $current_page_number);
+	$current_page_number = array_key_exists($param_name, $_GET) ? absint(wp_unslash($_GET[$param_name])) : 1;
+	$current_page_number = max(1, $current_page_number); // deals with 0 values
 
 	$posts_per_page = $custom_query->get("posts_per_page"); // Posts requested per page
 	$current_count = count($custom_query->posts); // Posts on this page
