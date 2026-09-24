@@ -82,7 +82,7 @@
 		},
 		"stylesArrows": {
 			"type": "array",
-			"default": [0,"",""]
+			"default": [0, "", ""]
 		},
 		"variant": {
 			"type": "string",
