@@ -5,7 +5,8 @@ name: Build and release plugin
 #
 # Builds the CSS/JS assets, zips the plugin (compiled assets included,
 # dev-only files stripped out) and attaches the zip to a GitHub Release
-# for that tag. See README.md for how to pull the release zip with Composer.
+# for that tag, then republishes the Composer repository (packages.json) on
+# GitHub Pages so consumers can require any released version.
 on:
   push:
     tags:
@@ -13,6 +14,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   release:
@@ -58,3 +61,37 @@ jobs:
         with:
           files: website-builder-blocks-${{ github.ref_name }}.zip
           generate_release_notes: true
+
+  composer-repo:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}packages.json
+    steps:
+      # Rebuilt from scratch on every release: one entry per release that has
+      # a plugin zip attached, so there is no state to keep in sync.
+      - name: Generate packages.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" \
+            --jq '.[] | select(.draft | not) | . as $r
+                  | .assets[] | select(.name == "website-builder-blocks-\($r.tag_name).zip")
+                  | {version: $r.tag_name, url: .browser_download_url}' \
+          | jq -s '{packages: {"ministryofjustice/website-builder-blocks":
+              (map({key: .version, value: {
+                name: "ministryofjustice/website-builder-blocks",
+                version: .version,
+                type: "wordpress-plugin",
+                dist: {url: .url, type: "zip"}
+              }}) | from_entries)}}' > site/packages.json
+          cat site/packages.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
