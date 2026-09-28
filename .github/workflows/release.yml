@@ -7,10 +7,14 @@ name: Build and release plugin
 # dev-only files stripped out) and attaches the zip to a GitHub Release
 # for that tag, then republishes the Composer repository (packages.json) on
 # GitHub Pages so consumers can require any released version.
+#
+# Run manually (workflow_dispatch) to only rebuild packages.json, e.g. after
+# deleting a release or re-uploading a zip.
 on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,6 +23,7 @@ permissions:
 
 jobs:
   release:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -64,6 +69,8 @@ jobs:
 
   composer-repo:
     needs: release
+    # Still run when release is skipped (manual dispatch), but not if it failed.
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
