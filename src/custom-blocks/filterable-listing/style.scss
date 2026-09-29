@@ -16,6 +16,8 @@ Block: Filterable Listing (Frontend styles)
 
 .wb-shaded {
 	background-color: color-mix(in srgb, currentColor 12%, transparent);
+}
+.wb-shaded--corners {
 	border-radius: min(var(--site-radius), 2rem);
 }
 .wb-datepicker__dialog {
