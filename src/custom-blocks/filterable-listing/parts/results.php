@@ -59,7 +59,10 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
    	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
-			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style . $border_radius_style; ?>">
+			<div
+				class="<?php echo $list_item_class; ?>"
+				style="<?php echo $set_bg_colour_style . $set_border_style . $border_radius_style; ?>"
+			>
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
 					<h2 class="wbb:font-bold wbb:text-<?php echo $item_heading_text_size; ?>">
@@ -243,10 +246,10 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 			$list_item_class .= "wb-shaded--corners ";
 		} else {
 			$map = [
-				'topLeft' => 'border-top-left-radius',
-				'topRight' => 'border-top-right-radius',
-				'bottomRight' => 'border-bottom-right-radius',
-				'bottomLeft' => 'border-bottom-left-radius',
+				"topLeft" => "border-top-left-radius",
+				"topRight" => "border-top-right-radius",
+				"bottomRight" => "border-bottom-right-radius",
+				"bottomLeft" => "border-bottom-left-radius",
 			];
 			foreach ($listing_settings["styles"]["borderRadius"] as $corner => $value) {
 				$border_radius_style .= "{$map[$corner]}: $value;";
@@ -264,7 +267,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 		"bg_colour_style" => $set_bg_colour_style,
 		"border" => $border_class,
 		"list_item_class" => $list_item_class,
-		"border_radius_style" => $border_radius_style
+		"border_radius_style" => $border_radius_style,
 	];
 
 	return $class_array;
