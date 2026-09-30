@@ -31,6 +31,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
 	$list_item_class = $class_array["list_item_class"];
 	$set_border_style = $class_array["border_style"];
 	$set_bg_colour_style = $class_array["bg_colour_style"];
+	$border_radius_style = $class_array["border_radius_style"];
 
 	if ($listing_query->have_posts()) {
 
@@ -58,7 +59,10 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
    	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
-			<div class="<?php echo $list_item_class; ?>" style="<?php echo $set_bg_colour_style . $set_border_style; ?>">
+			<div
+				class="<?php echo esc_attr($list_item_class); ?>"
+				style="<?php echo esc_attr($set_bg_colour_style . $set_border_style . $border_radius_style); ?>"
+			>
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
 					<h2 class="wbb:font-bold wbb:text-<?php echo $item_heading_text_size; ?>">
@@ -214,6 +218,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	// set border style - inline style for border colour
 	// border class - the bottom border for non-shaded
 	$set_border_style = "";
+	$border_radius_style = "";
 	$border_class = "";
 	if (!$listing_settings["styles"]["stylesResultsShadedBackground"]) {
 		$border_class = "wbb:border-b";
@@ -236,7 +241,20 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 	// List item classes - classes for each individual item in the list
 	$list_item_class = "wb-listing wbb:mb-4 $list_item_image_layout_class ";
 	if ($listing_settings["styles"]["stylesResultsShadedBackground"] === true) {
-		$list_item_class .= "wb-shaded wbb:p-4";
+		$list_item_class .= "wb-shaded wbb:p-4 ";
+		if (!$listing_settings["styles"]["borderRadius"]) {
+			$list_item_class .= "wb-shaded--corners ";
+		} else {
+			$map = [
+				"topLeft" => "border-top-left-radius",
+				"topRight" => "border-top-right-radius",
+				"bottomRight" => "border-bottom-right-radius",
+				"bottomLeft" => "border-bottom-left-radius",
+			];
+			foreach ($listing_settings["styles"]["borderRadius"] as $corner => $value) {
+				$border_radius_style .= "{$map[$corner]}: $value;";
+			}
+		}
 	} else {
 		$list_item_class .= $border_class . " wbb:pb-2";
 	}
@@ -249,6 +267,7 @@ function wb_blocks_filterable_listing_overarching_classes($listing_settings)
 		"bg_colour_style" => $set_bg_colour_style,
 		"border" => $border_class,
 		"list_item_class" => $list_item_class,
+		"border_radius_style" => $border_radius_style,
 	];
 
 	return $class_array;

@@ -9,6 +9,11 @@
 	"keywords": ["listing", "latest", "items"],
 	"textdomain": "wb_blocks",
 	"editorScript": "wb-blocks-editor-script",
+	"supports": {
+		"__experimentalBorder": {
+			"radius": true
+		}
+	},
 	"attributes": {
 		"listingPostType": {
 			"type": "string",

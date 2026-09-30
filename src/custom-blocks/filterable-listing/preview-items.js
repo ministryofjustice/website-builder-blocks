@@ -1,5 +1,9 @@
 export default function PreviewItems({ index, attributes, fieldLabels, featuredImagePreviewClass }) {
 	// Create a placeholder image
+	const radius = attributes.style?.border?.radius ?? false;
+	const borderRadius = radius
+		? `${radius.topLeft || 0} ${radius.topRight || 0} ${radius.bottomRight || 0} ${radius.bottomLeft || 0}`
+		: undefined;
 	const image = attributes.listingDisplayImage ? (
 		<div
 			className={`${featuredImagePreviewClass} wb-listing-thumbnail wbb:flex wbb:items-center wbb:justify-center wbb:border`}
@@ -45,13 +49,14 @@ export default function PreviewItems({ index, attributes, fieldLabels, featuredI
 	return (
 		<div
 			className={`wb-listing wbb:mb-4 wbb:flow-root ${
-				attributes.stylesResultsShadedBackground ? "wb-shaded wbb:p-4" : "wbb:border-b wbb:pb-2"
+				attributes.stylesResultsShadedBackground ? "wb-shaded wb-shaded--corners wbb:p-4" : "wbb:border-b wbb:pb-2"
 			}`}
 			style={{
 				...(attributes.stylesResultsShadedBackground && attributes.stylesResultsShadedColour
 					? { backgroundColor: attributes.stylesResultsShadedColour }
 					: undefined),
 				...(attributes.stylesResultsBorderColour ? { borderColor: attributes.stylesResultsBorderColour } : undefined),
+				...(attributes.stylesResultsShadedBackground && radius ? { borderRadius: borderRadius } : undefined),
 			}}
 		>
 			{image}
