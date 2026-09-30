@@ -60,8 +60,8 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
 			<div
-				class="<?php echo $list_item_class; ?>"
-				style="<?php echo $set_bg_colour_style . $set_border_style . $border_radius_style; ?>"
+				class="<?php echo esc_attr($list_item_class); ?>"
+				style="<?php echo esc_attr($set_bg_colour_style . $set_border_style . $border_radius_style); ?>"
 			>
 				<?php echo $image_html; ?>
 				<div class="<?= $details_wrapper_class ?>">
