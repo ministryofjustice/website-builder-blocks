@@ -2,7 +2,10 @@ import { PanelBody, ToggleControl, TextControl } from "@wordpress/components";
 import { Fragment } from "@wordpress/element";
 import { useRefEffect } from "@wordpress/compose";
 import { __ } from "@wordpress/i18n";
-import { RichText, InspectorControls, useBlockProps } from "@wordpress/block-editor";
+import { InnerBlocks, RichText, InspectorControls, useBlockProps } from "@wordpress/block-editor";
+
+// Load allowed blocks to be added beneath the table of contents
+const allowedBlocks = ["core/heading", "core/paragraph", "wb-blocks/print-button"];
 
 export default function tocEdit({ attributes, setAttributes }) {
 	const { tocTitle, backToTopText, sticky, scrollSpy, dualLevel, customNesting } = attributes;
@@ -217,6 +220,9 @@ export default function tocEdit({ attributes, setAttributes }) {
 						<RichText value={tocTitle} onChange={setTocTitle} />
 					</h2>
 					<ol id="table-of-contents-contents-list" className="wb-table-of-contents__list"></ol>
+				</div>
+				<div className="wbb:ml-4">
+					<InnerBlocks allowedBlocks={allowedBlocks} />
 				</div>
 			</div>
 		</Fragment>

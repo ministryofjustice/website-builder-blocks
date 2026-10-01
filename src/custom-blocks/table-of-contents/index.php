@@ -68,6 +68,7 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 		$top = esc_html($attribute_backToTopText),
 		$both_levels = $attribute_both_levels,
 		$nesting_icon = $attribute_nesting,
+		$inner_block_content = wp_kses_post($content),
 	);
 
 	// Get all the html/content that has been captured in the buffer and output via return

@@ -12,6 +12,7 @@
  * isn't stripped from content saved before this change.
  */
 import { registerBlockType } from "@wordpress/blocks";
+import { InnerBlocks } from "@wordpress/block-editor";
 
 /**
  * Internal dependencies
@@ -22,5 +23,7 @@ import metadata from "./block.json";
 registerBlockType(metadata.name, {
 	edit,
 	// return null as frontend output is done via PHP
-	save: () => null,
+	save: () => {
+		return <InnerBlocks.Content />;
+	},
 });

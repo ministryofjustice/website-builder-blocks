@@ -109,6 +109,7 @@ function wb_table_of_contents(
 	$top = "Back to top",
 	$both_levels = false,
 	$nesting_icon = "",
+	$inner_block_content = "",
 ) {
 	$list_class = "";
 	if ($both_levels) {
@@ -179,9 +180,12 @@ function wb_table_of_contents(
 				<h2 class='wb-table-of-contents__heading' id='table-of-contents-heading'>" .
 		esc_html($toc_title) .
 		"</h2>
-				<p hidden><b id='back-to-top-link-text'>$top</b></p>
-				<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>
-			</div>";
+			<p hidden><b id='back-to-top-link-text'>$top</b></p>
+			<ol class='wb-table-of-contents__list $list_class $print_columns'>$toc_list</ol>
+			<div class='wbb:ml-4'>
+				$inner_block_content
+			</div>
+		</div>";
 
 	return $toc;
 }
