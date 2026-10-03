@@ -80,7 +80,13 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 
 function wb_block_enqueue_frontend_assets()
 {
-	wp_enqueue_script("table-of-contents-frontend", plugins_url("frontend.js", __FILE__), [], "1.0", true);
+	wp_enqueue_script(
+		"table-of-contents-frontend",
+		plugins_url("build/custom-blocks/table-of-contents/frontend.js", dirname(__DIR__, 3) . "/website-builder-blocks.php"),
+		[],
+		"1.0",
+		true,
+	);
 }
 add_action("enqueue_block_assets", "wb_block_enqueue_frontend_assets");
 
