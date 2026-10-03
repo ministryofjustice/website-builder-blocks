@@ -42,7 +42,7 @@ function wb_blocks_render_callback_hmg_svg_block($attributes)
 	?>
 
 	<div <?= $hmgsvg_wrapper_attributes ?>>
-		<?php include __DIR__ . "/svg/{$attribute_hmgsvg_logo}.svg"; ?>
+		<?php include WB_BLOCKS_DIR . "build/custom-blocks/hmg-svg/svg/{$attribute_hmgsvg_logo}.svg"; ?>
 	</div>
 
 	<?php
