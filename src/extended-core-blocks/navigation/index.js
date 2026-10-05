@@ -18,12 +18,13 @@ registerBlockVariation("core/navigation", {
 	scope: ["transform"],
 	isActive: blockAttributes =>
 		!blockAttributes?.className?.includes("is-style-drawer") &&
+		!blockAttributes?.className?.includes("is-style-v-drawer") &&
 		!blockAttributes?.className?.includes("is-style-detached"),
 });
 registerBlockVariation("core/navigation", {
 	name: "drawer-navigation",
-	title: "Drawer navigation",
-	description: "Navigation where the submenu opens in a drawer",
+	title: "Drawer navigation (horizontal)",
+	description: "Navigation where the (horizontal) submenu opens in a drawer",
 	attributes: {
 		openSubmenusOnClick: true,
 		overlayMenu: "never",
@@ -31,6 +32,18 @@ registerBlockVariation("core/navigation", {
 	},
 	scope: ["transform"],
 	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-drawer"),
+});
+registerBlockVariation("core/navigation", {
+	name: "drawer-navigation",
+	title: "Drawer navigation (vertical)",
+	description: "Navigation where the (vertical) submenu opens in a drawer",
+	attributes: {
+		openSubmenusOnClick: true,
+		overlayMenu: "never",
+		className: "is-style-v-drawer",
+	},
+	scope: ["transform"],
+	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-v-drawer"),
 });
 registerBlockVariation("core/navigation", {
 	name: "detached-navigation",
@@ -59,7 +72,7 @@ const syncOptionsWithClass = createHigherOrderComponent(BlockEdit => {
 		const { attributes, setAttributes } = props;
 		const { className, overlayMenu, openSubmenusOnClick } = attributes;
 
-		const hasDrawerStyle = className?.includes("is-style-drawer");
+		const hasDrawerStyle = className?.includes("is-style-drawer") || className?.includes("is-style-v-drawer");
 		const hasDetachedStyle = className?.includes("is-style-detached");
 		useEffect(() => {
 			// Upon selecting either of these styles, the relevant options are selected

@@ -1,56 +1,59 @@
 nav.is-style-v-drawer {
-	--drawer-menu-padding: 0.5rem;
-	--drawer-menu-v-gap: 0.5rem;
-	--drawer-menu-h-gap: 1.25rem;
+	--v-drawer-menu-padding: 0.5rem;
+	--v-drawer-menu-v-gap: 0rem;
+	--v-drawer-menu-h-gap: 1.25rem;
 	/**
-	* This file contains all the required styles for the drawer nav except colour, which is in the theme.
+	* This file contains all the required styles for the vertical drawer nav except colour, which is in the theme.
 	*/
-
-	padding: var(--drawer-menu-padding) 0;
+	position: static;
+	padding: var(--v-drawer-menu-padding) 0;
 	font-weight: 700;
 	.wp-block-navigation__container {
-		margin-left: calc(-0.9 * var(--drawer-menu-padding));
-		column-gap: var(--drawer-menu-h-gap);
+		position: static;
+		margin-left: calc(-0.9 * var(--v-drawer-menu-padding));
+		column-gap: var(--v-drawer-menu-h-gap);
 		row-gap: 0.25rem;
+		left: 0;
 		.has-child .wp-block-navigation-submenu__toggle[aria-expanded="true"] ~ ul.wp-block-navigation__submenu-container {
-			flex-direction: row;
-			flex-wrap: wrap;
-			gap: var(--drawer-menu-v-gap) 0;
-			padding: var(--drawer-menu-padding) 0;
+			gap: var(--v-drawer-menu-v-gap) 0;
+			padding-top: var(--v-drawer-menu-padding);
+			padding-bottom: var(--v-drawer-menu-padding);
 			border: none;
 			font-weight: 700;
-			width: calc(1px + var(--size-content)); //max width set by JS to exclude scrollbar
-			left: -1px;
+			width: 100vw;
 
+			display: grid;
+			grid-template-rows: repeat(4, auto);
+			grid-auto-flow: column;
+			grid-auto-columns: 1fr;
+			&.wbb-right-aligned-submenu {
+				grid-auto-columns: max-content;
+				justify-content: end;
+
+				.wp-block-navigation-item:first-child {
+					min-width: var(--control-item-width); //brings child in line with parent
+				}
+			}
+			&.wbb-centre-aligned-submenu {
+				grid-auto-columns: max-content;
+				justify-content: center;
+			}
+			&.wbb-left-aligned-submenu {
+				margin-left: calc(var(--v-drawer-menu-padding) * -2 / 3);
+			}
+
+			&:has(> :nth-child(5)):not(:has(> :nth-child(7))) {
+				// 5 or 6 children = 3 per column
+				grid-template-rows: repeat(3, auto);
+			}
+			&:has(> :nth-child(13)) {
+				// 13+ children = 5 per column
+				grid-template-rows: repeat(5, auto);
+			}
 			.wp-block-navigation-item {
 				text-wrap: balance;
 				inline-size: 100%; // 1 per row
 				align-items: baseline;
-
-				&__content {
-					padding-right: calc(1.1 * var(--drawer-menu-padding));
-					padding-left: calc(1.1 * var(--drawer-menu-padding));
-				}
-
-				@media (width >= 640px) and (width < 782px) {
-					// We need to be specific as the 2n won't be overwritten by the 3n of the next breakpoint
-					inline-size: 50%; // 2 per row
-					&:nth-child(2n) .wp-block-navigation-item__content {
-						padding-right: 0;
-					}
-				}
-				@media (width >= 782px) and (width < 1080px) {
-					inline-size: 33%; // 3 per row
-					&:nth-child(3n) .wp-block-navigation-item__content {
-						padding-right: 0;
-					}
-				}
-				@media (width >= 1080px) {
-					inline-size: 25%; // 4 per row
-					&:nth-child(4n) .wp-block-navigation-item__content {
-						padding-right: 0;
-					}
-				}
 			}
 		}
 		.wp-block-navigation-item {
@@ -61,13 +64,13 @@ nav.is-style-v-drawer {
 			position: static;
 
 			&__content {
-				padding: var(--drawer-menu-padding);
+				padding: var(--v-drawer-menu-padding);
 
 				&.wp-block-navigation-submenu__toggle {
-					padding-right: calc(0.85em + var(--drawer-menu-padding));
+					padding-right: calc(0.85em + var(--v-drawer-menu-padding));
 
 					+ .wp-block-navigation__submenu-icon {
-						margin-left: calc(-1 * var(--drawer-menu-padding) - 0.65em);
+						margin-left: calc(-1 * var(--v-drawer-menu-padding) - 0.65em);
 						width: 1em;
 						height: 1em;
 

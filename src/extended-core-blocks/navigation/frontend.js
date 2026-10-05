@@ -9,7 +9,7 @@ import "./frontend-keyboard.js";
  * - function for opening a submenu, including extra padding to push page content down
  */
 
-// The first nav with the class "drawer" there should be only one on a page
+// There should be only one on a page
 const drawerNavs = document.querySelectorAll("nav.is-style-drawer,nav.is-style-v-drawer");
 
 // It is reasonable to have more than one detached nav, so we apply functionality to all of them
@@ -40,15 +40,58 @@ for (const [index, drawerNav] of drawerNavs.entries()) {
 }
 
 function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
-	const navBlockWidth = getComputedStyle(drawerNav).width;
+	const navBlockWidth = drawerNav.offsetWidth;
+	const headerHeight = drawerNav.closest("header").offsetHeight;
 
 	// Find the open submenu
 	const subMenu = Array.from(subMenus).find(subMenu => getComputedStyle(subMenu).visibility !== "hidden");
 
 	if (subMenu) {
-		let subMenuHeight = subMenu.offsetHeight;
-		subMenu.style.width = navBlockWidth;
-		subMenu.style.marginTop = initialPadding + "px";
+		// headers span the whole width of the page, so we can use header left and right to be the bounds of the page
+		// we need to account for the scrollbar width
+		const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+		const headerPositions = drawerNav.closest("header").getBoundingClientRect();
+		const subMenuHeight = subMenu.offsetHeight;
+		const subMenuItems = subMenu.children.length;
+
+		// this is the button which opened the submenu
+		const controlPositions = subMenu.closest("li.wp-block-navigation-item").getBoundingClientRect();
+		const controlWidth = subMenu.closest("li.wp-block-navigation-item").offsetWidth;
+		if (subMenuItems < 9 && controlPositions.right < headerPositions.right / 2) {
+			// the menu is on the left of the page
+			// submenu is absolutely positioned and spans the whole viewport (100vw)
+			// we add padding to position the content - adding scrollbar width to the right
+			subMenu.style.paddingLeft = controlPositions.left + "px";
+			subMenu.style.paddingRight = `calc(var(--wp--style--root--padding-right, 0) + ${scrollbarWidth}px)`;
+			subMenu.classList.add("wbb-left-aligned-submenu");
+			subMenu.classList.remove("wbb-centre-aligned-submenu");
+			subMenu.classList.remove("wbb-right-aligned-submenu");
+		} else if (subMenuItems < 9 && controlPositions.left > headerPositions.right / 2) {
+			// the menu is on the right of the page
+			// we align with the control by giving its first child a minimum width in CSS
+			subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
+			subMenu.style.paddingRight = headerPositions.right - controlPositions.right + scrollbarWidth + "px";
+			subMenu.classList.remove("wbb-left-aligned-submenu");
+			subMenu.classList.remove("wbb-centre-aligned-submenu");
+			subMenu.classList.add("wbb-right-aligned-submenu");
+			subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
+		} else if (subMenuItems < 5) {
+			// the menu is in the middle of the page and only has one column
+			// of items, so we align with its control - like left aligned ones
+			subMenu.style.paddingLeft = controlPositions.left + "px";
+			subMenu.style.paddingRight = `calc(var(--wp--style--root--padding-right, 0) + ${scrollbarWidth}px)`;
+			subMenu.classList.add("wbb-left-aligned-submenu");
+			subMenu.classList.remove("wbb-right-aligned-submenu");
+			subMenu.classList.remove("wbb-centre-aligned-submenu");
+		} else {
+			// the menu is in the middle of the page
+			// or there are loads of items so we need space
+			subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
+			subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
+			subMenu.classList.remove("wbb-left-aligned-submenu");
+			subMenu.classList.add("wbb-centre-aligned-submenu");
+			subMenu.classList.remove("wbb-right-aligned-submenu");
+		}
 
 		// Set this attribute, as a marker to know that we updated the margin bottom most recently.
 		header.setAttribute("data-margin-bottom-owner", `navigation-drawer-${index}`);
