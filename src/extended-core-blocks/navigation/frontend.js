@@ -10,7 +10,7 @@ import "./frontend-keyboard.js";
  */
 
 // The first nav with the class "drawer" there should be only one on a page
-const drawerNavs = document.querySelectorAll("nav.is-style-drawer");
+const drawerNavs = document.querySelectorAll("nav.is-style-drawer,nav.is-style-v-drawer");
 
 // It is reasonable to have more than one detached nav, so we apply functionality to all of them
 const detachedNavs = document.querySelectorAll("nav.is-style-detached");
