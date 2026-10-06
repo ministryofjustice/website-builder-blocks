@@ -182,7 +182,7 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 		if (!hasDrawerStyle && !hasDetachedStyle) {
 				return <BlockEdit {...props} />;
 		}
-			
+
 		return (
 			<>
 				<BlockEdit {...props} />
@@ -192,12 +192,9 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 							label="Submenu orientation"
 							value={submenuOrientation ?? "vertical"}
 							onChange={(value) => {
-								if (!["horizontal", "vertical"].includes(value)) {
-									value = "vertical";
-								}
-
+								const orientation = ["horizontal","vertical"].includes(value) ? value : "vertical";
 								setAttributes({
-									submenuOrientation: value,
+									submenuOrientation: orientation,
 								});
 							}}
 						>
