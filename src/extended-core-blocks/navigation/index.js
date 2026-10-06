@@ -6,6 +6,13 @@
 import { registerBlockVariation } from "@wordpress/blocks";
 const { createHigherOrderComponent } = wp.compose;
 const { useEffect } = wp.element;
+import { InspectorControls } from "@wordpress/block-editor";
+import {
+	PanelBody,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOptionIcon as ToggleGroupControlOptionIcon,
+} from "@wordpress/components";
+import { arrowRight, arrowDown } from "@wordpress/icons";
 
 registerBlockVariation("core/navigation", {
 	// This is the out-of-the-box WordPress style, no special stuff
@@ -18,39 +25,30 @@ registerBlockVariation("core/navigation", {
 	scope: ["transform"],
 	isActive: blockAttributes =>
 		!blockAttributes?.className?.includes("is-style-drawer") &&
-		!blockAttributes?.className?.includes("is-style-v-drawer") &&
 		!blockAttributes?.className?.includes("is-style-detached"),
 });
 registerBlockVariation("core/navigation", {
 	name: "drawer-navigation",
-	title: "Drawer navigation (horizontal)",
-	description: "Navigation where the (horizontal) submenu opens in a drawer",
+	title: "Drawer navigation",
+	description: "Navigation where the submenu opens in a drawer",
 	attributes: {
-		openSubmenusOnClick: true,
+		submenuVisibility: "click",
 		overlayMenu: "never",
 		className: "is-style-drawer",
+		layout: {
+			type: "flex",
+			orientation: "horizontal",
+		},
 	},
 	scope: ["transform"],
 	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-drawer"),
-});
-registerBlockVariation("core/navigation", {
-	name: "drawer-navigation",
-	title: "Drawer navigation (vertical)",
-	description: "Navigation where the (vertical) submenu opens in a drawer",
-	attributes: {
-		openSubmenusOnClick: true,
-		overlayMenu: "never",
-		className: "is-style-v-drawer",
-	},
-	scope: ["transform"],
-	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-v-drawer"),
 });
 registerBlockVariation("core/navigation", {
 	name: "detached-navigation",
 	title: "Detached navigation",
 	description: "Navigation opened and closed by a button",
 	attributes: {
-		openSubmenusOnClick: true,
+		submenuVisibility: "click",
 		overlayMenu: "always",
 		className: "is-style-detached",
 	},
@@ -58,40 +56,87 @@ registerBlockVariation("core/navigation", {
 	isActive: blockAttributes => blockAttributes?.className?.includes("is-style-detached"),
 });
 
+const addNavigationAttributes = (settings, name) => {
+	if (name !== "core/navigation") {
+		return settings;
+	}
+
+	return {
+		...settings,
+		attributes: {
+			...settings.attributes,
+			submenuOrientation: {
+				type: "string",
+				default: "vertical",
+			},
+		},
+	};
+};
+
+wp.hooks.addFilter(
+	"blocks.registerBlockType",
+	"wb-blocks/navigation-attributes",
+	addNavigationAttributes
+);
+
 /**
  * The following functions deal with the navigation settings which are incompatible with the new styles
  * overlayMenu must be "never" for drawer, and "always" for detached
  * openSubmenusOnClick must be TRUE for both
  */
-const syncOptionsWithClass = createHigherOrderComponent(BlockEdit => {
+const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 	return props => {
 		if (props.name !== "core/navigation") {
 			return <BlockEdit {...props} />;
 		}
 
 		const { attributes, setAttributes } = props;
-		const { className, overlayMenu, openSubmenusOnClick } = attributes;
+		const { className, overlayMenu, submenuVisibility, layout, submenuOrientation } = attributes;
 
-		const hasDrawerStyle = className?.includes("is-style-drawer") || className?.includes("is-style-v-drawer");
+		const hasDrawerStyle = className?.includes("is-style-drawer");
 		const hasDetachedStyle = className?.includes("is-style-detached");
+
 		useEffect(() => {
 			// Upon selecting either of these styles, the relevant options are selected
 			if (hasDrawerStyle) {
-				setAttributes({ openSubmenusOnClick: true });
-				setAttributes({ overlayMenu: "never" });
+				setAttributes({
+					submenuVisibility: "click",
+					overlayMenu: "never",
+					layout: {
+						...layout,
+						orientation: "horizontal",
+					},
+				});
 			}
 
 			if (hasDetachedStyle) {
-				setAttributes({ openSubmenusOnClick: true });
-				setAttributes({ overlayMenu: "always" });
+				setAttributes({ 
+					submenuVisibility: "click",
+					overlayMenu: "always"
+				});
 			}
 		}, [hasDrawerStyle, hasDetachedStyle]);
 
 		useEffect(() => {
+			if (!hasDrawerStyle && !hasDetachedStyle) {
+				return;
+			}
 			//Upon changing the submenu behaviour once one of the styles has been selected
-			if (!openSubmenusOnClick && (hasDrawerStyle || hasDetachedStyle)) {
+			if (submenuVisibility != "click") {
 				// Revert toggle
-				setAttributes({ openSubmenusOnClick: true });
+				setAttributes({ submenuVisibility: "click" });
+			}
+			//Upon changing the orientation - ensure horizontal (might be undefined, so search for vertical)
+			if (
+				hasDrawerStyle &&
+				layout?.orientation !== "horizontal"
+			) {
+				setAttributes({
+					layout: {
+						...layout,
+						orientation: "horizontal",
+					}
+				});
 			}
 
 			//Upon changing the overlay
@@ -101,10 +146,80 @@ const syncOptionsWithClass = createHigherOrderComponent(BlockEdit => {
 			if (hasDetachedStyle && overlayMenu != "always") {
 				setAttributes({ overlayMenu: "always" });
 			}
-		}, [overlayMenu, openSubmenusOnClick]);
+		}, [overlayMenu, submenuVisibility, layout]);
 
-		return <BlockEdit {...props} />;
+		// Add a class when the submenu orientation is changed
+		useEffect(() => {
+			if (!hasDrawerStyle && !hasDetachedStyle) {
+				return;
+			}
+			const orientation =
+				submenuOrientation === "horizontal"
+					? "horizontal"
+					: "vertical";
+			const orientationClass = `has-submenu-orientation-${orientation}`;
+
+			const classes = (className ?? "")
+				.split(/\s+/)
+				.filter(Boolean)
+				.filter(
+					(value) =>
+						!value.startsWith("has-submenu-orientation-")
+				);
+
+			const refinedClassName = [
+				...classes,
+				orientationClass,
+			].join(" ");
+
+			if (refinedClassName !== className) {
+				setAttributes({
+					className: refinedClassName,
+				});
+			}
+		}, [submenuOrientation]);
+
+		if (!hasDrawerStyle && !hasDetachedStyle) {
+				return <BlockEdit {...props} />;
+		}
+			
+		return (
+			<>
+				<BlockEdit {...props} />
+				<InspectorControls>
+					<PanelBody title="Submenu orientation">
+						<ToggleGroupControl
+							label="Submenu orientation"
+							value={submenuOrientation ?? "vertical"}
+							onChange={(value) => {
+								if (!["horizontal", "vertical"].includes(value)) {
+									value = "vertical";
+								}
+
+								setAttributes({
+									submenuOrientation: value,
+								});
+							}}
+						>
+							<ToggleGroupControlOptionIcon
+								value="horizontal"
+								label="Horizontal"
+								aria-label="Horizontal"
+								icon={arrowRight}
+							/>
+
+							<ToggleGroupControlOptionIcon
+								value="vertical"
+								label="Vertical"
+								aria-label="Vertical"
+								icon={arrowDown}
+							/>
+						</ToggleGroupControl>
+					</PanelBody>
+				</InspectorControls>
+			</>
+		);
 	};
-}, "syncOptionsWithClass");
+}, "enhanceNavigationBlockEdit");
 
-wp.hooks.addFilter("editor.BlockEdit", "website-builder-blocks/sync-toggle", syncOptionsWithClass);
+wp.hooks.addFilter("editor.BlockEdit", "website-builder-blocks/sync-toggle", enhanceNavigationBlockEdit);
