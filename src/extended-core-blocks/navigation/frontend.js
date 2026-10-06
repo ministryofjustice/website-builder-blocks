@@ -66,25 +66,15 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 				// 1 item or in first/last quarter, we align with the control
 				if (controlPositions.left < headerPositions.right / 2) {
 					// control is not fully on the right of the page
-					subMenu.style.paddingLeft = controlPositions.left + "px";
-					subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-					subMenu.classList.add("wbb-left-aligned-submenu");
-					subMenu.classList.remove("wbb-centre-aligned-submenu");
-					subMenu.classList.remove("wbb-right-aligned-submenu");
+					positionLeft(subMenu, controlPositions);
 				} else {
 					// control is fully on the right of the page
-					subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-					subMenu.style.paddingRight = headerPositions.right - controlPositions.right + "px";
-					subMenu.classList.remove("wbb-left-aligned-submenu");
-					subMenu.classList.remove("wbb-centre-aligned-submenu");
-					subMenu.classList.add("wbb-right-aligned-submenu");
+					positionRight(subMenu, controlPositions, headerPositions);
 					subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
 				}
 			} else if (subMenuItems < 4) {
 				// 2 or 3 items (not in first or last quarter) - we centre them around the control
-				subMenu.classList.remove("wbb-left-aligned-submenu");
-				subMenu.classList.add("wbb-centre-aligned-submenu");
-				subMenu.classList.remove("wbb-right-aligned-submenu");
+				positionCentre(subMenu);
 
 				const roomToRight = headerPositions.right - controlPositions.right;
 				const roomToLeft = controlPositions.left;
@@ -93,18 +83,12 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 					// control is further to the right than the left
 					// adjust padding to centre around control
 					subMenu.style.paddingLeft = `${roomToLeft - roomToRight}px`;
-					subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
 				} else {
 					// control is further to the left than the right
 					subMenu.style.paddingRight = `${roomToRight - roomToLeft}px`;
-					subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
 				}
 			} else {
-				subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-				subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-				subMenu.classList.remove("wbb-left-aligned-submenu");
-				subMenu.classList.remove("wbb-centre-aligned-submenu");
-				subMenu.classList.remove("wbb-right-aligned-submenu");
+				positionCentre(subMenu);
 			}
 		} else {
 			// not horizontal (i.e. vertical, although maybe we'll have diagonal one day...)
@@ -112,36 +96,20 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 				// the menu is on the left of the page
 				// submenu is absolutely positioned and spans the whole viewport (100vw)
 				// we add padding to position the content
-				subMenu.style.paddingLeft = controlPositions.left + "px";
-				subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-				subMenu.classList.add("wbb-left-aligned-submenu");
-				subMenu.classList.remove("wbb-centre-aligned-submenu");
-				subMenu.classList.remove("wbb-right-aligned-submenu");
+				positionLeft(subMenu, controlPositions);
 			} else if (subMenuItems < 9 && controlPositions.left > headerPositions.right / 2) {
 				// the menu is on the right of the page
 				// we align with the control by giving its first child a minimum width in CSS
-				subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-				subMenu.style.paddingRight = headerPositions.right - controlPositions.right + "px";
-				subMenu.classList.remove("wbb-left-aligned-submenu");
-				subMenu.classList.remove("wbb-centre-aligned-submenu");
-				subMenu.classList.add("wbb-right-aligned-submenu");
+				positionRight(subMenu, controlPositions, headerPositions);
 				subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
 			} else if (subMenuItems < 5) {
 				// the menu is in the middle of the page and only has one column
 				// of items, so we align with its control - like left aligned ones
-				subMenu.style.paddingLeft = controlPositions.left + "px";
-				subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-				subMenu.classList.add("wbb-left-aligned-submenu");
-				subMenu.classList.remove("wbb-right-aligned-submenu");
-				subMenu.classList.remove("wbb-centre-aligned-submenu");
+				positionLeft(subMenu, controlPositions);
 			} else {
 				// the menu is in the middle of the page
 				// or there are loads of items so we need space
-				subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-				subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-				subMenu.classList.remove("wbb-left-aligned-submenu");
-				subMenu.classList.add("wbb-centre-aligned-submenu");
-				subMenu.classList.remove("wbb-right-aligned-submenu");
+				positionCentre(subMenu);
 			}
 		}
 
@@ -201,6 +169,28 @@ for (const [index, detachedNav] of detachedNavs.entries()) {
 	 * between the states.
 	 */
 	resizeObserver.observe(popupMenu);
+}
+
+function positionLeft(subMenu, controlPositions) {
+	subMenu.style.paddingLeft = controlPositions.left + "px";
+	subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
+	subMenu.classList.add("wbb-left-aligned-submenu");
+	subMenu.classList.remove("wbb-centre-aligned-submenu");
+	subMenu.classList.remove("wbb-right-aligned-submenu");
+}
+function positionCentre(subMenu) {
+	subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
+	subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
+	subMenu.classList.remove("wbb-left-aligned-submenu");
+	subMenu.classList.add("wbb-centre-aligned-submenu");
+	subMenu.classList.remove("wbb-right-aligned-submenu");
+}
+function positionRight(subMenu, controlPositions, headerPositions) {
+	subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
+	subMenu.style.paddingRight = headerPositions.right - controlPositions.right + "px";
+	subMenu.classList.remove("wbb-left-aligned-submenu");
+	subMenu.classList.remove("wbb-centre-aligned-submenu");
+	subMenu.classList.add("wbb-right-aligned-submenu");
 }
 
 function initMenuDetached(detachedNav, closeMenu, index) {
