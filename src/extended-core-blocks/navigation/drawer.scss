@@ -38,7 +38,6 @@ nav.is-style-drawer {
 					// 13+ children = 5 per column
 					grid-template-rows: repeat(5, auto);
 				}
-				
 			}
 			&.wbb-right-aligned-submenu {
 				grid-auto-columns: max-content;

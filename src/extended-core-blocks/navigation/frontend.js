@@ -56,13 +56,11 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 		const controlWidth = subMenu.closest("li.wp-block-navigation-item").offsetWidth;
 
 		const horizontalSubMenu = drawerNav.classList.contains("has-submenu-orientation-horizontal");
-		
+
 		if (horizontalSubMenu) {
 			if (
-				subMenuItems === 1 // 1 item only
-				||
-				controlPositions.left < headerQuarter // first quarter
-				||
+				subMenuItems === 1 || // 1 item only
+				controlPositions.left < headerQuarter || // first quarter
 				controlPositions.right > headerQuarter * 3 // last quarter
 			) {
 				// 1 item or in first/last quarter, we align with the control
@@ -87,10 +85,10 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 				subMenu.classList.remove("wbb-left-aligned-submenu");
 				subMenu.classList.add("wbb-centre-aligned-submenu");
 				subMenu.classList.remove("wbb-right-aligned-submenu");
-				
+
 				const roomToRight = headerPositions.right - controlPositions.right;
 				const roomToLeft = controlPositions.left;
-				
+
 				if (roomToRight < roomToLeft) {
 					// control is further to the right than the left
 					// adjust padding to centre around control

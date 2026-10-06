@@ -73,11 +73,7 @@ const addNavigationAttributes = (settings, name) => {
 	};
 };
 
-wp.hooks.addFilter(
-	"blocks.registerBlockType",
-	"wb-blocks/navigation-attributes",
-	addNavigationAttributes
-);
+wp.hooks.addFilter("blocks.registerBlockType", "wb-blocks/navigation-attributes", addNavigationAttributes);
 
 /**
  * The following functions deal with the navigation settings which are incompatible with the new styles
@@ -110,9 +106,9 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 			}
 
 			if (hasDetachedStyle) {
-				setAttributes({ 
+				setAttributes({
 					submenuVisibility: "click",
-					overlayMenu: "always"
+					overlayMenu: "always",
 				});
 			}
 		}, [hasDrawerStyle, hasDetachedStyle]);
@@ -127,15 +123,12 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 				setAttributes({ submenuVisibility: "click" });
 			}
 			//Upon changing the orientation - ensure horizontal (might be undefined, so search for vertical)
-			if (
-				hasDrawerStyle &&
-				layout?.orientation !== "horizontal"
-			) {
+			if (hasDrawerStyle && layout?.orientation !== "horizontal") {
 				setAttributes({
 					layout: {
 						...layout,
 						orientation: "horizontal",
-					}
+					},
 				});
 			}
 
@@ -153,24 +146,15 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 			if (!hasDrawerStyle && !hasDetachedStyle) {
 				return;
 			}
-			const orientation =
-				submenuOrientation === "horizontal"
-					? "horizontal"
-					: "vertical";
+			const orientation = submenuOrientation === "horizontal" ? "horizontal" : "vertical";
 			const orientationClass = `has-submenu-orientation-${orientation}`;
 
 			const classes = (className ?? "")
 				.split(/\s+/)
 				.filter(Boolean)
-				.filter(
-					(value) =>
-						!value.startsWith("has-submenu-orientation-")
-				);
+				.filter(value => !value.startsWith("has-submenu-orientation-"));
 
-			const refinedClassName = [
-				...classes,
-				orientationClass,
-			].join(" ");
+			const refinedClassName = [...classes, orientationClass].join(" ");
 
 			if (refinedClassName !== className) {
 				setAttributes({
@@ -180,19 +164,18 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 		}, [submenuOrientation]);
 
 		if (!hasDrawerStyle && !hasDetachedStyle) {
-				return <BlockEdit {...props} />;
+			return <BlockEdit {...props} />;
 		}
 
 		return (
 			<>
-				<BlockEdit {...props} />
 				<InspectorControls>
-					<PanelBody title="Submenu orientation">
+					<PanelBody title="Submenu layout">
 						<ToggleGroupControl
-							label="Submenu orientation"
+							label="Orientation"
 							value={submenuOrientation ?? "vertical"}
-							onChange={(value) => {
-								const orientation = ["horizontal","vertical"].includes(value) ? value : "vertical";
+							onChange={value => {
+								const orientation = ["horizontal", "vertical"].includes(value) ? value : "vertical";
 								setAttributes({
 									submenuOrientation: orientation,
 								});
@@ -205,15 +188,11 @@ const enhanceNavigationBlockEdit = createHigherOrderComponent(BlockEdit => {
 								icon={arrowRight}
 							/>
 
-							<ToggleGroupControlOptionIcon
-								value="vertical"
-								label="Vertical"
-								aria-label="Vertical"
-								icon={arrowDown}
-							/>
+							<ToggleGroupControlOptionIcon value="vertical" label="Vertical" aria-label="Vertical" icon={arrowDown} />
 						</ToggleGroupControl>
 					</PanelBody>
 				</InspectorControls>
+				<BlockEdit {...props} />
 			</>
 		);
 	};
