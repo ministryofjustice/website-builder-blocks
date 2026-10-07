@@ -5,7 +5,7 @@ import { __ } from "@wordpress/i18n";
 import { RichText, InspectorControls, useBlockProps } from "@wordpress/block-editor";
 
 export default function tocEdit({ attributes, setAttributes }) {
-	const { tocTitle, backToTopText, sticky, scrollSpy, dualLevel, customNesting } = attributes;
+	const { tocTitle, backToTopText, scrollSpy, dualLevel, customNesting } = attributes;
 
 	// This block reads the editor's DOM to build a live preview of the contents
 	// list, which is what made it apiVersion 3's headline problem: once the post
@@ -90,7 +90,7 @@ export default function tocEdit({ attributes, setAttributes }) {
 	// render, which wrote to the store on every render pass.
 	const blockProps = useBlockProps({
 		ref: tocRef,
-		className: `wb-blocks-toc ${sticky ? "toc-sticky" : ""} ${customNesting ? "" : "toc-no-marker"} ${
+		className: `wb-blocks-toc ${customNesting ? "" : "toc-no-marker"} ${
 			customNesting == "|" ? "toc-border" : ""
 		} ${dualLevel ? "dual-level" : ""}`,
 		style: { "--bullet-icon": "'" + customNesting + "'" },
@@ -115,9 +115,6 @@ export default function tocEdit({ attributes, setAttributes }) {
 	const setBackToTopText = newBackToTopText => {
 		setAttributes({ backToTopText: newBackToTopText });
 	};
-	const setSticky = newSticky => {
-		setAttributes({ sticky: newSticky });
-	};
 	const setScrollSpy = newScrollSpy => {
 		setAttributes({ scrollSpy: newScrollSpy });
 	};
@@ -132,12 +129,6 @@ export default function tocEdit({ attributes, setAttributes }) {
 	const inspectorControls = (
 		<InspectorControls>
 			<PanelBody title={__("Table of contents")} initialOpen={true}>
-				<ToggleControl
-					label="Contents tracks down the page"
-					help="Designed for the ToC to be in its own column"
-					checked={sticky}
-					onChange={setSticky}
-				/>
 				<ToggleControl
 					label="Highlight the current position"
 					help="Marks the current ToC item as you scroll down the page, designed to be used with the above where the ToC is always visible on Desktop displays."
