@@ -51,6 +51,7 @@ nav.is-style-drawer {
 				justify-content: center;
 			}
 			&.wbb-left-aligned-submenu {
+				justify-content: left;
 				margin-left: calc(var(--drawer-menu-padding) * -2 / 3);
 			}
 			.wp-block-navigation-item {

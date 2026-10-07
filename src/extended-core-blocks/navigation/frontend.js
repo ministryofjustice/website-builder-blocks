@@ -72,8 +72,8 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 					positionRight(subMenu, controlPositions, headerPositions);
 					subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
 				}
-			} else if (subMenuItems < 4) {
-				// 2 or 3 items (not in first or last quarter) - we centre them around the control
+			} else {
+				// Not in first or last quarter - we centre them around the control
 				positionCentre(subMenu);
 
 				const roomToRight = headerPositions.right - controlPositions.right;
@@ -87,8 +87,6 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 					// control is further to the left than the right
 					subMenu.style.paddingRight = `${roomToRight - roomToLeft}px`;
 				}
-			} else {
-				positionCentre(subMenu);
 			}
 		} else {
 			// not horizontal (i.e. vertical, although maybe we'll have diagonal one day...)
