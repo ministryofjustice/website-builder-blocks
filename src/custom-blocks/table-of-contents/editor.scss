@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*********************************************************************************************
 
-Block: Filterable Listing (Gutenberg editor styles)
+Block: Table of contents (Gutenberg editor styles)
 
 **********************************************************************************************/
 
@@ -9,16 +9,6 @@ Block: Filterable Listing (Gutenberg editor styles)
 
 .wb-table-of-contents {
 	margin-left: 0.1px; // this is to make the thin submenu border more visible when the item is highlighted for editing
-}
-
-// This mimicks the sticky behaviour, moving out of the way of the block controls if selected.
-div[data-type="wb-blocks/table-of-contents"]:has(.toc-sticky) {
-	position: sticky;
-	top: 12px;
-
-	&.is-selected {
-		top: 60px;
-	}
 }
 
 .empty a {

@@ -18,10 +18,6 @@
 			"type": "string",
 			"default": "Back to top"
 		},
-		"sticky": {
-			"type": "boolean",
-			"default": false
-		},
 		"scrollSpy": {
 			"type": "boolean",
 			"default": false
