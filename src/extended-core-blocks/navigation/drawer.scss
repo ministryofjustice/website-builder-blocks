@@ -30,6 +30,7 @@ nav.is-style-drawer {
 			&:not(.has-submenu-orientation-horizontal *) {
 				// vertical layout
 				grid-template-rows: repeat(4, auto);
+				grid-auto-flow: column;
 				&:has(> :nth-child(5)):not(:has(> :nth-child(7))) {
 					// 5 or 6 children = 3 per column
 					grid-template-rows: repeat(3, auto);
