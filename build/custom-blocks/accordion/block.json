@@ -3,7 +3,7 @@
   "apiVersion": 3,
   "name": "wb-blocks/accordion",
   "title": "Accordion",
-  "description": "Display content in an accordion component.",
+  "description": "Let users show or hide content using an accordion.",
   "category": "wb-blocks",
   "icon": "list-view",
   "keywords": [

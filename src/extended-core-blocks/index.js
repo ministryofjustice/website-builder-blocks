@@ -3,6 +3,7 @@
  */
 
 import "./file";
+import "./group";
 import "./list";
 import "./button";
 import "./navigation";

@@ -1,14 +1,12 @@
 @charset "UTF-8";
 /*********************************************************************************************
 
-Block: Filterable Listing (Frontend styles)
+Block: Table of contents (Frontend styles)
 
 **********************************************************************************************/
 
 // Copied from Hale - needs rework
 .wb-table-of-contents {
-	padding-bottom: 1.1rem;
-	margin-bottom: 2rem;
 	border-bottom: 1px solid;
 
 	@media print {
@@ -43,18 +41,18 @@ Block: Filterable Listing (Frontend styles)
 	@media screen {
 		max-height: 97vh;
 		overflow-y: auto;
-		padding: 0.5rem 0.5rem 1.1rem 0;
+		padding: 0.5rem 0.5rem 0 0;
 		margin-left: -15px;
 		border-bottom: none;
 
 		&__heading {
-			padding-left: 15px;
+			padding-left: 0.25rem;
 			margin-bottom: 1.5rem;
 			font-weight: bold;
 		}
 
 		&__list {
-			margin-bottom: 2rem;
+			margin-bottom: 0.5rem;
 			list-style-type: none;
 			padding-left: 0;
 
@@ -66,7 +64,7 @@ Block: Filterable Listing (Frontend styles)
 			display: none;
 			font-weight: 400;
 
-			&:is(.toc-sticky *) {
+			&:is(.is-style-sticky *) {
 				&:has(.wb-table-of-contents__item--current),
 				&:is(.wb-table-of-contents__item--current *) {
 					&:is(.dual-level *) {
@@ -117,7 +115,7 @@ Block: Filterable Listing (Frontend styles)
 					background-color: color-mix(in srgb, var(--colour-page-background) 92.65%, var(--colour-foreground));
 				}
 			}
-			padding-left: 15px;
+			padding-left: 0.25rem;
 			padding-top: 0.2rem;
 			padding-bottom: 0.2rem;
 			margin-top: 0.625rem; // (10px, 10÷16 = 0.625)
@@ -165,21 +163,20 @@ Block: Filterable Listing (Frontend styles)
 	}
 }
 
-#table-of-contents {
-	top: 2rem;
-	overflow-y: auto;
-	@media (min-width: 782px) {
-		&.toc-sticky {
-			position: sticky;
-		}
-	}
-}
-
 .wb-jump-link {
 	display: inline;
 }
-body:has(.toc-sticky) .wb-jump-link {
+
+/********
+  Assumtions:
+  * Only 1 table of contents per page (editorial discipline)
+  * ToC will only track down page if in sticky group
+  * Sticky group is always in a column which stacks at 782px
+*/
+body:has(.is-style-sticky #table-of-contents) .wb-jump-link {
+	// Hiding back to top links if the ToC tracks down the page
 	@media (min-width: 782px) {
+		// width at wich columns stack
 		display: none;
 	}
 }

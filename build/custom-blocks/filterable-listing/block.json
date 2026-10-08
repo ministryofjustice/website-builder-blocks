@@ -3,7 +3,7 @@
   "apiVersion": 3,
   "name": "wb-blocks/filterable-listing",
   "title": "Filterable Listing",
-  "description": "Listing block",
+  "description": "Lets users see and filter a list of items",
   "category": "wb-blocks",
   "icon": "id-alt",
   "keywords": [
