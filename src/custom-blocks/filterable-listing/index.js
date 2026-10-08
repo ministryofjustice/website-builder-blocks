@@ -36,7 +36,7 @@ registerBlockVariation(metadata.name, {
 registerBlockVariation(metadata.name, {
 	name: "auto-item-list",
 	title: "Item Listing",
-	description: "Automatically pull through items",
+	description: "Lets users see a list of items",
 	icon: "list-view",
 	attributes: {
 		variant: "auto-item-list",

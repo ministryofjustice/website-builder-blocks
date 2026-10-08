@@ -339,22 +339,18 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 	const inspectorControls = (
 		<InspectorControls>
 			<PanelBody title={__("Main settings")} initialOpen={true}>
-				<SelectControl
-					label="Select item type"
-					value={listingPostType}
-					options={itemTypes}
-					onChange={setListingPostType}
-				/>
+				<SelectControl label="Item type" value={listingPostType} options={itemTypes} onChange={setListingPostType} />
 			</PanelBody>
 			{listingPostType.length > 0 && variant !== "auto-item-list" && (
 				<PanelBody title={__("Filterable Listing settings")} initialOpen={true}>
 					<ToggleControl
-						label="Search Text Filter"
+						label="Search text filter"
+						help="Allows users to search for an item using a word or phrase"
 						checked={listingSearchTextFilter}
 						onChange={setListingSearchTextFilter}
 					/>
 					{filterOptionList.length > 0 && (
-						<BaseControl label="Listing Filters">
+						<BaseControl label="Other filters">
 							<ReactSelect
 								isMulti
 								label="Filters"
@@ -370,7 +366,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 			{listingPostType.length > 0 && (
 				<PanelBody title={__("Results display settings")} initialOpen={true}>
 					{displayFieldsList.length > 0 && (
-						<BaseControl label="Display Fields">
+						<BaseControl label="Fields to display">
 							<ReactSelect
 								isMulti
 								value={selectedDisplayFields}
@@ -395,7 +391,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 			{listingPostType.length > 0 && (
 				<PanelBody title={__("Results settings")} initialOpen={true}>
 					<RangeControl
-						label="Items per page"
+						label={variant === "auto-item-list" ? "Number of items to display" : "Items shown on each page"}
 						min={3}
 						max={50}
 						step={1}
@@ -403,13 +399,13 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						onChange={setItemsPerPage}
 					/>
 
-					<SelectControl label="Sort by" options={sortOptions} value={listingSortOrder} onChange={setSortOrder} />
+					<SelectControl label="Sort items by" options={sortOptions} value={listingSortOrder} onChange={setSortOrder} />
 				</PanelBody>
 			)}
 			{listingPostType.length > 0 && (
 				<PanelBody title={__("Restrict results settings")} initialOpen={true}>
 					{taxOptionList.length > 0 && (
-						<BaseControl label="Restrict by">
+						<BaseControl label="Restrict items by">
 							<ReactSelect
 								isMulti
 								options={taxOptionList}
@@ -480,7 +476,7 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 			<InspectorControls group="styles">
 				<PanelBody title={__("Results styles")} initialOpen={true}>
 					<ToggleControl
-						label="Display featured image"
+						label="Display an image with each item"
 						checked={listingDisplayImage}
 						onChange={setListingDisplayImage}
 					/>
@@ -497,8 +493,8 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						/>
 					)}
 					<ToggleControl
-						label="Shaded background"
-						help="Item divider line will be hidden"
+						label="Shaded background for each item"
+						help="The divider line will be hidden if you choose a shaded background."
 						checked={stylesResultsShadedBackground}
 						onChange={setStylesResultsShadedBackground}
 					/>
@@ -520,16 +516,16 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							selected={stylesLayout ? stylesLayout : "side-by-side"}
 							options={[
 								{ label: "4 wide (2 on large mobiles)", value: "side-by-side-4-2" },
-								{ label: "4 wide", value: "side-by-side-4-1" },
-								{ label: "3 wide", value: "side-by-side" },
-								{ label: "2 wide", value: "side-by-side-2-1" },
+								{ label: "4 wide (1 on mobile phones)", value: "side-by-side-4-1" },
+								{ label: "3 wide (1 on mobile phones)", value: "side-by-side" },
+								{ label: "2 wide (1 on mobile phones)", value: "side-by-side-2-1" },
 								{ label: "Stacked", value: "stacked" },
 							]}
 							onChange={setStylesLayout}
 						/>
 					)}
 					<RadioControl
-						label="Layout of fields"
+						label="Layout of text"
 						selected={stylesFieldLayout ? stylesFieldLayout : "stacked"}
 						options={[
 							{ label: "Everything stacked", value: "stacked" },
@@ -540,20 +536,21 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 						onChange={setStylesFieldLayout}
 					/>
 					<ToggleControl
-						label="Links for taxonomies"
+						label="Add links for taxonomies"
 						help={
-							`Adds links for taxonomy values (` +
-							listingDisplayTerms
-								.map(term => taxOptionList.find(o => o.value === term)?.label)
-								.filter(Boolean)
-								.join("; ") +
-							`)`
+							listingDisplayTerms.length > 0 &&
+							`(` +
+								listingDisplayTerms
+									.map(term => taxOptionList.find(o => o.value === term)?.label)
+									.filter(Boolean)
+									.join("; ") +
+								`)`
 						}
 						checked={stylesTaxLinks}
 						onChange={setStylesTaxLinks}
 					/>
 					<ToggleControl
-						label="Hide titles"
+						label="Hide taxonomy titles"
 						help="Turn on if all taxonomies are self-explanatory"
 						checked={stylesHideLabels}
 						onChange={setStylesHideLabels}

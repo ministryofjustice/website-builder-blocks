@@ -102,7 +102,7 @@ registerBlockType(metadata.name, {
 						<PanelRow>
 							<SelectControl
 								label="Heading level"
-								hint="This should be one level down from the heading above the accordion, for example, if the last heading is an H2, this should be an H3."
+								help="This should be one level down from the heading above the accordion, for example, if the last heading is an H2, this should be an H3."
 								value={headingLevel}
 								options={[
 									{ label: "H2", value: 2 },
