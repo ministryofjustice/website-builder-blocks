@@ -516,9 +516,9 @@ export default function filterableListingEdit({ attributes, setAttributes }) {
 							selected={stylesLayout ? stylesLayout : "side-by-side"}
 							options={[
 								{ label: "4 wide (2 on large mobiles)", value: "side-by-side-4-2" },
-								{ label: "4 wide (1 on mobile phones)", value: "side-by-side-4-1" },
-								{ label: "3 wide (1 on mobile phones)", value: "side-by-side" },
-								{ label: "2 wide (1 on mobile phones)", value: "side-by-side-2-1" },
+								{ label: "4 wide", value: "side-by-side-4-1" },
+								{ label: "3 wide", value: "side-by-side" },
+								{ label: "2 wide", value: "side-by-side-2-1" },
 								{ label: "Stacked", value: "stacked" },
 							]}
 							onChange={setStylesLayout}
