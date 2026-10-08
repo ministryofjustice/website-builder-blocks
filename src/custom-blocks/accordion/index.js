@@ -98,10 +98,11 @@ registerBlockType(metadata.name, {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody title="Heading level & size" initialOpen={true}>
+					<PanelBody title="Section headings" initialOpen={true}>
 						<PanelRow>
 							<SelectControl
 								label="Heading level"
+								help="This should be one level down from the heading above the accordion, for example, if the last heading is an H2, this should be an H3."
 								value={headingLevel}
 								options={[
 									{ label: "H2", value: 2 },
@@ -122,17 +123,17 @@ registerBlockType(metadata.name, {
 							/>
 						</PanelRow>
 					</PanelBody>
-					<PanelBody title="Open and close text" initialOpen={false}>
+					<PanelBody title="Text to open and close sections" initialOpen={false}>
 						<PanelRow>
 							<TextControl
-								label="Open all text"
+								label="Text to open all sections"
 								value={openAll}
 								onChange={newValue => setAttributes({ openAll: newValue })}
 							/>
 						</PanelRow>
 						<PanelRow>
 							<TextControl
-								label="Close all text"
+								label="Text to close all sections"
 								value={closeAll}
 								onChange={newValue => setAttributes({ closeAll: newValue })}
 							/>
@@ -210,10 +211,10 @@ registerBlockType(sectionMetadata.name, {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody title="Options" initialOpen={false}>
+					<PanelBody title="Opening options" initialOpen={false}>
 						<PanelRow>
 							<RadioControl
-								label="Open section by default"
+								label="Open this section when the page loads"
 								selected={defaultOpen ? "yes" : "no"}
 								options={[
 									{ label: "Yes", value: "yes" },
