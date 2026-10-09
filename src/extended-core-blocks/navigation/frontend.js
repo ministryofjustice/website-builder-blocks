@@ -44,72 +44,18 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 	const subMenu = Array.from(subMenus).find(subMenu => getComputedStyle(subMenu).visibility !== "hidden");
 
 	if (subMenu) {
-		// headers span the whole width of the page, so we can use header left and right to be the bounds of the page
-
-		const headerPositions = drawerNav.closest("header").getBoundingClientRect();
+		// Position the open submenu so that the left edge of one of its columns lines up with
+		// the left edge of the toggle that opened it.
+		//
+		// The submenu band spans the full width of the header; only its padding-left is changed.
+		// We prefer the first column under the toggle. If the menu would then run off the page
+		// we try the second column, then the third, and so on. Only if no column fits do we fall
+		// back to simply keeping the menu on the page.
+		//
+		// Nothing here depends on the number of items or on the orientation - the grid in CSS
+		// decides the columns, and we measure what it rendered.
+		snapSubMenuToControl(subMenu, drawerNav);
 		const subMenuHeight = subMenu.offsetHeight;
-		const subMenuItems = subMenu.children.length;
-		const headerQuarter = headerPositions.right / 4; // one quarter of the width
-
-		// this is the button which opened the submenu
-		const controlPositions = subMenu.closest("li.wp-block-navigation-item").getBoundingClientRect();
-		const controlWidth = subMenu.closest("li.wp-block-navigation-item").offsetWidth;
-
-		const horizontalSubMenu = drawerNav.classList.contains("has-submenu-orientation-horizontal");
-
-		if (horizontalSubMenu) {
-			if (
-				subMenuItems === 1 || // 1 item only
-				controlPositions.left < headerQuarter || // first quarter
-				controlPositions.right > headerQuarter * 3 // last quarter
-			) {
-				// 1 item or in first/last quarter, we align with the control
-				if (controlPositions.left < headerPositions.right / 2) {
-					// control is not fully on the right of the page
-					positionLeft(subMenu, controlPositions);
-				} else {
-					// control is fully on the right of the page
-					positionRight(subMenu, controlPositions, headerPositions);
-					subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
-				}
-			} else {
-				// Not in first or last quarter - we centre them around the control
-				positionCentre(subMenu);
-
-				const roomToRight = headerPositions.right - controlPositions.right;
-				const roomToLeft = controlPositions.left;
-
-				if (roomToRight < roomToLeft) {
-					// control is further to the right than the left
-					// adjust padding to centre around control
-					subMenu.style.paddingLeft = `${roomToLeft - roomToRight}px`;
-				} else {
-					// control is further to the left than the right
-					subMenu.style.paddingRight = `${roomToRight - roomToLeft}px`;
-				}
-			}
-		} else {
-			// not horizontal (i.e. vertical, although maybe we'll have diagonal one day...)
-			if (subMenuItems < 9 && controlPositions.right < headerPositions.right / 2) {
-				// the menu is on the left of the page
-				// submenu is absolutely positioned and spans the whole viewport (100vw)
-				// we add padding to position the content
-				positionLeft(subMenu, controlPositions);
-			} else if (subMenuItems < 9 && controlPositions.left > headerPositions.right / 2) {
-				// the menu is on the right of the page
-				// we align with the control by giving its first child a minimum width in CSS
-				positionRight(subMenu, controlPositions, headerPositions);
-				subMenu.style.setProperty("--control-item-width", `${controlWidth}px`);
-			} else if (subMenuItems < 5) {
-				// the menu is in the middle of the page and only has one column
-				// of items, so we align with its control - like left aligned ones
-				positionLeft(subMenu, controlPositions);
-			} else {
-				// the menu is in the middle of the page
-				// or there are loads of items so we need space
-				positionCentre(subMenu);
-			}
-		}
 
 		// Set this attribute, as a marker to know that we updated the margin bottom most recently.
 		header.setAttribute("data-margin-bottom-owner", `navigation-drawer-${index}`);
@@ -135,8 +81,7 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 
 		drawerNav.style.paddingBottom = initialPadding + "px"; //Restore the bottom padding to original
 		subMenus.forEach(subMenu => {
-			subMenu.style.width = "";
-			subMenu.style.marginTop = "";
+			subMenu.style.paddingLeft = "";
 		});
 	}
 }
@@ -169,26 +114,52 @@ for (const [index, detachedNav] of detachedNavs.entries()) {
 	resizeObserver.observe(popupMenu);
 }
 
-function positionLeft(subMenu, controlPositions) {
-	subMenu.style.paddingLeft = controlPositions.left + "px";
-	subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-	subMenu.classList.add("wbb-left-aligned-submenu");
-	subMenu.classList.remove("wbb-centre-aligned-submenu");
-	subMenu.classList.remove("wbb-right-aligned-submenu");
-}
-function positionCentre(subMenu) {
-	subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-	subMenu.style.paddingRight = "var(--wp--style--root--padding-right, 0)";
-	subMenu.classList.remove("wbb-left-aligned-submenu");
-	subMenu.classList.add("wbb-centre-aligned-submenu");
-	subMenu.classList.remove("wbb-right-aligned-submenu");
-}
-function positionRight(subMenu, controlPositions, headerPositions) {
-	subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-	subMenu.style.paddingRight = headerPositions.right - controlPositions.right + "px";
-	subMenu.classList.remove("wbb-left-aligned-submenu");
-	subMenu.classList.remove("wbb-centre-aligned-submenu");
-	subMenu.classList.add("wbb-right-aligned-submenu");
+function snapSubMenuToControl(subMenu, drawerNav) {
+	// Reset to the stylesheet padding so we can read the page padding and measure a clean layout
+	subMenu.style.paddingLeft = "";
+	const subMenuStyles = getComputedStyle(subMenu);
+	const pagePaddingLeft = parseFloat(subMenuStyles.paddingLeft) || 0;
+	const pagePaddingRight = parseFloat(subMenuStyles.paddingRight) || 0;
+
+	const page = drawerNav.closest("header").getBoundingClientRect();
+	const band = subMenu.getBoundingClientRect();
+	const control = subMenu.closest("li.wp-block-navigation-item");
+
+	const items = Array.from(subMenu.children);
+	if (items.length === 0) {
+		return;
+	}
+
+	// We align text with text (the label inside the toggle with the label inside a child link),
+	// because the toggle and the child links have different internal padding.
+	const textLeft = item => {
+		const label = item.querySelector(":scope > .wp-block-navigation-item__content .wp-block-navigation-item__label");
+		return (label || item).getBoundingClientRect().left;
+	};
+	const anchor = textLeft(control);
+
+	const boxes = items.map(item => item.getBoundingClientRect());
+	const texts = items.map(textLeft);
+	const contentLeft = Math.min(...boxes.map(box => box.left));
+	const contentWidth = Math.max(...boxes.map(box => box.right)) - contentLeft;
+	const firstText = Math.min(...texts);
+	const textInset = firstText - contentLeft; // from the edge of the content to the first label
+
+	// Distances from the first label to the label at the start of each column (grid tracks are
+	// max-content, so these do not change when the padding changes)
+	const columnOffsets = [...new Set(texts.map(text => Math.round(text - firstText)))].sort((a, b) => a - b);
+
+	const minLeft = page.left + pagePaddingLeft;
+	const maxLeft = page.right - pagePaddingRight - contentWidth;
+
+	// Prefer the first column under the toggle; if the menu would leave the page, try the next column
+	let left = columnOffsets.map(offset => anchor - offset - textInset).find(x => x >= minLeft && x <= maxLeft);
+	if (left === undefined) {
+		// No column can line up with the control without leaving the page - just keep it on the page
+		left = Math.min(Math.max(anchor - textInset, minLeft), maxLeft);
+	}
+
+	subMenu.style.paddingLeft = `${left - band.left}px`;
 }
 
 function initMenuDetached(detachedNav, closeMenu, index) {

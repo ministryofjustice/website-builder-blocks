@@ -40,20 +40,11 @@ nav.is-style-drawer {
 					grid-template-rows: repeat(5, auto);
 				}
 			}
-			&.wbb-right-aligned-submenu {
-				justify-content: end;
-
-				.wp-block-navigation-item:first-child {
-					min-width: var(--control-item-width); //brings child in line with parent
-				}
-			}
-			&.wbb-centre-aligned-submenu {
-				justify-content: center;
-			}
-			&.wbb-left-aligned-submenu {
-				justify-content: left;
-				margin-left: calc(var(--drawer-menu-padding) * -2 / 3);
-			}
+			// The band spans the full width. JS sets padding-left so that one column of
+			// items lines up with the toggle; these are the defaults it reads the page padding from.
+			justify-content: start;
+			padding-left: var(--wp--style--root--padding-left, 0);
+			padding-right: var(--wp--style--root--padding-right, 0);
 			.wp-block-navigation-item {
 				text-wrap: balance;
 				inline-size: 100%; // 1 per row
