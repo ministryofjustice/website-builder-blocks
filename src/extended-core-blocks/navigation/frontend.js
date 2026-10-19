@@ -82,10 +82,11 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 				if (roomToRight < roomToLeft) {
 					// control is further to the right than the left
 					// adjust padding to centre around control
-					subMenu.style.paddingLeft = `${roomToLeft - roomToRight}px`;
+					// (added to the root padding, not replacing it, so both sides stay symmetrical)
+					subMenu.style.paddingLeft = `calc(var(--wp--style--root--padding-left, 0px) + ${roomToLeft - roomToRight}px)`;
 				} else {
 					// control is further to the left than the right
-					subMenu.style.paddingRight = `${roomToRight - roomToLeft}px`;
+					subMenu.style.paddingRight = `calc(var(--wp--style--root--padding-right, 0px) + ${roomToRight - roomToLeft}px)`;
 				}
 			}
 		} else {
