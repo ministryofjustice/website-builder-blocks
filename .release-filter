@@ -1,0 +1,15 @@
+# Files shipped in the release and preview zips.
+# rsync filter rules: checked top to bottom, first match wins.
+# "***" means the folder and everything in it; "- *" drops anything not listed.
++ /website-builder-blocks.php
++ /composer.json
++ /README.md
++ /build/***
++ /languages/***
+- /assets/scss/
++ /assets/***
+# Only the PHP in src/ runs; everything else there is build input.
++ /src/
++ /src/**/
++ /src/**.php
+- *
