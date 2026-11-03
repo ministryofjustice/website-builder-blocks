@@ -38,6 +38,10 @@ mix_
 const frontendFiles = glob.sync("src/**/frontend.js");
 mix_.js(frontendFiles, "frontend.min.js");
 
+// Runtime files that PHP loads directly, so the plugin only needs src/ for its PHP.
+mix_.copy("src/custom-blocks/table-of-contents/frontend.js", "build/custom-blocks/table-of-contents/frontend.js");
+mix_.copyDirectory("src/custom-blocks/hmg-svg/svg", "build/custom-blocks/hmg-svg/svg");
+
 if (mix_.inProduction()) {
 	mix_.version();
 } else {
