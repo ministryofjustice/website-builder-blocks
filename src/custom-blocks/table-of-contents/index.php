@@ -72,7 +72,10 @@ function wb_block_enqueue_frontend_assets()
 {
 	wp_enqueue_script(
 		"table-of-contents-frontend",
-		plugins_url("build/custom-blocks/table-of-contents/frontend.js", dirname(__DIR__, 3) . "/website-builder-blocks.php"),
+		plugins_url(
+			"build/custom-blocks/table-of-contents/frontend.js",
+			dirname(__DIR__, 3) . "/website-builder-blocks.php",
+		),
 		[],
 		"1.0",
 		true,

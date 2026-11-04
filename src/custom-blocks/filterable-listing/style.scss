@@ -12,6 +12,7 @@ Block: Filterable Listing (Frontend styles)
 
 .wb-listing-thumbnail {
 	border-radius: var(--site-radius, 0);
+	background-size: cover;
 }
 
 .wb-shaded {

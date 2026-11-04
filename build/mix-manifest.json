@@ -1,5 +1,10 @@
 {
     "/frontend.min.js": "/frontend.min.js?id=a1986077db4896cee02830bc160d7eef",
-    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=381b764e887e305e8bd6ff04c6575ab5",
-    "/style-frontend.min.css": "/style-frontend.min.css?id=582eea5a1bdb1514447c976c140a10b6"
+    "/style-gutenburg.min.css": "/style-gutenburg.min.css?id=9449b4c8c2d26a28f7c44a20e41edc7f",
+    "/style-frontend.min.css": "/style-frontend.min.css?id=e3b0231d3c401b664f705afd242439ab",
+    "/custom-blocks/table-of-contents/frontend.js": "/custom-blocks/table-of-contents/frontend.js?id=a158cec089aefb793c7c239a54f531f3",
+    "/custom-blocks/hmg-svg/svg/crest.svg": "/custom-blocks/hmg-svg/svg/crest.svg?id=b5b6e105420365dfb9200aa0e265e6a1",
+    "/custom-blocks/hmg-svg/svg/crown.svg": "/custom-blocks/hmg-svg/svg/crown.svg?id=a4c22ec76247e9ecd6c855368329fcb9",
+    "/custom-blocks/hmg-svg/svg/govuk.svg": "/custom-blocks/hmg-svg/svg/govuk.svg?id=0b9eb16f6dc729150f0ce408f354a316",
+    "/custom-blocks/hmg-svg/svg/ogl.svg": "/custom-blocks/hmg-svg/svg/ogl.svg?id=f8a047e849cc5d3d4a155ca78a739a79"
 }

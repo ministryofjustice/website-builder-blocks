@@ -55,7 +55,7 @@ function wb_blocks_filterable_listing_block_results($listing_settings, $active_f
    	$listing_query->the_post();
 
    	$thumb_id = get_post_thumbnail_id(get_the_ID());
-   	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "thumbnail");
+   	$thumb_url = get_the_post_thumbnail_url(get_the_ID(), "medium");
    	$image_html = wb_blocks_filterable_listing_image_html($listing_settings, $class_array, $thumb_id, $thumb_url);
    	$item_heading_text_size = $filters ? "2xl" : "lg";
    	?>
