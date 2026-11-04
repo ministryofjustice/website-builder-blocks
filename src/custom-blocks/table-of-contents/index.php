@@ -17,7 +17,7 @@ function wb_blocks_render_callback_toc_block($attributes, $content)
 {
 	// Parse attributes found in block.json
 	$attribute_title = $attributes["tocTitle"] ?? "Table of contents";
-	$attribute_backToTopText = $attributes["backToTopText"] ?? "Back to top";
+	$attribute_backToTopText = trim($attributes["backToTopText"]) ?? "Back to top";
 
 	// This block deliberately does NOT use get_block_wrapper_attributes().
 	//

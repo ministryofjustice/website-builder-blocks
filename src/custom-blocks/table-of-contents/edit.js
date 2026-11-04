@@ -113,6 +113,8 @@ export default function tocEdit({ attributes, setAttributes }) {
 		setAttributes({ tocTitle: newTocTitle });
 	};
 	const setBackToTopText = newBackToTopText => {
+		newBackToTopText = newBackToTopText.trimStart(); // removes any leading spaces
+		// don't trim end as that will prevent people adding new words !!!
 		setAttributes({ backToTopText: newBackToTopText });
 	};
 	const setScrollSpy = newScrollSpy => {
