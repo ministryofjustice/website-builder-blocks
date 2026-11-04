@@ -36,12 +36,18 @@ function wb_get_ordered_content($content)
 	$tags = $xpath->query("//h2 | //h3");
 	$hidden_tags = $xpath->query("//b");
 	$current_H2 = "";
+	$dual_level =
+		$xpath->query(
+			'//ol[contains(concat(" ", normalize-space(@class), " "), " wb-table-of-contents__list ")
+		and
+		contains(concat(" ", normalize-space(@class), " "), " dual-level ")]',
+		)->length > 0; // Checks whether the table of contents is dual level or not
 	$back_to_top_node = $xpath->query('//b[@id="back-to-top-link-text"]')->item(0);
 	if (!empty($back_to_top_node)) {
 		$back_to_top_text = esc_html($back_to_top_node->nodeValue);
 	}
 	if (empty($back_to_top_text)) {
-		$back_to_top_text = "Back to top";
+		$back_to_top_text = __("Back to top", "wb_blocks");
 	} //fallback
 	foreach ($tags as $tag) {
 		$heading_class = $tag->getAttribute("class");
@@ -49,8 +55,9 @@ function wb_get_ordered_content($content)
 			str_contains($heading_class, "wb-toc-ignore") ||
 			str_contains($heading_class, "wb-table-of-contents__heading")
 		) {
+			// We ignore headings with the class "wb-toc-ignore" and the ToC's own H2
 			continue;
-		} // We ignore headings with the class "wb-toc-ignore" and the ToC's own H2
+		}
 
 		$tag->setAttribute("class", $heading_class . " wb-toc-heading");
 		$title = $tag->nodeValue;
@@ -72,14 +79,18 @@ function wb_get_ordered_content($content)
 		];
 
 		//Jump to top link
-		$jump_link = $dom->createElement("a", $back_to_top_text);
-		$jump_link->setAttribute("href", "#table-of-contents-heading"); //link to the table of contents title
-		$tag_suffix = $dom->createElement("span", " (");
-		$tag_suffix->setAttribute("class", "wb-jump-link has-small-font-size");
-		$tag_suffix->appendChild($jump_link);
-		$tag_suffix->append(")");
+		if ($dual_level || strtolower($tag->nodeName) !== "h3") {
+			// We do not add jump link suffixes to H3s when the ToC is not dual level
 
-		$tag->appendChild($tag_suffix);
+			$jump_link = $dom->createElement("a", $back_to_top_text);
+			$jump_link->setAttribute("href", "#table-of-contents-heading"); //link to the table of contents title
+			$tag_suffix = $dom->createElement("span", " (");
+			$tag_suffix->setAttribute("class", "wb-jump-link has-small-font-size");
+			$tag_suffix->appendChild($jump_link);
+			$tag_suffix->append(")");
+
+			$tag->appendChild($tag_suffix);
+		}
 		$tag->setAttribute("id", $id);
 	}
 
