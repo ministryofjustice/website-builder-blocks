@@ -276,7 +276,6 @@ function wb_blocks_enqueue_style()
 
 		// Check for the block in the post content
 		if (has_block("wb-blocks/filterable-listing", $post)) {
-
 			$taxonomies = get_taxonomies(["public" => true]);
 
 			if (!empty($taxonomies) && is_array($taxonomies)) {

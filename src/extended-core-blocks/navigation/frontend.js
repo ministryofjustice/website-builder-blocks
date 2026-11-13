@@ -192,7 +192,7 @@ function positionRight(subMenu, controlPositions, headerPositions) {
 	subMenu.classList.add("wbb-right-aligned-submenu");
 
 	const submenuPositions = subMenu.querySelector("li").getBoundingClientRect();
-	subMenu.style.paddingRight = headerPositions.right  - controlPositions.left - submenuPositions.width + 5 + "px";
+	subMenu.style.paddingRight = headerPositions.right - controlPositions.left - submenuPositions.width + 5 + "px";
 	// aligns the text with the control text
 	// (5px out to compensate for optical illusion & match positionLeft's positioning)
 	// padding cannot be negative, so it will never go off the side of the screen
