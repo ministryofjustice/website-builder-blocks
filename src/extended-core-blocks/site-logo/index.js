@@ -40,7 +40,6 @@ const withLogoAltText = createHigherOrderComponent(BlockEdit => {
 
 		const { logoAltText } = props.attributes;
 
-
 		return (
 			<>
 				<BlockEdit {...props} />
