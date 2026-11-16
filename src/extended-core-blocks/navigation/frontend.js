@@ -52,7 +52,8 @@ function makeMenuDrawer(drawerNav, subMenus, initialPadding, index) {
 		const headerQuarter = headerPositions.right / 4; // one quarter of the width
 
 		// this is the button which opened the submenu
-		const controlPositions = subMenu.closest("li.wp-block-navigation-item").getBoundingClientRect();
+		const control = subMenu.closest("li.wp-block-navigation-item");
+		const controlPositions = control.getBoundingClientRect();
 		const controlWidth = subMenu.closest("li.wp-block-navigation-item").offsetWidth;
 
 		const horizontalSubMenu = drawerNav.classList.contains("has-submenu-orientation-horizontal");
@@ -186,10 +187,15 @@ function positionCentre(subMenu) {
 }
 function positionRight(subMenu, controlPositions, headerPositions) {
 	subMenu.style.paddingLeft = "var(--wp--style--root--padding-left, 0)";
-	subMenu.style.paddingRight = headerPositions.right - controlPositions.right + "px";
 	subMenu.classList.remove("wbb-left-aligned-submenu");
 	subMenu.classList.remove("wbb-centre-aligned-submenu");
 	subMenu.classList.add("wbb-right-aligned-submenu");
+
+	const submenuPositions = subMenu.querySelector("li").getBoundingClientRect();
+	subMenu.style.paddingRight = headerPositions.right - controlPositions.left - submenuPositions.width + 5 + "px";
+	// aligns the text with the control text
+	// (5px out to compensate for optical illusion & match positionLeft's positioning)
+	// padding cannot be negative, so it will never go off the side of the screen
 }
 
 function initMenuDetached(detachedNav, closeMenu, index) {
