@@ -362,3 +362,4 @@ include plugin_dir_path(__FILE__) . "src/extended-core-blocks/query-total/index.
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/file/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/search/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/separator/index.php";
+include plugin_dir_path(__FILE__) . "src/extended-core-blocks/site-logo/index.php";
