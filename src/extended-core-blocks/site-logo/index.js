@@ -13,7 +13,7 @@ import { useSelect } from "@wordpress/data";
 /**
  * Add attribute.
  */
-addFilter("blocks.registerBlockType", "govwind/site-logo-alt-text", (settings, name) => {
+addFilter("blocks.registerBlockType", "wb_blocks/site-logo-alt-text", (settings, name) => {
 	if (name !== "core/site-logo") {
 		return settings;
 	}
