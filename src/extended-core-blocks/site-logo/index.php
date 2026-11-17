@@ -22,12 +22,15 @@ add_filter(
 				? get_bloginfo("name") . " – homepage"
 				: "Homepage");
 
-		// We use the presence of rel="home" to confirm this logo links to the homepage.
-		if (!str_contains($block_content, 'rel="home"')) {
+		$processor = new WP_HTML_Tag_Processor($block_content);
+
+		// We use the presence of rel="home" in the <a> tag to confirm this logo links to the homepage.
+		if (
+			!$processor->next_tag("a") ||
+			!in_array("home", preg_split("/\s+/", trim((string) $processor->get_attribute("rel"))), true)
+		) {
 			return $block_content;
 		}
-
-		$processor = new WP_HTML_Tag_Processor($block_content);
 
 		if ($processor->next_tag("img")) {
 			$processor->set_attribute("alt", $alt);
