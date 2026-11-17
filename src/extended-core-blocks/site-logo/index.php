@@ -16,7 +16,7 @@
 add_filter(
 	"render_block_core/site-logo",
 	function ($block_content, $block) {
-		$alt = !empty($block["attrs"]["logoAltText"])
+		$alt = trim((string) ($block["attrs"]["logoAltText"] ?? "")) !== ""
 			? $block["attrs"]["logoAltText"]
 			: (!empty(get_bloginfo("name"))
 				? get_bloginfo("name") . " – homepage"
