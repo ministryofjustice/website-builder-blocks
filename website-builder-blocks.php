@@ -6,7 +6,7 @@
  * Plugin name: Website Builder Blocks
  * Plugin URI:  https://github.com/ministryofjustice/website-builder-blocks
  * Description: Introduces new Wordpress blocks
- * Version:     2.3.13
+ * Version:     2.3.14
  * Author:      Ministry of Justice
  * Text domain: wb_blocks
  * Domain Path: /languages
@@ -362,3 +362,4 @@ include plugin_dir_path(__FILE__) . "src/extended-core-blocks/query-total/index.
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/file/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/search/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/separator/index.php";
+include plugin_dir_path(__FILE__) . "src/extended-core-blocks/site-logo/index.php";
