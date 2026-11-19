@@ -7,7 +7,7 @@ import { addFilter } from "@wordpress/hooks";
 import { createHigherOrderComponent } from "@wordpress/compose";
 import { InspectorControls } from "@wordpress/block-editor";
 import { PanelBody, TextControl } from "@wordpress/components";
-import { __ } from "@wordpress/i18n";
+import { __, sprintf } from "@wordpress/i18n";
 import { useSelect } from "@wordpress/data";
 
 /**
@@ -36,7 +36,7 @@ const withLogoAltText = createHigherOrderComponent(BlockEdit => {
 		}
 
 		const siteTitle = useSelect(select => select("core").getSite()?.title, []);
-		const defaultAlt = siteTitle ? `${siteTitle} – homepage` : "Homepage";
+		const exampleAlt = siteTitle ? sprintf(__("%s – homepage", "wb_blocks"), siteTitle) : __("Homepage", "wb_blocks");
 
 		const { logoAltText } = props.attributes;
 
@@ -45,11 +45,11 @@ const withLogoAltText = createHigherOrderComponent(BlockEdit => {
 				<BlockEdit {...props} />
 
 				<InspectorControls group="settings">
-					<PanelBody title={__("Accessibility", "wb_blocks")}>
+					<PanelBody title={__("Accessibility", "wb_blocks")} initialOpen={false}>
 						<TextControl
 							label={__("Homepage link alt text", "wb_blocks")}
-							help={__("Used when the logo links to the homepage.", "wb_blocks")}
-							value={logoAltText ?? defaultAlt}
+							help={sprintf(__("Used when the logo links to the homepage, e.g. %s", "wb_blocks"), exampleAlt)}
+							value={logoAltText}
 							onChange={value =>
 								props.setAttributes({
 									logoAltText: value,

@@ -16,11 +16,18 @@
 add_filter(
 	"render_block_core/site-logo",
 	function ($block_content, $block) {
-		$alt = trim((string) ($block["attrs"]["logoAltText"] ?? "")) !== ""
-			? $block["attrs"]["logoAltText"]
-			: (!empty(get_bloginfo("name"))
-				? get_bloginfo("name") . " – homepage"
-				: "Homepage");
+		$site_name = get_bloginfo("name");
+		$alt = trim((string) ($block["attrs"]["logoAltText"] ?? ""));
+
+		if (empty($alt) && !empty($site_name)) {
+			$alt = sprintf(
+				/* translators: %s: site name */
+				__("%s – homepage", "wb_blocks"),
+				$site_name,
+			);
+		} elseif (empty($alt)) {
+			$alt = __("Homepage", "wb_blocks");
+		}
 
 		$processor = new WP_HTML_Tag_Processor($block_content);
 
