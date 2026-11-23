@@ -41,15 +41,15 @@ add_action("init", function () {
 				}
 
 				$name = $icon_name . $variant[1];
-				$slug = $icon_name."_" . $variant[0];
+				$slug = $icon_name . "_" . $variant[0];
 
 				$result = wp_register_icon("{$collection}/{$slug}", [
 					"label" => $name,
 					"file_path" => $svg,
 				]);
 
-				if ( is_wp_error( $result ) ) {
-					error_log( $result->get_error_message() );
+				if (is_wp_error($result)) {
+					error_log($result->get_error_message());
 				}
 			}
 		}
