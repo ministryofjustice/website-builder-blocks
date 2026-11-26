@@ -1,0 +1,16 @@
+@charset "UTF-8";
+/*********************************************************************************************
+
+Core block: Social links (Frontend styles)
+
+**********************************************************************************************/
+
+.wp-block-social-link {
+	overflow: hidden;
+}
+
+.is-style-rectangular {
+	.wp-block-social-link {
+		border-radius: 0.5rem;
+	}
+}

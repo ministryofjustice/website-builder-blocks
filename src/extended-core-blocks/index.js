@@ -12,3 +12,4 @@ import "./query-pagination";
 import "./query-pagination-numbers";
 import "./query-total";
 import "./site-logo";
+import "./social-links";
