@@ -360,6 +360,7 @@ include plugin_dir_path(__FILE__) . "src/extended-core-blocks/post-date/index.ph
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/query-pagination-numbers/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/query-total/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/file/index.php";
+include plugin_dir_path(__FILE__) . "src/extended-core-blocks/icon/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/search/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/separator/index.php";
 include plugin_dir_path(__FILE__) . "src/extended-core-blocks/site-logo/index.php";
